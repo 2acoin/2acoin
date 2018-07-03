@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Copyright (c) 2018, The TurtleCoin Developers
+# Copyright (c) 2018, 2ACoin Developers
+# 
+# Please see the included LICENSE file for more information.
+
 set -o errexit
 
 TAG_VERSION=$1
@@ -8,7 +13,7 @@ BUILD_DIRECTORY=$2
 function usage()
 {
     echo "This script builds the dynamically and statically linked version"
-    echo "and generates the checksum files of the TurtleCoin tag provided."
+    echo "and generates the checksum files of the 2ACoin tag provided."
     echo
     echo "USAGE: $0 <tag> <build-directory>"
     echo
@@ -71,7 +76,7 @@ function generate_tarball()
     tar --transform "s,^,$RELEASE_NAME/," -c -f $TARBALL -z -C "$CLONE_DIR/build/release/src" \
         miner \
         zedwallet \
-        TurtleCoind \
+        2ACoind \
         walletd
 
     generate_checksums $TARBALL
@@ -115,11 +120,11 @@ then
 fi
 
 # -- Config
-GITHUB_REPO="https://github.com/turtlecoin/turtlecoin.git"
-CLONE_DIR="$BUILD_DIRECTORY/turtlecoin-buildall"
-TARGET_DIR="$BUILD_DIRECTORY/turtlecoin-releases"
-DYNAMIC_RELEASE="turtlecoin-${TAG_VERSION}-linux-CLI"
-STATIC_RELEASE="turtlecoin-${TAG_VERSION}-linux-staticboost-CLI"
+GITHUB_REPO="https://github.com/2acoin/2acoin.git"
+CLONE_DIR="$BUILD_DIRECTORY/2acoin-buildall"
+TARGET_DIR="$BUILD_DIRECTORY/2acoin-releases"
+DYNAMIC_RELEASE="2acoin-${TAG_VERSION}-linux-CLI"
+STATIC_RELEASE="2acoin-${TAG_VERSION}-linux-staticboost-CLI"
 
 checkout_tag
 build_static_linked_version

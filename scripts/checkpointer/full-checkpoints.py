@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# Copyright (c) 2018, The TurtleCoin Developers
+# Copyright (c) 2018, 2ACoin Developers
+# 
+# Please see the included LICENSE file for more information.
 
 import sys
 import json

@@ -57,7 +57,7 @@ const uint64_t MINIMUM_MIXIN_V2                              = 0;
 const uint64_t MAXIMUM_MIXIN_V2                              = 7;
 
 const uint32_t MIXIN_LIMITS_V1_HEIGHT                        = 0;
-const uint32_t MIXIN_LIMITS_V2_HEIGHT                        = 0;
+const uint32_t MIXIN_LIMITS_V2_HEIGHT                        = 200000;
 
 const uint64_t DEFAULT_MIXIN                                 = MINIMUM_MIXIN_V2;
 
@@ -67,7 +67,7 @@ const uint64_t DEFAULT_DUST_THRESHOLD_V2                     = UINT64_C(0);
 const uint32_t DUST_THRESHOLD_V2_HEIGHT                      = MIXIN_LIMITS_V2_HEIGHT;
 
 const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
-const size_t   DIFFICULTY_WINDOW                             = 960;
+const size_t   DIFFICULTY_WINDOW                             = 17;
 const size_t   DIFFICULTY_WINDOW_V1                          = 960;
 const size_t   DIFFICULTY_WINDOW_V2                          = 960;
 const size_t   DIFFICULTY_CUT                                = 0;  // timestamps to cut after sorting
@@ -112,7 +112,8 @@ const uint8_t CURRENT_FORK_INDEX = 0;
 
 /* Block heights we are going to have hard forks at */
 const uint64_t FORK_HEIGHTS[] = {
-    100
+    100000,
+    250000
 };
 
 /* Make sure CURRENT_FORK_INDEX is a valid index */
@@ -125,7 +126,7 @@ const char     P2P_NET_DATA_FILENAME[]                       = "p2pstate.bin";
 const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json";
 } // parameters
 
-const char     CRYPTONOTE_NAME[]                             = "TurtleCoin";
+const char     CRYPTONOTE_NAME[]                             = "2ACoin";
 
 const uint8_t  TRANSACTION_VERSION_1                         =  1;
 const uint8_t  TRANSACTION_VERSION_2                         =  2;
