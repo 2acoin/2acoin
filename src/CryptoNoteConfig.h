@@ -42,6 +42,10 @@ const unsigned EMISSION_SPEED_FACTOR                         = 21;
 const uint64_t GENESIS_BLOCK_REWARD                          = UINT64_C(214920000000000);
 static_assert(EMISSION_SPEED_FACTOR <= 8 * sizeof(uint64_t), "Bad EMISSION_SPEED_FACTOR");
 
+const uint64_t GENESIS_BLOCK_REWARD                          = UINT64_C(214920000000000);
+
+const char     GENESIS_COINBASE_TX_HEX[]                     = "011401ff000180a085b2ffee30022d1d76ccd131461bde05a3368179858341cb0aeb97ffbe797da5c14247f80bae2101defedd5500e48c2e2a3beb631b981d075ed1175dc5dc2550700a2f468da9dfe9";
+
 const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW               = 100;
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE     = 100000; //size of block (bytes) after which reward for block calculated using block size
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  = 20000;
@@ -105,19 +109,26 @@ const uint32_t UPGRADE_WINDOW                                = EXPECTED_NUMBER_O
 static_assert(0 < UPGRADE_VOTING_THRESHOLD && UPGRADE_VOTING_THRESHOLD <= 100, "Bad UPGRADE_VOTING_THRESHOLD");
 static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
 
-/* The index in the FORK_HEIGHTS array that this version of the software will
-   support. For example, if CURRENT_FORK_INDEX is 3, this version of the
-   software will support the fork at 600,000 blocks. */
-const uint8_t CURRENT_FORK_INDEX = 0;
-
 /* Block heights we are going to have hard forks at */
-const uint64_t FORK_HEIGHTS[] = {
+const uint64_t FORK_HEIGHTS[] = 
+{
     100000,
     250000
 };
 
-/* Make sure CURRENT_FORK_INDEX is a valid index */
-static_assert(CURRENT_FORK_INDEX < (sizeof(FORK_HEIGHTS)/sizeof(*FORK_HEIGHTS)), "CURRENT_FORK_INDEX out of range of FORK_HEIGHTS!");
+const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
+
+/* The index in the FORK_HEIGHTS array that this version of the software will
+   support. For example, if CURRENT_FORK_INDEX is 0, this version of the
+   software will support the fork at 100,000 blocks.
+
+   This will default to zero if the FORK_HEIGHTS array is empty, so you don't
+   need to change it manually. */
+const uint8_t CURRENT_FORK_INDEX = FORK_HEIGHTS_SIZE == 0 ? 0 : 0;
+
+static_assert(CURRENT_FORK_INDEX >= 0, "CURRENT FORK INDEX must be >= 0");
+/* Make sure CURRENT_FORK_INDEX is a valid index, unless FORK_HEIGHTS is empty */
+static_assert(FORK_HEIGHTS_SIZE == 0 || CURRENT_FORK_INDEX < FORK_HEIGHTS_SIZE, "CURRENT_FORK_INDEX out of range of FORK_HEIGHTS!");
 
 const char     CRYPTONOTE_BLOCKS_FILENAME[]                  = "blocks.bin";
 const char     CRYPTONOTE_BLOCKINDEXES_FILENAME[]            = "blockindexes.bin";
