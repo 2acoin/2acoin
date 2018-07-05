@@ -1,4 +1,5 @@
 // Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2018, The 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
@@ -389,7 +390,7 @@ void printOutgoingTransfer(CryptoNote::WalletTransaction t,
         const std::string blockTime
             = getBlockTimestamp(getBlock(t.blockHeight, node));
 
-        /* Couldn't get timestamp, maybe old node or turtlecoind closed */
+        /* Couldn't get timestamp, maybe old node or 2ACoind closed */
         if (blockTime != "")
         {
             std::cout << WarningMsg("Timestamp: " + blockTime) << std::endl;
@@ -424,7 +425,7 @@ void printIncomingTransfer(CryptoNote::WalletTransaction t,
         const std::string blockTime
             = getBlockTimestamp(getBlock(t.blockHeight, node));
 
-        /* Couldn't get timestamp, maybe old node or turtlecoind closed */
+        /* Couldn't get timestamp, maybe old node or 2ACoind closed */
         if (blockTime != "")
         {
             std::cout << SuccessMsg("Timestamp: " + blockTime) << std::endl;
@@ -481,7 +482,7 @@ CryptoNote::BlockDetails getBlock(uint32_t blockHeight,
 {
     CryptoNote::BlockDetails block;
 
-    /* No connection to turtlecoind */
+    /* No connection to 2ACoind */
     if (node.getLastKnownBlockHeight() == 0)
     {
         return block;
