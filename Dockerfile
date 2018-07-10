@@ -11,8 +11,8 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 ADD https://github.com/just-containers/socklog-overlay/releases/download/v2.1.0-0/socklog-overlay-amd64.tar.gz /tmp/
 RUN tar xzf /tmp/socklog-overlay-amd64.tar.gz -C /
 
-ARG TURTLECOIN_BRANCH=master
-ENV TURTLECOIN_BRANCH=${TURTLECOIN_BRANCH}
+ARG 2ACOIN_BRANCH=master
+ENV 2ACOIN_BRANCH=${2ACOIN_BRANCH}
 
 # install build dependencies
 # checkout the latest tag
@@ -28,7 +28,7 @@ RUN apt-get update && \
       librocksdb-dev && \
     git clone https://github.com/2acoin/2acoin.git /src/2acoin && \
     cd /src/2acoin && \
-    git checkout $TURTLECOIN_BRANCH && \
+    git checkout $2ACOIN_BRANCH && \
     mkdir build && \
     cd build && \
     cmake -DCMAKE_CXX_FLAGS="-g0 -Os -fPIC -std=gnu++11" .. && \
