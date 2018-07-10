@@ -56,6 +56,7 @@ namespace CryptoNote {
 HttpResponse::HttpResponse() {
   status = STATUS_200;
   headers["Server"] = "CryptoNote-based HTTP server";
+  headers["Access-Control-Allow-Origin"] = "*"; // Temporary - cors_domain not working - need future fix
 }
 
 void HttpResponse::setStatus(HTTP_STATUS s) {

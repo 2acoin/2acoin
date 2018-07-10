@@ -177,6 +177,7 @@ bool RpcServer::processJsonRpcRequest(const HttpRequest& request, HttpResponse& 
     response.addHeader("Access-Control-Allow-Origin", cors_domain);
   }
   response.addHeader("Content-Type", "application/json");
+  response.addHeader("Access-Control-Allow-Origin", "*");   // Temporary - above cors_domain not working - need future fix
 
   JsonRpcRequest jsonRequest;
   JsonRpcResponse jsonResponse;
