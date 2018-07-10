@@ -478,6 +478,11 @@ Difficulty Currency::nextDifficultyV3(std::vector<std::uint64_t> timestamps, std
         next_D = std::max(next_D, (prev_D * 110) / 100);
     }
 
+    /* Control min Difficulty required for non-busy network*/
+    if (next_D < 100) {
+       next_D = 100;
+    }
+
     return static_cast<uint64_t>(next_D);
 }
 
