@@ -452,7 +452,7 @@ Difficulty Currency::nextDifficultyV3(std::vector<std::uint64_t> timestamps, std
 
     if (timestamps.size() <= static_cast<uint64_t>(N))
     {
-        return 1000;
+        return 5000;
     }
 
     for (int64_t i = 1; i <= N; i++)
@@ -479,8 +479,8 @@ Difficulty Currency::nextDifficultyV3(std::vector<std::uint64_t> timestamps, std
     }
 
     /* Control min Difficulty required for non-busy network*/
-    if (next_D < 100) {
-       next_D = 100;
+    if (next_D < 5000) {
+       next_D = 5000;
     }
 
     return static_cast<uint64_t>(next_D);
