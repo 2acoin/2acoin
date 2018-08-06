@@ -36,7 +36,7 @@ sudo apt-get install librocksdb-dev
 
 ##### Building
 
-- `git clone https://github.com/2acoin/2acoin` 2acoin
+- `git clone https://github.com/2acoin/2acoin`
 - `cd 2acoin`
 - `mkdir build && cd $_`
 - `cmake ..`
@@ -53,7 +53,7 @@ sudo apt-get install librocksdb-dev
 
 ##### Building
 
-- `git clone https://github.com/2acoin/2acoin` 2acoin
+- `git clone https://github.com/2acoin/2acoin`
 - `cd 2acoin`
 - `mkdir build && cd $_`
 - `cmake ..` or `cmake -DBOOST_ROOT=<path_to_boost_install> ..` when building
@@ -88,7 +88,7 @@ Cryptonote Developers, Bytecoin Developers, Monero Developers, Forknote Project,
 
 ### Copypasta for license when editing files
 
-Hi 2ACoin contributor, thanks for forking and sending back Pull Requests. Extensive docs about contributing are in the works or elsewhere. For now this is the bit we need to get into all the files we touch. Please add it to the top of the files, see [src/CryptoNoteConfig.h](https://github.com/2acoin/2acoin/commit/28cfef2575f2d767f6e512f2a4017adbf44e610e) for an example.
+Hi 2ACoin contributor, thanks for forking and sending back Pull Requests. Extensive docs about contributing are in the works or elsewhere. For now this is the bit we need to get into all the files we touch. Please add it to the top of the files, see [src/CryptoNoteConfig.h](https://github.com/2acoin/2acoin/blob/master/src/CryptoNoteConfig.h) for an example.
 
 ```
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
