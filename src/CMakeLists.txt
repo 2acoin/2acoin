@@ -23,8 +23,7 @@ file(GLOB_RECURSE Wallet Wallet/*)
 file(GLOB_RECURSE WalletLegacy WalletLegacy/*)
 file(GLOB_RECURSE JsonRpcServer JsonRpcServer/*)
 file(GLOB_RECURSE PaymentGate PaymentGate/*)
-file(GLOB_RECURSE PaymentGateService PaymentGateService/*)
-file(GLOB_RECURSE PoolWallet PoolWallet/*)
+file(GLOB_RECURSE service PaymentGateService/*)
 file(GLOB_RECURSE zedwallet zedwallet/*)
 
 if(MSVC)
@@ -38,7 +37,7 @@ endif()
 # This appears to be an IDE thing, to group files together.
 # https://cmake.org/cmake/help/v3.0/command/source_group.html
 # Probably not what you need to be looking at if something isn't building
-source_group("" FILES $${Common} ${ConnectivityTool} ${Crypto} ${CryptoNoteCore} ${CryptoNoteProtocol} ${Daemon} ${JsonRpcServer} ${Http} ${Logging} ${Miner} ${Mnemonics} ${NodeRpcProxy} ${PoolWallet} ${P2p} ${Rpc} ${Serialization} ${System} ${Transfers} ${Wallet} ${WalletLegacy} ${zedwallet})
+source_group("" FILES $${Common} ${ConnectivityTool} ${Crypto} ${CryptoNoteCore} ${CryptoNoteProtocol} ${2ACoind} ${JsonRpcServer} ${Http} ${Logging} ${miner} ${Mnemonics} ${NodeRpcProxy} ${P2p} ${Rpc} ${Serialization} ${System} ${Transfers} ${Wallet} ${WalletLegacy} ${zedwallet})
 
 add_library(BlockchainExplorer ${BlockchainExplorer})
 add_library(Common ${Common})
@@ -65,9 +64,6 @@ if(MSVC)
   set(ZED_WALLET_SOURCES_OS
     BinaryInfo/zedwallet.rc
   )
-  set(POOLWALLET_SOURCES_OS
-    BinaryInfo/poolwallet.rc
-  )
   set(MINER_SOURCES_OS
     BinaryInfo/miner.rc
   )
@@ -78,9 +74,8 @@ endif()
 
 add_executable(Daemon ${Daemon} ${DAEMON_SOURCES_OS})
 add_executable(zedwallet ${zedwallet} ${ZED_WALLET_SOURCES_OS})
-add_executable(PaymentGateService ${PaymentGateService} ${PG_SOURCES_OS})
-add_executable(PoolWallet ${PoolWallet} ${POOLWALLET_SOURCES_OS})
-add_executable(Miner ${Miner} ${MINER_SOURCES_OS})
+add_executable(service ${service} ${PG_SOURCES_OS})
+add_executable(miner ${miner} ${MINER_SOURCES_OS})
 
 if(MSVC)
   target_link_libraries(System ws2_32)
@@ -105,8 +100,8 @@ if(MSVC)
 else()
 	target_link_libraries(PaymentGateService PaymentGate JsonRpcServer Wallet NodeRpcProxy Transfers CryptoNoteCore Crypto Rpc Http System Logging Common InProcessNode rocksdblib ${Boost_LIBRARIES})
 endif()
-target_link_libraries(PoolWallet Wallet NodeRpcProxy Transfers Rpc P2P upnpc-static Http Serialization CryptoNoteCore System Logging Common Crypto ${Boost_LIBRARIES})
-target_link_libraries(Miner CryptoNoteCore Rpc Serialization System Http Logging Common Crypto ${Boost_LIBRARIES})
+target_link_libraries(Wallet NodeRpcProxy Transfers Rpc P2P upnpc-static Http Serialization CryptoNoteCore System Logging Common Crypto ${Boost_LIBRARIES})
+target_link_libraries(miner CryptoNoteCore Rpc Serialization System Http Logging Common Crypto ${Boost_LIBRARIES})
 
 # Add dependencies means we have to build the latter before we build the former
 # In this case it's because we need to have the current version name rather
@@ -114,13 +109,11 @@ target_link_libraries(Miner CryptoNoteCore Rpc Serialization System Http Logging
 add_dependencies(Rpc version)
 add_dependencies(Daemon version)
 add_dependencies(zedwallet version)
-add_dependencies(PaymentGateService version)
-add_dependencies(PoolWallet version)
+add_dependencies(service version)
 add_dependencies(P2P version)
 
 # Finally build the binaries
 set_property(TARGET Daemon PROPERTY OUTPUT_NAME "2ACoind")
 set_property(TARGET zedwallet PROPERTY OUTPUT_NAME "zedwallet")
-set_property(TARGET PaymentGateService PROPERTY OUTPUT_NAME "walletd")
-set_property(TARGET PoolWallet PROPERTY OUTPUT_NAME "poolwallet")
-set_property(TARGET Miner PROPERTY OUTPUT_NAME "miner")
+set_property(TARGET service PROPERTY OUTPUT_NAME "2acoin-service")
+set_property(TARGET miner PROPERTY OUTPUT_NAME "miner")
