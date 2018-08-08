@@ -13,6 +13,7 @@
 #include "CryptoNoteConfig.h"
 
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
+#include <CryptoNoteCore/CryptoNoteTools.h>
 #include <CryptoNoteCore/TransactionExtra.h>
 
 #include "IWallet.h"
@@ -753,8 +754,147 @@ bool parseFee(std::string feeString)
     return true;
 }
 
+Maybe<std::pair<std::string, std::string>> extractIntegratedAddress(
+    std::string integratedAddress)
+{
+    if (integratedAddress.length() != WalletConfig::integratedAddressLength)
+    {
+        return Nothing<std::pair<std::string, std::string>>();
+    }
 
-bool parseAddress(std::string address)
+    std::string decoded;
+    uint64_t prefix;
+
+    /* Need to be able to decode the string as an address */
+    if (!Tools::Base58::decode_addr(integratedAddress, prefix, decoded))
+    {
+        return Nothing<std::pair<std::string, std::string>>();
+    }
+
+    /* The prefix needs to be the same as the base58 prefix */
+    if (prefix !=
+        CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX)
+    {
+        return Nothing<std::pair<std::string, std::string>>();
+    }
+
+    const uint64_t paymentIDLen = 64;
+
+    /* Grab the payment ID from the decoded address */
+    std::string paymentID = decoded.substr(0, paymentIDLen);
+
+    /* The binary array encoded keys are the rest of the address */
+    std::string keys = decoded.substr(paymentIDLen, std::string::npos);
+
+    CryptoNote::AccountPublicAddress addr;
+    CryptoNote::BinaryArray ba = Common::asBinaryArray(keys);
+
+    if (!CryptoNote::fromBinaryArray(addr, ba))
+    {
+        return Nothing<std::pair<std::string, std::string>>();
+    }
+
+    /* Parse the AccountPublicAddress into a standard wallet address */
+    /* Use the calculated prefix from earlier for less typing :p */
+    std::string address = CryptoNote::getAccountAddressAsStr(prefix, addr);
+
+    /* The address out should of course be a valid address */
+    if (!parseStandardAddress(address))
+    {
+        return Nothing<std::pair<std::string, std::string>>();
+    }
+    
+    std::vector<uint8_t> extra;
+
+    /* And the payment ID out should be valid as well! */
+    if (!CryptoNote::createTxExtraWithPaymentId(paymentID, extra))
+    {
+        return Nothing<std::pair<std::string, std::string>>();
+    }
+    
+    return Just<std::pair<std::string, std::string>>({address, paymentID});
+}
+
+Maybe<std::pair<AddressType, std::string>> getAddress(std::string msg)
+{
+    while (true)
+    {
+        std::string address;
+
+        std::cout << InformationMsg(msg);
+
+        std::getline(std::cin, address);
+        boost::algorithm::trim(address);
+
+        if (address == "cancel")
+        {
+            return Nothing<std::pair<AddressType, std::string>>();
+        }
+
+        auto addressType = parseAddress(address);
+
+        if (addressType != NotAnAddress)
+        {
+            return Just<std::pair<AddressType, std::string>>
+            ({
+                addressType, address
+            });
+        }
+    }
+}
+
+AddressType parseAddress(std::string address)
+{
+    if (parseStandardAddress(address))
+    {
+        return StandardAddress;
+    }
+
+    if (parseIntegratedAddress(address))
+    {
+        return IntegratedAddress;
+    }
+
+    /* Failed to parse, lets try and diagnose a more accurate failure message */
+
+    if (address.length() != WalletConfig::standardAddressLength &&
+        address.length() != WalletConfig::integratedAddressLength)
+    {
+        std::cout << WarningMsg("Address is wrong length!") << std::endl
+                  << "It should be " << WalletConfig::standardAddressLength
+                  << " or " << WalletConfig::integratedAddressLength
+                  << " characters long, but it is " << address.length()
+                  << " characters long!" << std::endl << std::endl;
+
+        return NotAnAddress;
+    }
+
+    if (address.substr(0, WalletConfig::addressPrefix.length()) !=
+        WalletConfig::addressPrefix)
+    {
+        std::cout << WarningMsg("Invalid address! It should start with ")
+                  << WarningMsg(WalletConfig::addressPrefix)
+                  << WarningMsg("!")
+                  << std::endl << std::endl;
+
+        return NotAnAddress;
+    }
+
+    std::cout << WarningMsg("Failed to parse address, address is not a ")
+              << WarningMsg("valid ")
+              << WarningMsg(WalletConfig::ticker)
+              << WarningMsg(" address!") << std::endl
+              << std::endl;
+
+    return NotAnAddress;
+}
+
+bool parseIntegratedAddress(std::string integratedAddress)
+{
+    return extractIntegratedAddress(integratedAddress).isJust;
+}
+
+bool parseStandardAddress(std::string address, bool printErrors)
 {
     uint64_t prefix;
 

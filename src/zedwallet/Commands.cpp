@@ -154,6 +154,14 @@ bool dispatchCommand(std::shared_ptr<WalletInfo> &walletInfo,
     {
         changePassword(walletInfo);
     }
+    else if (command == "create_integrated_address")
+    {
+        createIntegratedAddress();
+    }
+    else if (command == "send_all")
+    {
+        transfer(walletInfo, node.getLastKnownBlockHeight(), true);
+    }
     /* This should never happen */
     else
     {
@@ -251,6 +259,10 @@ std::vector<Command> allCommands()
 
         {"bc_height", "Show the blockchain height", true, true},
         {"change_password", "Change your wallet password", true, true},
+
+        {"create_integrated_address", "Make an integrated address from an "
+                                      "address + payment ID", true, true},
+
         {"incoming_transfers", "Show incoming transfers", true, true},
         {"list_transfers", "Show all transfers", false, true},
         {"optimize", "Optimize your wallet to send large amounts", false, true},
