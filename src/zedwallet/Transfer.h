@@ -25,8 +25,9 @@ void sendMultipleTransactions(CryptoNote::WalletGreen &wallet,
                               std::vector<CryptoNote::TransactionParameters>
                               transfers);
 
-void splitTx(CryptoNote::WalletGreen &wallet,
-             CryptoNote::TransactionParameters p);
+void sendTX(std::shared_ptr<WalletInfo> walletInfo, 
+            CryptoNote::TransactionParameters p, uint32_t height,
+            bool retried = false, uint32_t nodeFee = 0);
 
 bool confirmTransaction(CryptoNote::TransactionParameters t,
                         std::shared_ptr<WalletInfo> walletInfo,

@@ -134,67 +134,8 @@ bool confirmTransaction(CryptoNote::TransactionParameters t,
     return false;
 }
 
-void sendMultipleTransactions(CryptoNote::WalletGreen &wallet,
-                              std::vector<CryptoNote::TransactionParameters>
-                              transfers)
-{
-    const size_t numTxs = transfers.size();
-    size_t currentTx = 1;
-
-    std::cout << "Your transaction has been split up into " << numTxs
-              << " separate transactions of " 
-              << formatAmount(transfers[0].destinations[0].amount)
-              << ". "
-              << std::endl
-              << "It may take some time to send all the transactions."
-              << std::endl << std::endl;
-
-    for (auto tx : transfers)
-    {
-        while (true)
-        {
-            std::cout << "Attempting to send transaction "
-                      << InformationMsg(std::to_string(currentTx))
-                      << " of " << InformationMsg(std::to_string(numTxs))
-                      << std::endl;
-
-            wallet.updateInternalCache();
-
-            const uint64_t neededBalance = tx.destinations[0].amount + tx.fee;
-
-            if (neededBalance < wallet.getActualBalance())
-            {
-                const size_t id = wallet.transfer(tx);
-
-                const CryptoNote::WalletTransaction sentTx 
-                    = wallet.getTransaction(id);
-
-                std::cout << SuccessMsg("Transaction has been sent!")
-                          << std::endl
-                          << SuccessMsg("Hash: " 
-                                      + Common::podToHex(sentTx.hash))
-                          << std::endl << std::endl;
-
-                break;
-            }
-           
-            std::cout << "Waiting for balance to unlock to send next "
-                      << "transaction."
-                      << std::endl
-                      << "Will try again in 5 seconds..."
-                      << std::endl << std::endl;
-
-            std::this_thread::sleep_for(std::chrono::seconds(5));
-        }
-
-        currentTx++;
-    }
-
-    std::cout << SuccessMsg("All transactions sent!") << std::endl;
-}
-
-void splitTx(CryptoNote::WalletGreen &wallet, 
-             CryptoNote::TransactionParameters p)
+void splitTX(CryptoNote::WalletGreen &wallet, 
+             const CryptoNote::TransactionParameters p, uint32_t nodeFee)
 {
     std::cout << "Transaction is still too large to send, splitting into "
               << "multiple chunks." 
@@ -221,41 +162,49 @@ void splitTx(CryptoNote::WalletGreen &wallet,
 
     for (int numTxMultiplier = 1; ; numTxMultiplier++)
     {
-        /* We modify p a bit in this function, so restore back to initial
-           state each time */
-        p = restoreInitialTx;
+        amountDivider = 2;
+    }
 
-        /* We can't just evenly divide a transaction up to be < 115k bytes by
-           decreasing the amount we're sending, because depending upon the
-           inputs we might need to split into more transactions, so instead
-           check at the end that each transaction is small enough, and
-           if not, we up the numTxMultiplier and try again with more
-           transactions. */
-        int numTransactions 
-            = int(numTxMultiplier * 
-                 (std::ceil(double(txSize) / double(maxSize))));
+    /* Use for quick restoring to originalDivider once a tx suceeds */
+    uint64_t originalDivider = amountDivider;
 
-        /* Split the requested fee over each transaction, i.e. if a fee of 200
-           TRTL was requested and we split it into 4 transactions each one will
-           have a fee of 5 TRTL. If the fee per transaction is less than the
-           default fee, use the default fee. */
-        const uint64_t feePerTx = std::max (p.fee / numTransactions, defaultFee);
+    int txNumber = 1;
 
-        const uint64_t totalFee = feePerTx * numTransactions;
+    while (true)
+    {
+        auto p1 = p;
 
-        const uint64_t totalCost = p.destinations[0].amount + totalFee;
-        
-        /* If we have to use the minimum fee instead of splitting the total fee,
-           then it is possible the user no longer has the balance to cover this
-           transaction. So, we slightly lower the amount they are sending. */
-        if (totalCost > wallet.getActualBalance())
+        p1.destinations[0].amount = totalAmount / amountDivider;
+
+        /* If we have odd numbers, we can have an amount that is smaller
+           than the remainder to send, but the remainder is less than
+           2 * amount.
+           So, we include this amount in our current transaction to prevent
+           this change not being sent.
+           If we're trying to send more than the remaining amount, set to
+           the remaining amount. */
+        if ((p1.destinations[0].amount != remainder &&
+             remainder < (p1.destinations[0].amount * 2))
+         || (p1.destinations[0].amount > remainder))
+        {
+            p1.destinations[0].amount = remainder;
+        }
+        else if (p1.destinations[0].amount + p1.fee + nodeFee > balance)
+        {
+            p1.destinations[0].amount = balance - p1.fee - nodeFee;
+
+            if (p1.destinations[0].amount < WalletConfig::minimumSend)
+            {
+                return;
+            }
+        }
+
+        if (p1.destinations[0].amount == 0)
         {
             p.destinations[0].amount = wallet.getActualBalance() - totalFee;
         }
 
-        const uint64_t amountPerTx = p.destinations[0].amount / numTransactions;
-        /* Left over amount from integral division */
-        const uint64_t change = p.destinations[0].amount % numTransactions;
+        uint64_t totalNeeded = p1.destinations[0].amount + p1.fee + nodeFee;
 
         std::vector<CryptoNote::TransactionParameters> transfers;
 
@@ -272,12 +221,44 @@ void splitTx(CryptoNote::WalletGreen &wallet,
 
         for (const auto &tx : transfers)
         {
-            /* One of the transfers is too large. Retry, cutting the
-               transactions into smaller pieces */
-            if (wallet.txIsTooLarge(tx))
-            {
-                continue;
-            }
+            amountDivider *= 2;
+            /* This can take quite a long time so let them know it's not frozen
+            */
+            std::cout << InformationMsg("Working...") << std::endl;
+            continue;
+        }
+
+        std::cout << InformationMsg("Sending transaction number ")
+                  << InformationMsg(std::to_string(txNumber))
+                  << InformationMsg("...")
+                  << std::endl;
+
+        const size_t id = wallet.transfer(prepared);
+        auto hash = wallet.getTransaction(id).hash;
+
+        std::cout << SuccessMsg("Transaction has been sent!")
+                  << std::endl
+                  << SuccessMsg("Hash: ")
+                  << SuccessMsg(Common::podToHex(hash))
+                  << std::endl
+                  << SuccessMsg("Amount: ")
+                  << SuccessMsg(formatAmount(p1.destinations[0].amount))
+                  << std::endl << std::endl;
+
+        txNumber++;
+
+        sentAmount += p1.destinations[0].amount;
+        /* Remember to remove the fee as well from balance */
+        balance = balance - p1.destinations[0].amount - p1.fee - nodeFee;
+        remainder = totalAmount - sentAmount;
+
+        /* We've sent the full amount required now */
+        if (sentAmount == totalAmount)
+        {
+            std::cout << InformationMsg("All transactions have been sent!")
+                      << std::endl;
+
+            return;
         }
 
         sendMultipleTransactions(wallet, transfers);
@@ -536,18 +517,65 @@ void doTransfer(std::string address, uint64_t amount, uint64_t fee,
         return;
     }
 
-    bool retried = false;
+    sendTX(walletInfo, p, height, false, nodeFee);
+}
 
-    while (true)
+void sendTX(std::shared_ptr<WalletInfo> walletInfo, 
+            CryptoNote::TransactionParameters p, uint32_t height,
+            bool retried, uint32_t nodeFee)
+{
+    try
     {
         try
         {
             if (walletInfo->wallet.txIsTooLarge(p))
             {
-                if (!fusionTX(walletInfo->wallet, p))
-                {
-                    return;
-                }
+                return;
+            }
+
+            /* Reform with the optimized inputs */
+            tx = walletInfo->wallet.formTransaction(p);
+
+            /* If the transaction is still too large, lets split it up into 
+               smaller chunks */
+            if (walletInfo->wallet.txIsTooLarge(tx))
+            {
+                splitTX(walletInfo->wallet, p, nodeFee);
+                return;
+            }
+        }
+
+        const size_t id = walletInfo->wallet.transfer(tx);
+        auto hash = walletInfo->wallet.getTransaction(id).hash;
+        
+        std::cout << SuccessMsg("Transaction has been sent!")
+                  << std::endl
+                  << SuccessMsg("Hash: ")
+                  << SuccessMsg(Common::podToHex(hash))
+                  << std::endl;
+    }
+    /* Lets handle the error and possibly resend the transaction */
+    catch (const std::system_error &e)
+    {
+        bool setMixinToZero = handleTransferError(e, retried, height);
+
+        if (setMixinToZero)
+        {
+            p.mixIn = 0;
+            sendTX(walletInfo, p, height, true, nodeFee);
+        }
+    }
+}
+
+bool handleTransferError(const std::system_error &e,
+                         bool retried,
+                         uint32_t height)
+{
+    if (retried)
+    {
+        std::cout << WarningMsg("Failed to send transaction!")
+                  << std::endl << "Error message: " << e.what()
+                  << std::endl;
 
                 if (walletInfo->wallet.txIsTooLarge(p))
                 {
