@@ -42,8 +42,6 @@ const unsigned EMISSION_SPEED_FACTOR                         = 21;
 const uint64_t GENESIS_BLOCK_REWARD                          = UINT64_C(214920000000000);
 static_assert(EMISSION_SPEED_FACTOR <= 8 * sizeof(uint64_t), "Bad EMISSION_SPEED_FACTOR");
 
-const uint64_t GENESIS_BLOCK_REWARD                          = UINT64_C(214920000000000);
-
 const char     GENESIS_COINBASE_TX_HEX[]                     = "011401ff000180a085b2ffee30022d1d76ccd131461bde05a3368179858341cb0aeb97ffbe797da5c14247f80bae2101defedd5500e48c2e2a3beb631b981d075ed1175dc5dc2550700a2f468da9dfe9";
 
 const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW               = 100;
