@@ -8,11 +8,18 @@
 
 #include <zedwallet/Types.h>
 
-void transfer(std::shared_ptr<WalletInfo> walletInfo, uint32_t height);
+enum AddressType {NotAnAddress, IntegratedAddress, StandardAddress};
+
+enum BalanceInfo {NotEnoughBalance, EnoughBalance, SetMixinToZero};
+
+void transfer(std::shared_ptr<WalletInfo> walletInfo, uint32_t height,
+              bool sendAll = false, std::string nodeAddress = std::string(), uint32_t nodeFee = 0);
 
 void doTransfer(std::string address, uint64_t amount, uint64_t fee,
                 std::string extra, std::shared_ptr<WalletInfo> walletInfo,
-                uint32_t height);
+                uint32_t height, bool integratedAddress,
+                uint64_t mixin = WalletConfig::defaultMixin, 
+                std::string nodeAddress = std::string(), uint32_t nodeFee = 0);
 
 void sendMultipleTransactions(CryptoNote::WalletGreen &wallet,
                               std::vector<CryptoNote::TransactionParameters>
@@ -22,7 +29,8 @@ void splitTx(CryptoNote::WalletGreen &wallet,
              CryptoNote::TransactionParameters p);
 
 bool confirmTransaction(CryptoNote::TransactionParameters t,
-                        std::shared_ptr<WalletInfo> walletInfo);
+                        std::shared_ptr<WalletInfo> walletInfo,
+                        bool integratedAddress, uint32_t nodeFee);
 
 bool parseAmount(std::string amountString);
 
@@ -41,3 +49,10 @@ Maybe<std::string> getDestinationAddress();
 Maybe<uint64_t> getFee();
 
 Maybe<uint64_t> getTransferAmount();
+
+Maybe<std::pair<std::string, std::string>> extractIntegratedAddress(
+    std::string integratedAddress);
+
+BalanceInfo doWeHaveEnoughBalance(uint64_t amount, uint64_t fee,
+                                  std::shared_ptr<WalletInfo> walletInfo,
+                                  uint64_t height, uint32_t nodeFee);
