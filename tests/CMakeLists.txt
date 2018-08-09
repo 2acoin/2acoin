@@ -50,8 +50,8 @@ if (MSVC)
   target_link_libraries(CoreTests ws2_32)
 endif ()
 
-target_link_libraries(TransfersTests IntegrationTestLibrary TestsCommon Wallet gtest_main InProcessNode NodeRpcProxy P2P Rpc Http BlockchainExplorer CryptoNoteCore Serialization System Logging Transfers Common Crypto upnpc-static ${Boost_LIBRARIES})
-target_link_libraries(UnitTests gtest_main PaymentGate Wallet TestGenerator InProcessNode NodeRpcProxy Rpc P2P upnpc-static Http Transfers Serialization System Logging BlockchainExplorer CryptoNoteCore Common Crypto ${Boost_LIBRARIES})
+target_link_libraries(TransfersTests IntegrationTestLibrary TestsCommon Wallet gtest_main NodeRpcProxy P2P Rpc Http BlockchainExplorer CryptoNoteCore Serialization System Logging Transfers Common Crypto upnpc-static ${Boost_LIBRARIES})
+target_link_libraries(UnitTests WalletService gtest_main Wallet TestGenerator NodeRpcProxy Rpc P2P upnpc-static Http Transfers Serialization System Logging BlockchainExplorer CryptoNoteCore Common Crypto ${Boost_LIBRARIES})
 
 target_link_libraries(DifficultyTests CryptoNoteCore Serialization Crypto Logging Common ${Boost_LIBRARIES})
 target_link_libraries(HashTargetTests CryptoNoteCore Crypto)

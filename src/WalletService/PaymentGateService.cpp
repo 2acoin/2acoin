@@ -23,7 +23,7 @@
 #include "Common/Util.h"
 #include "InProcessNode/InProcessNode.h"
 #include "Logging/LoggerRef.h"
-#include "PaymentGate/PaymentServiceJsonRpcServer.h"
+#include "PaymentServiceJsonRpcServer.h"
 
 #include "Common/ScopeExit.h"
 #include "CryptoNoteCore/Core.h"
