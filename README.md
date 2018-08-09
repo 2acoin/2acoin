@@ -3,7 +3,7 @@
 
 ### How To Compile
 
-On Ubuntu or Mac on a non standard architecture, and can't get GNU Readline installed?
+On Linux or Mac on a non standard architecture, and can't get GNU Readline installed?
 
 Disable it with `cmake .. -DFORCE_READLINE=FALSE`
 
