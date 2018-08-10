@@ -172,8 +172,8 @@ bool dispatchCommand(std::shared_ptr<WalletInfo> &walletInfo,
 }
 
 const Maybe<Command> resolveCommand(std::string command,
-                              std::vector<Command> &allCommands,
-                              std::vector<Command> &available)
+                                    std::vector<Command> &allCommands,
+                                    std::vector<Command> &available)
 {
     int index;
 

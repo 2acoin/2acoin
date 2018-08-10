@@ -1,4 +1,5 @@
 // Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2018, 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
@@ -7,6 +8,7 @@
 #include <memory>
 
 #include <zedwallet/Types.h>
+#include <zedwallet/WalletConfig.h>
 
 enum AddressType {NotAnAddress, IntegratedAddress, StandardAddress};
 
@@ -36,9 +38,16 @@ bool confirmTransaction(CryptoNote::TransactionParameters t,
 
 bool parseAmount(std::string amountString);
 
-bool parseAddress(std::string address);
+bool parseStandardAddress(std::string address, bool printErrors = false);
+
+bool parseIntegratedAddress(std::string address);
 
 bool parseFee(std::string feeString);
+
+bool handleTransferError(const std::system_error &e, bool retried,
+                         uint32_t height);
+
+AddressType parseAddress(std::string address);
 
 std::string getExtraFromPaymentID(std::string paymentID);
 
@@ -46,7 +55,7 @@ Maybe<std::string> getPaymentID(std::string msg);
 
 Maybe<std::string> getExtra();
 
-Maybe<std::string> getDestinationAddress();
+Maybe<std::pair<AddressType, std::string>> getAddress(std::string msg);
 
 Maybe<uint64_t> getFee();
 

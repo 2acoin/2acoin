@@ -1,4 +1,5 @@
 // Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2018, 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
@@ -23,5 +24,7 @@ std::string yellowANSIMsg(std::string msg);
 std::string getPrompt(std::shared_ptr<WalletInfo> &walletInfo);
 
 std::string unixTimeToDate(uint64_t timestamp);
+
+std::string createIntegratedAddress(std::string address, std::string paymentID);
 
 uint64_t getDivisor();

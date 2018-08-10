@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 2.8.6)
 
+# Required for finding Threads on arm
+enable_language(C)
+enable_language(CXX)
+find_package(Threads)
+
 set(VERSION "0.1")
 # $Format:Packaged from commit %H%nset(COMMIT %h)%nset(REFS "%d")$
 
@@ -112,11 +117,31 @@ else()
   endif()
   set(C_WARNINGS "-Waggregate-return -Wnested-externs -Wold-style-definition -Wstrict-prototypes")
   set(CXX_WARNINGS "-Wno-reorder -Wno-missing-field-initializers")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 ${MINGW_FLAG} ${WARNINGS} ${C_WARNINGS} ${ARCH_FLAG} -maes")
+  
+  try_compile(STATICASSERTC_RESULT "${CMAKE_CURRENT_BINARY_DIR}/static-assert" "${CMAKE_CURRENT_SOURCE_DIR}/tests/Common/TestStaticAssert.c" COMPILE_DEFINITIONS "-std=c11")
+  if(STATICASSERTC_RESULT)
+    set(STATICASSERTC_FLAG "")
+  else()
+    set(STATICASSERTC_FLAG "-Dstatic_assert=_Static_assert")
+  endif()
+
+  try_compile(STATICASSERTCPP_RESULT "${CMAKE_CURRENT_BINARY_DIR}/static-assert" "${CMAKE_CURRENT_SOURCE_DIR}/tests/Common/TestStaticAssert.cpp" COMPILE_DEFINITIONS "-std=c++11")
+  if(STATICASSERTCPP_RESULT)
+    set(STATICASSERTCPP_FLAG "")
+  else()
+    set(STATICASSERTCPP_FLAG "-Dstatic_assert=_Static_assert")
+  endif()
+  
+  # -maes is not supported on arm
+  if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 ${MINGW_FLAG} ${STATICASSERTC_FLAG} ${WARNINGS} ${C_WARNINGS} ${ARCH_FLAG} -maes")
+  endif()
   if(NOT APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
   endif()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${MINGW_FLAG} ${WARNINGS} ${CXX_WARNINGS} ${ARCH_FLAG} -maes")
+  if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${MINGW_FLAG} ${STATICASSERTCPP_FLAG} ${WARNINGS} ${CXX_WARNINGS} ${ARCH_FLAG} -maes")
+  endif()
   if(APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGTEST_HAS_TR1_TUPLE=0")
   endif()
@@ -202,7 +227,7 @@ endif()
 ## We need to setup the RocksDB build environment to match our system
 if(NOT MSVC)
   execute_process(
-    COMMAND cmake ${CMAKE_CURRENT_SOURCE_DIR}/external/rocksdb -DWITH_GFLAGS=0 -B${PROJECT_BINARY_DIR}/rocksdb
+    COMMAND cmake ${CMAKE_CURRENT_SOURCE_DIR}/external/rocksdb -DWITH_GFLAGS=0 -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_TESTS=OFF -DWITH_TOOLS=OFF -DPORTABLE=ON -B${PROJECT_BINARY_DIR}/rocksdb
   )
   set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${PROJECT_BINARY_DIR}/rocksdb/librocksdb.a")
 endif()

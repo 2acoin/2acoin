@@ -34,11 +34,10 @@ namespace WalletConfig
     const std::string walletdName = "2acoin-service";
 
     /* The full name of your crypto */
-    const std::string coinName = "2ACoin";
+    const std::string coinName = std::string(CryptoNote::CRYPTONOTE_NAME);
 
     /* Where can your users contact you for support? E.g. discord */
     const std::string contactLink = "http://chat.2acoin.org";
-
 
     /* The number of decimals your coin has */
     const int numDecimalPlaces = CryptoNote::parameters

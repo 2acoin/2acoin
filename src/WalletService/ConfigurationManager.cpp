@@ -25,52 +25,37 @@
 #include "version.h"
 
 namespace PaymentService {
-
 namespace po = boost::program_options;
 
 ConfigurationManager::ConfigurationManager() {
-  startInprocess = false;
 }
 
 bool ConfigurationManager::init(int argc, char** argv) {
   po::options_description cmdGeneralOptions("Common Options");
-
   cmdGeneralOptions.add_options()
-      ("config,c", po::value<std::string>(), "configuration file");
+    ("config,c", po::value<std::string>(), "configuration file")
+    ("help,h", "produce this help message and exit")
+    ("version,v", "Output version information");
 
   po::options_description confGeneralOptions;
-  confGeneralOptions.add(cmdGeneralOptions).add_options()
-      ("testnet", po::bool_switch(), "")
-      ("local", po::bool_switch(), "");
-
-  cmdGeneralOptions.add_options()
-      ("help,h", "produce this help message and exit")
-      ("local", po::bool_switch(), "start with local node (remote is default)")
-      ("testnet", po::bool_switch(), "testnet mode")
-      ("version", "Output version information");
-
-  command_line::add_arg(cmdGeneralOptions, command_line::arg_data_dir, Tools::getDefaultDataDirectory());
-  command_line::add_arg(confGeneralOptions, command_line::arg_data_dir, Tools::getDefaultDataDirectory());
 
   Configuration::initOptions(cmdGeneralOptions);
   Configuration::initOptions(confGeneralOptions);
-  po::options_description netNodeOptions("Local Node Options");
-  CryptoNote::NetNodeConfig::initOptions(netNodeOptions);
-  
+
   po::options_description remoteNodeOptions("Remote Node Options");
   RpcNodeConfiguration::initOptions(remoteNodeOptions);
 
   po::options_description cmdOptionsDesc;
-  cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);
+  cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions);
 
   po::options_description confOptionsDesc;
-  confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);
+  confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions);
 
   po::variables_map cmdOptions;
   po::store(po::parse_command_line(argc, argv, cmdOptionsDesc), cmdOptions);
   po::notify(cmdOptions);
 
-  if (cmdOptions.count("help")) {
+  if (cmdOptions.count("help") > 0) {
     std::cout << cmdOptionsDesc << std::endl;
     return false;
   }
@@ -95,13 +80,7 @@ bool ConfigurationManager::init(int argc, char** argv) {
   po::notify(allOptions);
 
   gateConfiguration.init(allOptions);
-  netNodeConfig.init(allOptions);
   remoteNodeConfig.init(allOptions);
-  dataDir = command_line::get_arg(allOptions, command_line::arg_data_dir);
-
-  netNodeConfig.setTestnet(allOptions["testnet"].as<bool>());
-  startInprocess = allOptions["local"].as<bool>();
-
   return true;
 }
 

@@ -1,4 +1,5 @@
 // Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2018, 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
@@ -46,3 +47,5 @@ void printOutgoingTransfer(CryptoNote::WalletTransaction t,
 
 void printIncomingTransfer(CryptoNote::WalletTransaction t,
                            CryptoNote::INode &node);
+
+void createIntegratedAddress();

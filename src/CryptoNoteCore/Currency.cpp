@@ -293,7 +293,7 @@ bool Currency::isFusionTransaction(const std::vector<uint64_t>& inputsAmounts, c
 
   uint64_t inputAmount = 0;
   for (auto amount: inputsAmounts) {
-    if (amount < defaultDustThreshold(height)) {
+    if (amount < defaultFusionDustThreshold(height)) {
       return false;
     }
 
@@ -302,7 +302,7 @@ bool Currency::isFusionTransaction(const std::vector<uint64_t>& inputsAmounts, c
 
   std::vector<uint64_t> expectedOutputsAmounts;
   expectedOutputsAmounts.reserve(outputsAmounts.size());
-  decomposeAmount(inputAmount, defaultDustThreshold(height), expectedOutputsAmounts);
+  decomposeAmount(inputAmount, defaultFusionDustThreshold(height), expectedOutputsAmounts);
   std::sort(expectedOutputsAmounts.begin(), expectedOutputsAmounts.end());
 
   return expectedOutputsAmounts == outputsAmounts;
@@ -334,7 +334,7 @@ bool Currency::isAmountApplicableInFusionTransactionInput(uint64_t amount, uint6
     return false;
   }
 
-  if (amount < defaultDustThreshold(height)) {
+  if (amount < defaultFusionDustThreshold(height)) {
     return false;
   }
 
@@ -429,8 +429,12 @@ Difficulty Currency::getNextDifficulty(uint8_t version, uint32_t blockIndex, std
     {
         return nextDifficulty(version, blockIndex, timestamps, cumulativeDifficulties);
     }
+    else if (blockIndex < CryptoNote::parameters::LWMA_2_DIFFICULTY_BLOCK_INDEX_V2)
+    {
+        return nextDifficultyV3(timestamps, cumulativeDifficulties);
+    }
 
-    return nextDifficultyV3(timestamps, cumulativeDifficulties);
+    return nextDifficultyV4(timestamps, cumulativeDifficulties);
 }
 
 // LWMA-2 difficulty algorithm 
@@ -694,21 +698,21 @@ std::vector<uint64_t> cumulativeDifficulties_o(cumulativeDifficulties);
   return (low + timeSpan - 1) / timeSpan;  // with version
 }
 
-bool Currency::checkProofOfWorkV1(Crypto::cn_context& context, const CachedBlock& block, Difficulty currentDifficulty) const {
+bool Currency::checkProofOfWorkV1(const CachedBlock& block, Difficulty currentDifficulty) const {
   if (BLOCK_MAJOR_VERSION_1 != block.getBlock().majorVersion) {
     return false;
   }
 
-  return check_hash(block.getBlockLongHash(context), currentDifficulty);
+  return check_hash(block.getBlockLongHash(), currentDifficulty);
 }
 
-bool Currency::checkProofOfWorkV2(Crypto::cn_context& context, const CachedBlock& cachedBlock, Difficulty currentDifficulty) const {
+bool Currency::checkProofOfWorkV2(const CachedBlock& cachedBlock, Difficulty currentDifficulty) const {
   const auto& block = cachedBlock.getBlock();
   if (block.majorVersion < BLOCK_MAJOR_VERSION_2) {
     return false;
   }
 
-  if (!check_hash(cachedBlock.getBlockLongHash(context), currentDifficulty)) {
+  if (!check_hash(cachedBlock.getBlockLongHash(), currentDifficulty)) {
     return false;
   }
 
@@ -734,15 +738,15 @@ bool Currency::checkProofOfWorkV2(Crypto::cn_context& context, const CachedBlock
   return true;
 }
 
-bool Currency::checkProofOfWork(Crypto::cn_context& context, const CachedBlock& block, Difficulty currentDiffic) const {
+bool Currency::checkProofOfWork(const CachedBlock& block, Difficulty currentDiffic) const {
   switch (block.getBlock().majorVersion) {
   case BLOCK_MAJOR_VERSION_1:
-    return checkProofOfWorkV1(context, block, currentDiffic);
+    return checkProofOfWorkV1(block, currentDiffic);
 
   case BLOCK_MAJOR_VERSION_2:
   case BLOCK_MAJOR_VERSION_3:
   case BLOCK_MAJOR_VERSION_4:
-    return checkProofOfWorkV2(context, block, currentDiffic);
+    return checkProofOfWorkV2(block, currentDiffic);
   }
 
   logger(ERROR, BRIGHT_RED) << "Unknown block major version: " << block.getBlock().majorVersion << "." << block.getBlock().minorVersion;

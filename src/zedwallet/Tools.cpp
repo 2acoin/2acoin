@@ -8,6 +8,7 @@
 
 #include <cmath>
 
+#include <Common/Base58.h>
 #include <Common/StringTools.h>
 
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>

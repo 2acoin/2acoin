@@ -40,7 +40,7 @@ add_executable(HashTargetTests HashTarget.cpp)
 add_executable(HashTests Hash/main.cpp)
 
 target_link_libraries(CoreTests TestGenerator TestsCommon CryptoNoteCore Serialization System Logging Common Crypto BlockchainExplorer UnitTestsLib ${Boost_LIBRARIES})
-target_link_libraries(IntegrationTests IntegrationTestLibrary TestsCommon Wallet NodeRpcProxy InProcessNode P2P Rpc Http Transfers Serialization System CryptoNoteCore Logging Common Crypto BlockchainExplorer gtest upnpc-static ${Boost_LIBRARIES})
+target_link_libraries(IntegrationTests IntegrationTestLibrary TestsCommon Wallet NodeRpcProxy P2P Rpc Http Transfers Serialization System CryptoNoteCore Logging Common Crypto BlockchainExplorer gtest upnpc-static ${Boost_LIBRARIES})
 target_link_libraries(NodeRpcProxyTests NodeRpcProxy CryptoNoteCore Rpc Http Serialization System Logging Common Crypto ${Boost_LIBRARIES})
 target_link_libraries(PerformanceTests CryptoNoteCore Serialization Logging Common Crypto ${Boost_LIBRARIES})
 target_link_libraries(SystemTests System gtest_main)

@@ -27,6 +27,7 @@
 
 #include <System/Timer.h>
 #include <System/InterruptedException.h>
+#include "Common/Base58.h"
 #include "Common/Util.h"
 
 #include "crypto/crypto.h"
@@ -939,7 +940,7 @@ std::error_code WalletService::getAddresses(std::vector<std::string>& addresses)
   return std::error_code();
 }
 
-std::error_code WalletService::sendTransaction(const SendTransaction::Request& request, std::string& transactionHash) {
+std::error_code WalletService::sendTransaction(SendTransaction::Request& request, std::string& transactionHash) {
   try {
     System::EventLock lk(readyEvent);
 

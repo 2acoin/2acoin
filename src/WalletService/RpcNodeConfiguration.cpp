@@ -5,6 +5,7 @@
 // 
 // Please see the included LICENSE file for more information.
 
+#include "CryptoNoteConfig.h"
 #include "RpcNodeConfiguration.h"
 
 namespace PaymentService {
@@ -19,7 +20,7 @@ RpcNodeConfiguration::RpcNodeConfiguration() {
 void RpcNodeConfiguration::initOptions(boost::program_options::options_description& desc) {
   desc.add_options()
     ("daemon-address", po::value<std::string>()->default_value("localhost"), "2acoind address")
-    ("daemon-port", po::value<uint16_t>()->default_value(17890), "daemon port");
+    ("daemon-port", po::value<uint16_t>()->default_value(CryptoNote::RPC_DEFAULT_PORT), "daemon port");
 }
 
 void RpcNodeConfiguration::init(const boost::program_options::variables_map& options) {

@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <limits>
 #include <initializer_list>
+#include <boost/uuid/uuid.hpp>
 
 namespace CryptoNote {
 namespace parameters {
@@ -70,6 +71,7 @@ const uint64_t DEFAULT_DUST_THRESHOLD                        = UINT64_C(10000);
 const uint64_t DEFAULT_DUST_THRESHOLD_V2                     = UINT64_C(0);
 
 const uint32_t DUST_THRESHOLD_V2_HEIGHT                      = MIXIN_LIMITS_V2_HEIGHT;
+const uint32_t FUSION_DUST_THRESHOLD_HEIGHT_V2               = 800000;
 
 const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
 const size_t   DIFFICULTY_WINDOW                             = 17;
@@ -171,6 +173,11 @@ const uint32_t P2P_DEFAULT_PING_CONNECTION_TIMEOUT           = 2000;          //
 const uint64_t P2P_DEFAULT_INVOKE_TIMEOUT                    = 60 * 2 * 1000; // 2 minutes
 const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000;          // 5 seconds
 const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "";
+
+const static boost::uuids::uuid CRYPTONOTE_NETWORK =
+{
+    {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
+};
 
 const char* const SEED_NODES[] = {
   "207.148.3.16:17890", //seed01

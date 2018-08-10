@@ -8,11 +8,10 @@ file(GLOB_RECURSE ConnectivityTool ConnectivityTool/*)
 file(GLOB_RECURSE Crypto crypto/*)
 file(GLOB_RECURSE CryptoNoteCore CryptoNoteCore/* CryptoNoteConfig.h)
 file(GLOB_RECURSE CryptoNoteProtocol CryptoNoteProtocol/*)
-file(GLOB_RECURSE Daemon Daemon/*)
+file(GLOB_RECURSE 2ACoind Daemon/*)
 file(GLOB_RECURSE Http HTTP/*)
-file(GLOB_RECURSE InProcessNode InProcessNode/*)
 file(GLOB_RECURSE Logging Logging/*)
-file(GLOB_RECURSE Miner Miner/*)
+file(GLOB_RECURSE miner Miner/*)
 file(GLOB_RECURSE Mnemonics Mnemonics/*)
 file(GLOB_RECURSE NodeRpcProxy NodeRpcProxy/*)
 file(GLOB_RECURSE P2p P2p/*)
@@ -43,7 +42,6 @@ add_library(Common ${Common})
 add_library(Crypto ${Crypto})
 add_library(CryptoNoteCore ${CryptoNoteCore})
 add_library(Http ${Http})
-add_library(InProcessNode ${InProcessNode})
 add_library(Logging ${Logging})
 add_library(Mnemonics ${Mnemonics})
 add_library(NodeRpcProxy ${NodeRpcProxy})
@@ -67,19 +65,19 @@ if(MSVC)
     BinaryInfo/miner.rc
   )
   set(PG_SOURCES_OS
-    BinaryInfo/walletd.rc
+    BinaryInfo/service.rc
   )
 endif()
 
-add_executable(Daemon ${Daemon} ${DAEMON_SOURCES_OS})
+add_executable(2ACoind ${2ACoind} ${DAEMON_SOURCES_OS})
 add_executable(zedwallet ${zedwallet} ${ZED_WALLET_SOURCES_OS})
 add_executable(service ${service} ${PG_SOURCES_OS})
 add_executable(miner ${miner} ${MINER_SOURCES_OS})
 
 if(MSVC)
   target_link_libraries(System ws2_32)
-  target_link_libraries(Daemon Rpcrt4)
-  target_link_libraries(PaymentGateService Rpcrt4)
+  target_link_libraries(2ACoind Rpcrt4)
+  target_link_libraries(service Rpcrt4)
 endif ()
 
 # Add the dependencies we need
@@ -89,9 +87,9 @@ target_link_libraries(P2P CryptoNoteCore Logging ${Boost_LIBRARIES} upnpc-static
 target_link_libraries(Rpc CryptoNoteCore Logging P2P)
 target_link_libraries(WalletService Mnemonics)
 if(MSVC)
-	target_link_libraries(Daemon P2P Rpc Serialization System Http Logging CryptoNoteCore Crypto Common rocksdb ${Boost_LIBRARIES} )
+	target_link_libraries(2ACoind P2P Rpc Serialization System Http Logging CryptoNoteCore Crypto Common rocksdb ${Boost_LIBRARIES} )
 else()
-	target_link_libraries(Daemon P2P Rpc Serialization System Http Logging CryptoNoteCore Crypto Common rocksdblib ${Boost_LIBRARIES} )
+	target_link_libraries(2ACoind P2P Rpc Serialization System Http Logging CryptoNoteCore Crypto Common rocksdblib ${Boost_LIBRARIES} )
 endif()
 target_link_libraries(zedwallet Mnemonics Wallet NodeRpcProxy Transfers Rpc Http CryptoNoteCore System Logging Common ${Boost_LIBRARIES})
 target_link_libraries(service WalletService JsonRpcServer Wallet NodeRpcProxy Transfers CryptoNoteCore Crypto Rpc Http System Logging Common ${Boost_LIBRARIES})
@@ -102,13 +100,13 @@ target_link_libraries(miner CryptoNoteCore Rpc Serialization System Http Logging
 # In this case it's because we need to have the current version name rather
 # than a cached one
 add_dependencies(Rpc version)
-add_dependencies(Daemon version)
+add_dependencies(2ACoind version)
 add_dependencies(zedwallet version)
 add_dependencies(service version)
 add_dependencies(P2P version)
 
 # Finally build the binaries
-set_property(TARGET Daemon PROPERTY OUTPUT_NAME "2ACoind")
+set_property(TARGET 2ACoind PROPERTY OUTPUT_NAME "2ACoind")
 set_property(TARGET zedwallet PROPERTY OUTPUT_NAME "zedwallet")
 set_property(TARGET service PROPERTY OUTPUT_NAME "2acoin-service")
 set_property(TARGET miner PROPERTY OUTPUT_NAME "miner")
