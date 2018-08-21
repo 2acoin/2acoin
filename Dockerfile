@@ -24,8 +24,7 @@ RUN apt-get update && \
       gcc-4.9 \
       g++-4.9 \
       git cmake \
-      libboost1.58-all-dev \
-      librocksdb-dev && \
+      libboost1.58-all-dev && \
     git clone https://github.com/2acoin/2acoin.git /src/2acoin && \
     cd /src/2acoin && \
     git checkout $2ACOIN_BRANCH && \
