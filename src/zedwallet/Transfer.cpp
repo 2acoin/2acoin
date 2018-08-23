@@ -558,7 +558,7 @@ void doTransfer(std::string address, uint64_t amount, uint64_t fee,
     }
 
     p.fee = fee;
-    p.mixIn = mixin;
+    p.mixIn = static_cast<uint16_t>(mixin);
     p.extra = extra;
     p.changeDestination = walletInfo->walletAddress;
 
