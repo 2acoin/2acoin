@@ -492,7 +492,6 @@ Difficulty Currency::nextDifficultyV4(std::vector<std::uint64_t> timestamps, std
     if (timestamps.size() <= static_cast<uint64_t>(N))
     {
         return 1000;
->>>>>>> 0bf98f3... Merge pull request #384 from brandonlehmann/its_time_to_clean_things_up_a_bit
     }
 
     for (int64_t i = 1; i <= N; i++)
