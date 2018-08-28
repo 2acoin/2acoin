@@ -245,7 +245,7 @@ int main(int argc, char* argv[])
   "                       /=[  ]/     ` ==.- -             `-.L| \n"
   "                      /==---/            - -  \n"
   "                      '-.__/              __7 \n"
-  << "version:" << PROJECT_VERSION_LONG << " \n"
+  << "version: " << PROJECT_VERSION_LONG << " \n"
   << ENDL;
 
     if (command_line_preprocessor(vm, logger)) {
