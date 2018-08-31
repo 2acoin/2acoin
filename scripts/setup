@@ -1,6 +1,6 @@
 # setup - pull a copy of 2acoin-development 
 # and put it inside a timestamped folder.
-# rock made this
+
 #!/usr/bin/env bash
 
 # You should only need to run this line on a new machine or

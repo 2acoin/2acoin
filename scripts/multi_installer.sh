@@ -35,7 +35,7 @@ _note() {
 _fail() {
     local msg=`echo \'$1\'`
     _colorize red "Failure: $msg" | tee -a build.log && echo
-    _colorize red "Please check build.log and if you need help check out the team discord @ 'https://discordapp.com/invite/#####'" && echo
+    _colorize red "Please check build.log and if you need help check out the team discord @ 'https://discord.gg/9SkNZwc'" && echo
     _colorize purple "Exiting script" && echo
     exit 1
 }
@@ -148,7 +148,7 @@ _configure_os() {
     _note "Operating system configuration completed. You're halfway there!"
 }
 
-_note "2ACoin Multi_Installer v1.0 (pepperoni)"
+_note "2ACoin Multi_Installer v1.0 (angus)"
 _colorize green " _______         _   _       _____      _       \n|__   __|       | | | |     / ____|    (_)      \n   | |_   _ _ __| |_| | ___| |     ___  _ _ __  \n   | | | | | '__| __| |/ _ \ |    / _ \| | '_ \ \n   | | |_| | |  | |_| |  __/ |___| (_) | | | | |\n   |_|\__,_|_|   \__|_|\___|\_____\___/|_|_| |_|\n" && echo
 
 _configure_os
@@ -157,4 +157,4 @@ _set_wd
 _build_2acoin
 
 _note "Installation complete!"
-_note "Look in '2acoin/build/src/' for the executible binaries. See 'https://github.com/2acoin/2acoin' for more project support. Cowabunga!"
+_note "Look in '2acoin/build/src/' for the executible binaries. See 'https://github.com/2acoin/2acoin' for more project support. Good Job Man!"

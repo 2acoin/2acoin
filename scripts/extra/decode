@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# by Ereptor, TurtleCoin
+# by Miner, 2ACoin
+
+HASH=$1
+
+curl --silent 'http://blocks.2acoin.org/daemon/json_rpc' --data '{"jsonrpc":"2.0","id":"test","method":"f_transaction_json","params":{"hash":"'"$HASH"'"}}' --compressed | jq '.result.tx.extra' | xxd -r -p
+
+
+
+
+
+
+
+
+
+
+
+
+

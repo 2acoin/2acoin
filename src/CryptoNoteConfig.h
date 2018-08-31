@@ -72,7 +72,7 @@ const uint64_t DEFAULT_DUST_THRESHOLD                        = UINT64_C(10000);
 const uint64_t DEFAULT_DUST_THRESHOLD_V2                     = UINT64_C(0);
 
 const uint32_t DUST_THRESHOLD_V2_HEIGHT                      = MIXIN_LIMITS_V2_HEIGHT;
-const uint32_t FUSION_DUST_THRESHOLD_HEIGHT_V2               = MIXIN_LIMITS_V2_HEIGHT;
+const uint32_t FUSION_DUST_THRESHOLD_HEIGHT_V2               = 50000;
 
 const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
 const size_t   DIFFICULTY_WINDOW                             = 17;
@@ -116,8 +116,12 @@ static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
 /* Block heights we are going to have hard forks at */
 const uint64_t FORK_HEIGHTS[] = 
 {
-    100000, //0
-    250000  //1
+     50000, //0
+     70000, //1
+    100000, //2
+    200000, //3
+    300000, //4
+    400000  //5
 };
 
 /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
@@ -126,7 +130,7 @@ const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 0;
 const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
 /* The index in the FORK_HEIGHTS array that this version of the software will
-   support. For example, if CURRENT_FORK_INDEX is 0, this version of the
+   support. For example, if CURRENT_FORK_INDEX is 2, this version of the
    software will support the fork at 100,000 blocks.
 
    This will default to zero if the FORK_HEIGHTS array is empty, so you don't

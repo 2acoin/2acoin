@@ -77,7 +77,7 @@ function generate_tarball()
         miner \
         zedwallet \
         2ACoind \
-        walletd
+        2acoin-service
 
     generate_checksums $TARBALL
 }
