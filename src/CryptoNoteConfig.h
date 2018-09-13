@@ -48,6 +48,7 @@ const uint64_t GENESIS_BLOCK_REWARD                          = UINT64_C(21492000
 static_assert(EMISSION_SPEED_FACTOR <= 8 * sizeof(uint64_t), "Bad EMISSION_SPEED_FACTOR");
 
 const char     GENESIS_COINBASE_TX_HEX[]                     = "011401ff000180a085b2ffee30022d1d76ccd131461bde05a3368179858341cb0aeb97ffbe797da5c14247f80bae2101defedd5500e48c2e2a3beb631b981d075ed1175dc5dc2550700a2f468da9dfe9";
+const uint64_t GENESIS_BLOCK_TIMESTAMP                       = 1533143395;
 
 const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW               = 100;
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE     = 100000; //size of block (bytes) after which reward for block calculated using block size
@@ -60,13 +61,24 @@ const uint64_t MINIMUM_FEE                                   = UINT64_C(50000);
 
 const uint64_t MINIMUM_MIXIN_V1                              = 0;
 const uint64_t MAXIMUM_MIXIN_V1                              = 100;
+
 const uint64_t MINIMUM_MIXIN_V2                              = 0;
 const uint64_t MAXIMUM_MIXIN_V2                              = 7;
 
+const uint64_t MINIMUM_MIXIN_V3                              = 3;
+const uint64_t MAXIMUM_MIXIN_V3                              = 3;
+
+/* The heights to activate the mixin limits at */
 const uint32_t MIXIN_LIMITS_V1_HEIGHT                        = 0;
 const uint32_t MIXIN_LIMITS_V2_HEIGHT                        = 250;
+const uint32_t MIXIN_LIMITS_V3_HEIGHT                        = 80000;
 
-const uint64_t DEFAULT_MIXIN                                 = MINIMUM_MIXIN_V2;
+/* The mixin to use by default with zedwallet and 2acoin-service */
+/* DEFAULT_MIXIN_V0 is the mixin used before MIXIN_LIMITS_V1_HEIGHT is started */
+const uint64_t DEFAULT_MIXIN_V0                              = 3;
+const uint64_t DEFAULT_MIXIN_V1                              = MAXIMUM_MIXIN_V1;
+const uint64_t DEFAULT_MIXIN_V2                              = MAXIMUM_MIXIN_V2;
+const uint64_t DEFAULT_MIXIN_V3                              = MAXIMUM_MIXIN_V3;
 
 const uint64_t DEFAULT_DUST_THRESHOLD                        = UINT64_C(10000);
 const uint64_t DEFAULT_DUST_THRESHOLD_V2                     = UINT64_C(0);
@@ -106,7 +118,7 @@ const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;
 const uint32_t UPGRADE_HEIGHT_V2                             = 1;
 const uint32_t UPGRADE_HEIGHT_V3                             = 2;
 const uint32_t UPGRADE_HEIGHT_V4                             = 3; // Upgrade height for CN-Lite Variant 1 switch.
-const uint32_t UPGRADE_HEIGHT_CURRENT                        = UPGRADE_HEIGHT_V4; 
+const uint32_t UPGRADE_HEIGHT_CURRENT                        = UPGRADE_HEIGHT_V4;
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
 const uint32_t UPGRADE_WINDOW                                = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -114,7 +126,7 @@ static_assert(0 < UPGRADE_VOTING_THRESHOLD && UPGRADE_VOTING_THRESHOLD <= 100, "
 static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
 
 /* Block heights we are going to have hard forks at */
-const uint64_t FORK_HEIGHTS[] = 
+const uint64_t FORK_HEIGHTS[] =
 {
      50000, //0
      70000, //1
@@ -170,6 +182,11 @@ const int      RPC_DEFAULT_PORT                              =  17910;
 const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  1000;
 const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  5000;
 
+// P2P Network Configuration Section - This defines our current P2P network version
+// and the minimum version for communication between nodes
+const uint8_t  P2P_CURRENT_VERSION                           = 2;
+const uint8_t  P2P_MINIMUM_VERSION                           = 1;
+
 const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE          = 32 * 1024 * 1024; // 32 MB
 const uint32_t P2P_DEFAULT_CONNECTIONS_COUNT                 = 8;
 const size_t   P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT     = 70;
@@ -182,7 +199,8 @@ const uint64_t P2P_DEFAULT_INVOKE_TIMEOUT                    = 60 * 2 * 1000; //
 const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000;          // 5 seconds
 const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "";
 
-const static boost::uuids::uuid CRYPTONOTE_NETWORK =
+const char     LATEST_VERSION_URL[]                          = "http://latest.2acoin.org";
+const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
 };

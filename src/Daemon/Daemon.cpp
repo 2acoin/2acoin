@@ -173,7 +173,7 @@ int main(int argc, char* argv[])
     command_line::add_arg(desc_cmd_sett, arg_load_checkpoints);
     command_line::add_arg(desc_cmd_sett, arg_set_fee_address);
     command_line::add_arg(desc_cmd_sett, arg_set_fee_amount);
-
+    
     RpcServerConfig::initOptions(desc_cmd_sett);
     NetNodeConfig::initOptions(desc_cmd_sett);
     DataBaseConfig::initOptions(desc_cmd_sett);

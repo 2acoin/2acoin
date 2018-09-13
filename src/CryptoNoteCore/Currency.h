@@ -1,6 +1,7 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2014-2018, The Monero Project
 // Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2018, 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
@@ -15,7 +16,6 @@
 #include "../Logging/LoggerRef.h"
 #include "CachedBlock.h"
 #include "CryptoNoteBasic.h"
-#include "Difficulty.h"
 
 namespace CryptoNote {
 
@@ -154,17 +154,13 @@ size_t difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion, uint32_t h
   std::string formatAmount(int64_t amount) const;
   bool parseAmount(const std::string& str, uint64_t& amount) const;
 
-  Difficulty getNextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;
-  Difficulty nextDifficulty(std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;
-Difficulty nextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;
-  Difficulty nextDifficultyV3(std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulative_difficulties) const;
-  Difficulty nextDifficultyV4(std::vector<std::uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;
-  Difficulty nextDifficultyV5(std::vector<std::uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;
+  uint64_t getNextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<uint64_t> cumulativeDifficulties) const;
+  uint64_t nextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<uint64_t> cumulativeDifficulties) const;
 
 
-  bool checkProofOfWorkV1(const CachedBlock& block, Difficulty currentDifficulty) const;
-  bool checkProofOfWorkV2(const CachedBlock& block, Difficulty currentDifficulty) const;
-  bool checkProofOfWork(const CachedBlock& block, Difficulty currentDifficulty) const;
+  bool checkProofOfWorkV1(const CachedBlock& block, uint64_t currentDifficulty) const;
+  bool checkProofOfWorkV2(const CachedBlock& block, uint64_t currentDifficulty) const;
+  bool checkProofOfWork(const CachedBlock& block, uint64_t currentDifficulty) const;
 
   Currency(Currency&& currency);
 
