@@ -7,8 +7,6 @@
 #include <zedwallet/Transfer.h>
 ///////////////////////////////
 
-#include <boost/algorithm/string.hpp>
-
 #include <Common/Base58.h>
 #include <Common/StringTools.h>
 
@@ -38,12 +36,15 @@ namespace WalletErrors
 }
 
 #include <Wallet/WalletGreen.h>
+#include <Wallet/WalletUtils.h>
 
 bool parseAmount(std::string strAmount, uint64_t &amount)
 {
-    boost::algorithm::trim(strAmount);
+    /* Trim any whitespace */
+    trim(strAmount);
+
     /* If the user entered thousand separators, remove them */
-    boost::erase_all(strAmount, ",");
+    removeCharFromString(strAmount, ',');
 
     const size_t pointIndex = strAmount.find_first_of('.');
     const size_t numDecimalPlaces = WalletConfig::numDecimalPlaces;
@@ -335,7 +336,7 @@ void transfer(std::shared_ptr<WalletInfo> walletInfo, uint32_t height,
        the fee from full balance */
     uint64_t amount = 0;
 
-    uint64_t mixin = WalletConfig::defaultMixin;
+    uint64_t mixin = CryptoNote::getDefaultMixinByHeight(height);
 
     /* If we're sending everything, obviously we don't need to ask them how
        much to send */
@@ -403,7 +404,8 @@ void transfer(std::shared_ptr<WalletInfo> walletInfo, uint32_t height,
        check for balance minus dust */
     if (sendAll)
     {
-        if (WalletConfig::defaultMixin != 0 && balance != balanceNoDust)
+        if (CryptoNote::getDefaultMixinByHeight(height) != 0
+         && balance != balanceNoDust)
         {
             uint64_t unsendable = balance - balanceNoDust;
 
@@ -489,7 +491,7 @@ BalanceInfo doWeHaveEnoughBalance(uint64_t amount, uint64_t fee,
 
         return NotEnoughBalance;
     }
-    else if (WalletConfig::defaultMixin != 0 &&
+    else if (CryptoNote::getDefaultMixinByHeight(height) != 0 &&
              balanceNoDust < amount + WalletConfig::minimumFee + nodeFee)
     {
         std::cout << std::endl
@@ -585,7 +587,7 @@ void sendTX(std::shared_ptr<WalletInfo> walletInfo,
         if (walletInfo->wallet.txIsTooLarge(tx))
         {
             /* If the fusion transactions didn't completely unlock, abort tx */
-            if (!fusionTX(walletInfo->wallet, p))
+            if (!fusionTX(walletInfo->wallet, p, height))
             {
                 return;
             }
@@ -983,7 +985,7 @@ Maybe<std::pair<AddressType, std::string>> getAddress(std::string msg)
         std::cout << InformationMsg(msg);
 
         std::getline(std::cin, address);
-        boost::algorithm::trim(address);
+        trim(address);
 
         if (address == "cancel")
         {
