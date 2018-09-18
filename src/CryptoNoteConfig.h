@@ -129,15 +129,14 @@ static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
 const uint64_t FORK_HEIGHTS[] =
 {
      50000, //0
-     70000, //1
-     80000, //2
-    100000, //3
-    200000, //4
-    300000  //5
+     80000, //1
+    110000, //2
+    150000, //3
+    200000  //4
 };
 
 /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
-const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 0;
+const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 1;
 
 const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
