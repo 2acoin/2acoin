@@ -135,12 +135,13 @@ size_t Currency::difficultyCutByBlockVersion(uint8_t blockMajorVersion) const {
 
 size_t Currency::difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion, uint32_t height) const
 {
-    if (height >= CryptoNote::parameters::LWMA_2_DIFFICULTY_BLOCK_INDEX)
-    {
+    if (height >= CryptoNote::parameters::LWMA_2_DIFFICULTY_BLOCK_INDEX_V3) {
+        return CryptoNote::parameters::DIFFICULTY_BLOCKS_COUNT_V4;    
+    } else if (height >= CryptoNote::parameters::LWMA_2_DIFFICULTY_BLOCK_INDEX) {
         return CryptoNote::parameters::DIFFICULTY_BLOCKS_COUNT_V3;
+    } else {
+      return difficultyWindowByBlockVersion(blockMajorVersion) + difficultyLagByBlockVersion(blockMajorVersion);
     }
-
-    return difficultyWindowByBlockVersion(blockMajorVersion) + difficultyLagByBlockVersion(blockMajorVersion);
 }
 
 size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVersion) const {

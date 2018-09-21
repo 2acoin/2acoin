@@ -41,7 +41,9 @@ const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V2              = 50000;  //v4
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V3              = 70000;  //v5
 
 const uint64_t DIFFICULTY_WINDOW_V3                          = 60;
+const uint64_t DIFFICULTY_WINDOW_V4                          = 75;     // T=90 - set to 75
 const uint64_t DIFFICULTY_BLOCKS_COUNT_V3                    = DIFFICULTY_WINDOW_V3 + 1;
+const uint64_t DIFFICULTY_BLOCKS_COUNT_V4                    = DIFFICULTY_WINDOW_V4 + 1;
 
 const unsigned EMISSION_SPEED_FACTOR                         = 21;
 const uint64_t GENESIS_BLOCK_REWARD                          = UINT64_C(214920000000000);
