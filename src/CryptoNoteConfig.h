@@ -40,7 +40,7 @@ const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX                 = 5;      //v3
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V2              = 50000;  //v4
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V3              = 70000;  //v5
 
-const uint64_t DIFFICULTY_WINDOW_V3                          = 60;
+const uint64_t DIFFICULTY_WINDOW_V3                          = 75;     // T=90 - set to 75
 const uint64_t DIFFICULTY_BLOCKS_COUNT_V3                    = DIFFICULTY_WINDOW_V3 + 1;
 
 const unsigned EMISSION_SPEED_FACTOR                         = 21;
@@ -71,7 +71,7 @@ const uint64_t MAXIMUM_MIXIN_V3                              = 3;
 /* The heights to activate the mixin limits at */
 const uint32_t MIXIN_LIMITS_V1_HEIGHT                        = 0;
 const uint32_t MIXIN_LIMITS_V2_HEIGHT                        = 250;
-const uint32_t MIXIN_LIMITS_V3_HEIGHT                        = 80000;
+const uint32_t MIXIN_LIMITS_V3_HEIGHT                        = 100000;
 
 /* The mixin to use by default with zedwallet and 2acoin-service */
 /* DEFAULT_MIXIN_V0 is the mixin used before MIXIN_LIMITS_V1_HEIGHT is started */
@@ -129,8 +129,8 @@ static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
 const uint64_t FORK_HEIGHTS[] =
 {
      50000, //0
-     80000, //1
-    110000, //2
+     70000, //1
+    100000, //2
     150000, //3
     200000  //4
 };
@@ -142,7 +142,7 @@ const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
 /* The index in the FORK_HEIGHTS array that this version of the software will
    support. For example, if CURRENT_FORK_INDEX is 2, this version of the
-   software will support the fork at 80,000 blocks.
+   software will support the fork at 100,000 blocks.
 
    This will default to zero if the FORK_HEIGHTS array is empty, so you don't
    need to change it manually. */
@@ -198,15 +198,17 @@ const uint64_t P2P_DEFAULT_INVOKE_TIMEOUT                    = 60 * 2 * 1000; //
 const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000;          // 5 seconds
 const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "";
 
-const char     LATEST_VERSION_URL[]                          = "http://latest.2acoin.org";
+const char     LATEST_VERSION_URL[]                          = "https://github.com/2acoin/2acoin/releases/latest";
 const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
 };
 
 const char* const SEED_NODES[] = {
-  "207.148.3.16:17890", //seed01
-  "207.148.6.195:17890", //seed02
-  "45.76.232.71:17890" //here
+  "45.63.35.51:17890", //seed01-Seattle
+  "144.202.29.252:17890", //seed02-Atlanta
+  "207.148.3.16:17890", //seed01-Dallas
+  "207.148.6.195:17890", //seed02-Dallas
+  "45.76.232.71:17890" //Dallas
 };
 } // CryptoNote
