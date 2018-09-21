@@ -23,7 +23,7 @@ std::string yellowANSIMsg(std::string msg)
 
 std::string getPrompt(std::shared_ptr<WalletInfo> walletInfo)
 {
-    const int promptLength = 20;
+    const int promptLength = 22;
     const std::string extension = ".wallet";
 
     std::string walletName = walletInfo->walletFileName;
