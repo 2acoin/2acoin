@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "CryptoNoteConfig.h"
+#include <config/CryptoNoteConfig.h>
 
 #include <Serialization/ISerializer.h>
 

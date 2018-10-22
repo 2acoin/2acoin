@@ -179,14 +179,18 @@ const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT         =  1000;
 
 const int      P2P_DEFAULT_PORT                              =  17890;
 const int      RPC_DEFAULT_PORT                              =  17910;
+const int      SERVICE_DEFAULT_PORT                          =  17760;
 
 const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  1000;
 const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  5000;
 
 // P2P Network Configuration Section - This defines our current P2P network version
 // and the minimum version for communication between nodes
-const uint8_t  P2P_CURRENT_VERSION                           = 2;
-const uint8_t  P2P_MINIMUM_VERSION                           = 1;
+const uint8_t  P2P_CURRENT_VERSION                           = 3;
+const uint8_t  P2P_MINIMUM_VERSION                           = 2;
+// This defines the number of versions ahead we must see peers before we start displaying
+// warning messages that we need to upgrade our software.
+const uint8_t  P2P_UPGRADE_WINDOW                            = 2;
 
 const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE          = 32 * 1024 * 1024; // 32 MB
 const uint32_t P2P_DEFAULT_CONNECTIONS_COUNT                 = 8;

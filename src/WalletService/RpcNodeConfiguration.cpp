@@ -5,7 +5,7 @@
 // 
 // Please see the included LICENSE file for more information.
 
-#include "CryptoNoteConfig.h"
+#include <config/CryptoNoteConfig.h>
 #include "RpcNodeConfiguration.h"
 
 namespace PaymentService {

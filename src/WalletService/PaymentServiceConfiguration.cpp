@@ -1,21 +1,14 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
+// Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2018, 2ACoin Developers
 //
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
+// Please see the included LICENSE file for more information.
 
 #include "PaymentServiceConfiguration.h"
+#include <config/CryptoNoteConfig.h>
+
+#include <CryptoTypes.h>
+#include "crypto/hash.h"
 
 #include <iostream>
 #include <fstream>
@@ -43,7 +36,7 @@ Configuration::Configuration() {
   secretViewKey = "";
   secretSpendKey = "";
   mnemonicSeed = "";
-  rpcPassword = "";
+  rpcPassword = Crypto::Hash();
   legacySecurity = false;
   corsHeader = "";
   scanHeight = 0;
@@ -52,7 +45,7 @@ Configuration::Configuration() {
 void Configuration::initOptions(boost::program_options::options_description& desc) {
   desc.add_options()
       ("bind-address", po::value<std::string>()->default_value("127.0.0.1"), "payment service bind address")
-      ("bind-port", po::value<uint16_t>()->default_value(8070), "payment service bind port")
+      ("bind-port", po::value<uint16_t>()->default_value(CryptoNote::SERVICE_DEFAULT_PORT), "payment service bind port")
       ("rpc-password", po::value<std::string>(), "Specify the password to access the rpc server.")
       ("rpc-legacy-security", "Enable legacy mode (no password for RPC). WARNING: INSECURE. USE ONLY AS A LAST RESORT.")
       ("container-file,w", po::value<std::string>(), "container file")
@@ -205,7 +198,9 @@ void Configuration::init(const boost::program_options::variables_map& options) {
     legacySecurity = true;
   }
   else {
-    rpcPassword = options["rpc-password"].as<std::string>();
+    std::string passClearText = options["rpc-password"].as<std::string>();
+    std::vector<uint8_t> rawData(passClearText.begin(), passClearText.end());
+    Crypto::cn_slow_hash_v0(rawData.data(), rawData.size(), rpcPassword);
   }
 
   if (options.count("enable-cors") != 0) {

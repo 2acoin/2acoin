@@ -7,7 +7,7 @@
 
 #include "Difficulty.h"
 
-#include "CryptoNoteConfig.h"
+#include <config/CryptoNoteConfig.h>
 
 // LWMA-2 difficulty algorithm 
 // Copyright (c) 2017-2018 Zawy, MIT License
@@ -38,6 +38,7 @@ uint64_t nextDifficultyV5(std::vector<uint64_t> timestamps, std::vector<uint64_t
     }
 
     next_D = (static_cast<int64_t>(cumulativeDifficulties[N] - cumulativeDifficulties[0]) * T * (N+1) * 99) / (100 * 2 * L);
+
     prev_D = cumulativeDifficulties[N] - cumulativeDifficulties[N-1];
 
     next_D = std::max((prev_D * 67) / 100, std::min(next_D, (prev_D * 150) / 100));

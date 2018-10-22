@@ -21,6 +21,10 @@
 
 #include <Common/FormatTools.h>
 
+#include <config/Ascii.h>
+#include <config/CryptoNoteConfig.h>
+#include <config/WalletConfig.h>
+
 using namespace Logging;
 using namespace Common;
 
@@ -35,7 +39,7 @@ bool post_notify(IP2pEndpoint& p2p, typename t_parametr::request& arg, const Cry
 
 template<class t_parametr>
 void relay_post_notify(IP2pEndpoint& p2p, typename t_parametr::request& arg, const net_connection_id* excludeConnection = nullptr) {
-  p2p.relay_notify_to_all(t_parametr::ID, LevinProtocol::encode(arg), excludeConnection);
+  p2p.externalRelayNotifyToAll(t_parametr::ID, LevinProtocol::encode(arg), excludeConnection);
 }
 
 std::vector<RawBlockLegacy> convertRawBlocksToRawBlocksLegacy(const std::vector<RawBlock>& rawBlocks) {
@@ -615,14 +619,14 @@ bool CryptoNoteProtocolHandler::on_connection_synchronized() {
   if (m_synchronized.compare_exchange_strong(val_expected, true)) {
     logger(Logging::INFO)
       << ENDL ;
-      logger(INFO, BRIGHT_MAGENTA) << "===[ 2ACoin Tip! ]=============================" << ENDL ;
-      logger(INFO, WHITE) << " Always exit 2ACoind and zedwallet with the \"exit\" command to preserve your chain and wallet data." << ENDL ;
+      logger(INFO, BRIGHT_MAGENTA) << "===[ " + std::string(CryptoNote::CRYPTONOTE_NAME) + " Tip! ]=============================" << ENDL ;
+      logger(INFO, WHITE) << " Always exit " + WalletConfig::daemonName + " and " + WalletConfig::walletName + " with the \"exit\" command to preserve your chain and wallet data." << ENDL ;
       logger(INFO, WHITE) << " Use the \"help\" command to see a list of available commands." << ENDL ;
-      logger(INFO, WHITE) << " Use the \"export_keys\" command in zedwallet to display your keys for restoring a corrupted wallet." << ENDL ;
-      logger(INFO, WHITE) << " If you need more assistance, visit the #HELP channel in the 2ACoin Discord Chat - https://chat.2acoin.org" << ENDL ;
+      logger(INFO, WHITE) << " Use the \"backup\" command in " + WalletConfig::walletName + " to display your keys/seed for restoring a corrupted wallet." << ENDL ;
+      logger(INFO, WHITE) << " If you need more assistance, you can contact us for support at " + WalletConfig::contactLink << ENDL;
       logger(INFO, BRIGHT_MAGENTA) << "===================================================" << ENDL << ENDL ;
 
-      logger(INFO, BRIGHT_GREEN) << ENDL ;
+      logger(INFO, BRIGHT_GREEN) << asciiArt << ENDL;
 
     m_observerManager.notify(&ICryptoNoteProtocolObserver::blockchainSynchronized, m_core.getTopBlockIndex());
   }
@@ -695,12 +699,12 @@ int CryptoNoteProtocolHandler::handleRequestTxPool(int command, NOTIFY_REQUEST_T
 
 void CryptoNoteProtocolHandler::relayBlock(NOTIFY_NEW_BLOCK::request& arg) {
   auto buf = LevinProtocol::encode(arg);
-  m_p2p->externalRelayNotifyToAll(NOTIFY_NEW_BLOCK::ID, buf);
+  m_p2p->externalRelayNotifyToAll(NOTIFY_NEW_BLOCK::ID, buf, nullptr);
 }
 
 void CryptoNoteProtocolHandler::relayTransactions(const std::vector<BinaryArray>& transactions) {
   auto buf = LevinProtocol::encode(NOTIFY_NEW_TRANSACTIONS::request{transactions});
-  m_p2p->externalRelayNotifyToAll(NOTIFY_NEW_TRANSACTIONS::ID, buf);
+  m_p2p->externalRelayNotifyToAll(NOTIFY_NEW_TRANSACTIONS::ID, buf, nullptr);
 }
 
 void CryptoNoteProtocolHandler::requestMissingPoolTransactions(const CryptoNoteConnectionContext& context) {
