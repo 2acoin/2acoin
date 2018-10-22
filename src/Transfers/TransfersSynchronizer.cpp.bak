@@ -50,7 +50,7 @@ ITransfersSubscription& TransfersSyncronizer::addSubscription(const AccountSubsc
     consumer->addObserver(this);
     it = m_consumers.insert(std::make_pair(acc.keys.address.viewPublicKey, std::move(consumer))).first;
   }
-
+    
   return it->second->addSubscription(acc);
 }
 
@@ -78,13 +78,6 @@ void TransfersSyncronizer::getSubscriptions(std::vector<AccountPublicAddress>& s
 ITransfersSubscription* TransfersSyncronizer::getSubscription(const AccountPublicAddress& acc) {
   auto it = m_consumers.find(acc.viewPublicKey);
   return (it == m_consumers.end()) ? nullptr : it->second->getSubscription(acc);
-}
-
-void TransfersSyncronizer::addPublicKeysSeen(const AccountPublicAddress& acc, const Crypto::Hash& transactionHash, const Crypto::PublicKey& outputKey) {
-  auto it = m_consumers.find(acc.viewPublicKey);
-  if (it != m_consumers.end()) {
-     it->second->addPublicKeysSeen(transactionHash, outputKey);
-  }
 }
 
 std::vector<Crypto::Hash> TransfersSyncronizer::getViewKeyKnownBlocks(const Crypto::PublicKey& publicViewKey) {
@@ -169,7 +162,7 @@ void TransfersSyncronizer::save(std::ostream& os) {
 
     std::string blob = consumerState.str();
     s(blob, "state");
-
+    
     std::vector<AccountPublicAddress> subscriptions;
     consumer.second->getSubscriptions(subscriptions);
     size_t subCount = subscriptions.size();
