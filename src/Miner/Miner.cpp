@@ -9,6 +9,7 @@
 
 #include <functional>
 #include <mutex>
+#include "Common/StringTools.h"
 
 #include "crypto/crypto.h"
 #include "CryptoNoteCore/CachedBlock.h"
@@ -75,6 +76,7 @@ void Miner::runWorkers(BlockMiningParameters blockMiningParameters, size_t threa
       m_workers.emplace_back(std::unique_ptr<System::RemoteContext<void>> (
         new System::RemoteContext<void>(m_dispatcher, std::bind(&Miner::workerFunc, this, blockMiningParameters.blockTemplate, blockMiningParameters.difficulty, static_cast<uint32_t>(threadCount))))
       );
+	  m_logger(Logging::INFO) << "Thread " << i << " started at nonce: " << blockMiningParameters.blockTemplate.nonce;
 
       blockMiningParameters.blockTemplate.nonce++;
     }
