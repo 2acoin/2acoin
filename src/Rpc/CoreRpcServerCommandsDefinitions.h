@@ -853,10 +853,12 @@ struct COMMAND_RPC_GET_PEERS {
   struct response {
     std::string status;
     std::vector<std::string> peers;
+    std::vector<std::string> gray_peers;
 
     void serialize(ISerializer &s) {
       KV_MEMBER(status)
       KV_MEMBER(peers)
+      KV_MEMBER(gray_peers)
     }
   };
 };
