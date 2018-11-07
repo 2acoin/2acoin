@@ -1,4 +1,5 @@
 // Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2018, 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
@@ -10,6 +11,6 @@ bool handleCommand(const std::string command,
                    std::shared_ptr<WalletInfo> walletInfo,
                    CryptoNote::INode &node);
 
-std::tuple<bool, std::shared_ptr<WalletInfo>>
-    handleLaunchCommand(CryptoNote::WalletGreen &wallet,
-                        std::string launchCommand, Config &config);
+std::shared_ptr<WalletInfo> handleLaunchCommand(CryptoNote::WalletGreen &wallet,
+                                                std::string launchCommand,
+                                                Config &config);

@@ -1,10 +1,13 @@
 // Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2018, 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
 ///////////////////////////
 #include <zedwallet/Menu.h>
 ///////////////////////////
+
+#include <Common/SignalHandler.h>
 
 #include <zedwallet/ColouredMsg.h>
 #include <zedwallet/CommandDispatcher.h>
@@ -109,16 +112,13 @@ std::tuple<bool, std::shared_ptr<WalletInfo>>
             return std::make_tuple(true, nullptr);
         }
 
-        bool success;
-        std::shared_ptr<WalletInfo> walletInfo;
-
-        /* Handle the users action */
-        std::tie(success, walletInfo) = handleLaunchCommand(
+        /* Handle the user input */
+        std::shared_ptr<WalletInfo> walletInfo = handleLaunchCommand(
             wallet, launchCommand, config
         );
 
         /* Action failed, for example wallet file is corrupted. */
-        if (!success)
+        if (walletInfo == nullptr)
         {
             std::cout << InformationMsg("Returning to selection screen...")
                       << std::endl;
@@ -149,6 +149,20 @@ std::tuple<bool, std::shared_ptr<WalletInfo>>
         }
         else
         {
+            /* Need another signal handler here, in case the user does
+               ctrl+c whilst syncing, to save the wallet. The walletInfo
+               ptr will be null in the parent scope, since we haven't returned
+               it yet. */
+            bool alreadyShuttingDown = false;
+
+            Tools::SignalHandler::install([&]
+            {
+                if (shutdown(walletInfo, node, alreadyShuttingDown))
+                {
+                    exit(0);
+                }
+            });
+
             syncWallet(node, walletInfo);
         }
 
