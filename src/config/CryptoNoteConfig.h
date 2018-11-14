@@ -134,10 +134,12 @@ const uint64_t FORK_HEIGHTS[] =
      50000, //0
      70000, //1
     100000, //2
-    150000, //3
-    200000, //4
-    250000, //5
-    300000  //6
+    125000, //3
+    150000, //4
+    175000, //5
+    200000, //6
+    250000, //7
+    300000  //8
 };
 
 /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
