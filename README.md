@@ -1,4 +1,4 @@
-### About
+### About 2ACoin ![](./2acoin_logo.png)
 2ACoin is an innovative crypto-currency that is designed/developed to protect American's Second Amendment Rights. 2ACoin provides the benefits of a crypto-currency utilizing the CryptoNote algorithm and also supports the NRA with annual crypto payments. 
 
 ### How To Compile
@@ -28,8 +28,8 @@ The following images are known to work.
 
 ##### Building
 
-- `git clone -b master --single-branch https://github.com/turtlecoin/turtlecoin`
-- `cd turtlecoin`
+- `git clone -b master --single-branch https://github.com/2acoin/2acoin`
+- `cd 2acoin`
 - `mkdir build && cd $_`
 - `cmake ..`
 - `make`
@@ -97,11 +97,11 @@ Cryptonote Developers, Bytecoin Developers, Monero Developers, Forknote Project,
 
 Hi 2ACoin contributor, thanks for forking and sending back Pull Requests. Extensive docs about contributing are in the works or elsewhere. For now this is the bit we need to get into all the files we touch. Please add it to the top of the files, see [src/CryptoNoteConfig.h](https://github.com/2acoin/2acoin/blob/master/src/CryptoNoteConfig.h) for an example.
 
-```
-// Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
-// Copyright (c) 2014-2018, The Monero Project
-// Copyright (c) 2018, The TurtleCoin Developers
-// Copyright (c) 2018, The 2ACoin Developers
-// 
-// Please see the included LICENSE file for more information.
-```
+    
+    // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers  
+    // Copyright (c) 2014-2018, The Monero Project  
+    // Copyright (c) 2018, The TurtleCoin Developers  
+    // Copyright (c) 2018, The 2ACoin Developers  
+    // 
+    // Please see the included LICENSE file for more information.
+    
