@@ -9,6 +9,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <string>
 #include <limits>
 #include <initializer_list>
 #include <boost/uuid/uuid.hpp>
@@ -39,6 +40,7 @@ const uint8_t  ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION      = 3;
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX                 = 5;      //v3
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V2              = 50000;  //v4
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V3              = 70000;  //v5
+const uint64_t LWMA_3_DIFFICULTY_BLOCK_INDEX                 = 200000; //V6
 
 const unsigned EMISSION_SPEED_FACTOR                         = 21;
 const uint64_t GENESIS_BLOCK_REWARD                          = UINT64_C(214920000000000);
@@ -143,7 +145,7 @@ const uint64_t FORK_HEIGHTS[] =
 };
 
 /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
-const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 3;
+const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 6;
 
 const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
@@ -211,7 +213,13 @@ const uint64_t P2P_DEFAULT_INVOKE_TIMEOUT                    = 60 * 2 * 1000; //
 const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000;          // 5 seconds
 const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "";
 
+const uint64_t DATABASE_WRITE_BUFFER_MB_DEFAULT_SIZE         = 256;
+const uint64_t DATABASE_READ_BUFFER_MB_DEFAULT_SIZE          = 10;
+const uint32_t DATABASE_DEFAULT_MAX_OPEN_FILES               = 100;
+const uint16_t DATABASE_DEFAULT_BACKGROUND_THREADS_COUNT     = 2;
+
 const char     LATEST_VERSION_URL[]                          = "https://github.com/2acoin/2acoin/releases/latest";
+const std::string LICENSE_URL                                = "https://github.com/2acoin/2acoin/blob/master/LICENSE";
 const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }

@@ -21,7 +21,7 @@ class WalletService;
 
 class PaymentServiceJsonRpcServer : public CryptoNote::JsonRpcServer {
 public:
-  PaymentServiceJsonRpcServer(System::Dispatcher& sys, System::Event& stopEvent, WalletService& service, Logging::ILogger& loggerGroup, PaymentService::Configuration& config);
+  PaymentServiceJsonRpcServer(System::Dispatcher& sys, System::Event& stopEvent, WalletService& service, Logging::ILogger& loggerGroup, PaymentService::ConfigurationManager& config);
   PaymentServiceJsonRpcServer(const PaymentServiceJsonRpcServer&) = delete;
 
 protected:
@@ -109,7 +109,7 @@ private:
   std::error_code handleEstimateFusion(const EstimateFusion::Request& request, EstimateFusion::Response& response);
   std::error_code handleCreateIntegratedAddress(const CreateIntegratedAddress::Request& request, CreateIntegratedAddress::Response& response);
   std::error_code handleNodeFeeInfo(const NodeFeeInfo::Request& request, NodeFeeInfo::Response& response);
-  
+
 };
 
 }//namespace PaymentService
