@@ -599,13 +599,12 @@ std::error_code Core::addBlock(const CachedBlock& cachedBlock, RawBlock&& rawBlo
     mixinChangeWindow = mixinChangeWindow - CryptoNote::parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW;
   }
 
-  bool success;
-  std::string error;
-  std::tie(success, error) = Mixins::validate(transactions, blockIndex);
+  auto [success, error] = Mixins::validate(transactions, blockIndex);
 
   if (!success)
   {
-    std::tie(success, error) = Mixins::validate(transactions, mixinChangeWindow);
+    /* Warning, this shadows the above variables */
+    auto [success, error] = Mixins::validate(transactions, mixinChangeWindow);
 
     if (!success)
     {
@@ -967,10 +966,7 @@ bool Core::addTransactionToPool(CachedTransaction&& cachedTransaction) {
 }
 
 bool Core::isTransactionValidForPool(const CachedTransaction& cachedTransaction, TransactionValidatorState& validatorState) {
-  bool success;
-  std::string err;
-
-  std::tie(success, err) = Mixins::validate({cachedTransaction}, getTopBlockIndex());
+  auto [success, err] = Mixins::validate({cachedTransaction}, getTopBlockIndex());
 
   if (!success)
   {
