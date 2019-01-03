@@ -481,7 +481,7 @@ struct f_transaction_short_response {
 
 struct f_transaction_details_response {
   std::string hash;
-  size_t size;
+  uint64_t size;
   std::string paymentId;
   uint64_t mixin;
   uint64_t fee;
@@ -528,7 +528,7 @@ struct f_block_details_response {
   uint64_t difficulty;
   uint64_t reward;
   uint64_t blockSize;
-  size_t sizeMedian;
+  uint64_t sizeMedian;
   uint64_t effectiveSizeMedian;
   uint64_t transactionsCumulativeSize;
   std::string alreadyGeneratedCoins;
@@ -847,7 +847,7 @@ struct COMMAND_RPC_GET_TRANSACTION_DETAILS_BY_HASHES {
 };
 
 struct COMMAND_RPC_GET_PEERS {
-  //TODO useful to add option to get gray peers ?
+  // TODO: rename peers to white_peers - do at v1 
   typedef EMPTY_STRUCT request;
 
   struct response {

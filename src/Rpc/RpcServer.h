@@ -1,7 +1,8 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2018, The TurtleCoin Developers
 // Copyright (c) 2018, The Karai Developers
-// 
+// Copyright (c) 2019, 2ACoin Developers
+//
 // Please see the included LICENSE file for more information.
 
 #pragma once
@@ -50,7 +51,7 @@ private:
   bool processJsonRpcRequest(const HttpRequest& request, HttpResponse& response);
   bool isCoreReady();
 
-  // binary handlers
+  // json handlers
   bool on_get_blocks(const COMMAND_RPC_GET_BLOCKS_FAST::request& req, COMMAND_RPC_GET_BLOCKS_FAST::response& res);
   bool on_query_blocks(const COMMAND_RPC_QUERY_BLOCKS::request& req, COMMAND_RPC_QUERY_BLOCKS::response& res);
   bool on_query_blocks_lite(const COMMAND_RPC_QUERY_BLOCKS_LITE::request& req, COMMAND_RPC_QUERY_BLOCKS_LITE::response& res);
@@ -88,6 +89,7 @@ private:
   bool f_on_transaction_json(const F_COMMAND_RPC_GET_TRANSACTION_DETAILS::request& req, F_COMMAND_RPC_GET_TRANSACTION_DETAILS::response& res);
   bool f_on_transactions_pool_json(const F_COMMAND_RPC_GET_POOL::request& req, F_COMMAND_RPC_GET_POOL::response& res);
   bool f_getMixin(const Transaction& transaction, uint64_t& mixin);
+
   Logging::LoggerRef logger;
   Core& m_core;
   NodeServer& m_p2p;
