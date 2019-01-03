@@ -23,7 +23,7 @@ def lastknownblock():
 
 
 def height():
-    base_url = 'http://localhost:17890/getheight'
+    base_url = 'http://localhost:17910/getheight'
     resp = requests.get(base_url).json()
     if 'height' not in resp:
         print ('Unexpected response, make sure 2ACoind is running',
@@ -34,7 +34,7 @@ def height():
 
 
 def rpc(method, params={}):
-    base_url = 'http://localhost:17890/json_rpc'
+    base_url = 'http://localhost:17910/json_rpc'
     payload = {
         'jsonrpc': '2.0',
         'id': 'block_info',
