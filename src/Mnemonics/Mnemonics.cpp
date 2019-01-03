@@ -6,11 +6,12 @@
 // Please see the included LICENSE file for more information.
 
 #include <algorithm>
-#include <boost/crc.hpp>
-#include <sstream>
 
-#include "Mnemonics.h"
-#include "WordList.h"
+#include <Mnemonics/CRC32.h>
+#include <Mnemonics/Mnemonics.h>
+#include <Mnemonics/WordList.h>
+
+#include <sstream>
 
 namespace Mnemonics
 {
@@ -49,7 +50,7 @@ namespace Mnemonics
             str << "Mnemonic seed is wrong length - It should be 25 words "
                 << "long, but it is " << len << " " << wordPlural << " long!";
 
-            return std::make_tuple(str.str(), key);
+            return {str.str(), key};
         }
 
         /* All words must be present in the word list */
@@ -64,15 +65,14 @@ namespace Mnemonics
                 str << "Mnemonic seed has invalid word - "
                     << word << " is not in the English word list!";
 
-                return std::make_tuple(str.str(), key);
+                return {str.str(), key};
             }
         }
 
         /* The checksum must be correct */
         if (!HasValidChecksum(words))
         {
-            return std::make_tuple("Mnemonic seed has incorrect checksum!",
-                                   key);
+            return {"Mnemonic seed has incorrect checksum!", key};
         }
 
         auto wordIndexes = GetWordIndexes(words);
@@ -90,13 +90,15 @@ namespace Mnemonics
             const size_t wlLen = WordList::English.size();
 
             /* no idea what this does lol */
-            const uint32_t val = w1 + wlLen * (((wlLen - w1) + w2) % wlLen) + wlLen 
-                                            * wlLen * (((wlLen - w2) + w3) % wlLen);
+            const uint32_t val = static_cast<uint32_t>(
+                w1 + wlLen * (((wlLen - w1) + w2) % wlLen) + wlLen 
+                           * wlLen * (((wlLen - w2) + w3) % wlLen)
+            );
 
             /* Don't know what this is testing either */
             if (!(val % wlLen == w1))
             {
-                return std::make_tuple("Mnemonic seed is invalid!", key);
+                return {"Mnemonic seed is invalid!", key};
             }
 
             /* Interpret val as 4 uint8_t's */
@@ -112,7 +114,7 @@ namespace Mnemonics
         /* Copy the data to the secret key */
         std::copy(data.begin(), data.end(), key.data);
 
-        return std::make_tuple(std::string(), key);
+        return {std::string(), key};
     }
 
     std::string PrivateKeyToMnemonic(const Crypto::SecretKey privateKey)
@@ -180,10 +182,12 @@ namespace Mnemonics
             trimmed += word.substr(0, 3);
         }
 
-        boost::crc_32_type crc32;
-        crc32.process_bytes(trimmed.data(), trimmed.length());
+        /* Hash the data */
+        uint64_t hash = CRC32::crc32(trimmed);
 
-        return words[crc32.checksum() % words.size()];
+        /* Modulus the hash by the word length to get the index of the 
+           checksum word */
+        return words[hash % words.size()];
     }
 
     std::vector<int> GetWordIndexes(const std::vector<std::string> words)
