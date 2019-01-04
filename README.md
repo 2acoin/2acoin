@@ -2,7 +2,7 @@
 2ACoin is an innovative crypto-currency that is designed/developed to protect American's Second Amendment Rights. 2ACoin provides the benefits of a crypto-currency utilizing the CryptoNote algorithm and also supports the NRA with annual crypto payments. 
 ### Installing
 
-We offer binary images of the latest releases here: https://latest.turtlecoin.lol
+We offer binary images of the latest releases here: https://latest.2acoin.org
 
 If you would like to compile yourself, read on.
 
@@ -22,78 +22,80 @@ If you are using Clang, you will need Clang 5.0 or higher. You will also need li
 
 ##### GCC setup, on Ubuntu
 
-- `sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y`
-- `sudo apt-get update`
-- `sudo apt-get install aptitude -y`
-- `sudo aptitude install -y build-essential g++-8 gcc-8 git libboost-all-dev python-pip`
-- `sudo pip install cmake`
-- `export CC=gcc-8`
-- `export CXX=g++-8`
-- `git clone -b master --single-branch https://github.com/2acoin/2acoin`
-- `cd 2acoin`
-- `mkdir build`
-- `cd build`
-- `cmake ..`
-- `make`
-
+    sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    sudo apt-get update
+    sudo apt-get install aptitude -y
+    sudo aptitude install -y build-essential g++-8 gcc-8 git libboost-all-dev python-pip
+    sudo pip install cmake
+    export CC=gcc-8
+    export CXX=g++-8
+    git clone -b master --single-branch https://github.com/2acoin/2acoin
+    cd 2acoin
+    mkdir build
+    cd build
+    cmake ..
+    make
+    
 The binaries will be in the `src` folder when you are complete.
 
-- `cd src`
-- `./2ACoind --version`
-
+    cd src
+    ./2ACoind --version
+    
 ##### Clang setup, on Ubuntu
 
-- `sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y`
-- `wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -`
-
+    sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+    
 You need to modify the below command for your version of ubuntu - see https://apt.llvm.org/
 
-* Ubuntu 14.04 (Trusty)
-- `sudo add-apt-repository "deb https://apt.llvm.org/trusty/ llvm-toolchain-trusty 6.0 main"`
+* Ubuntu 14.04 (Trusty)  
+`sudo add-apt-repository "deb https://apt.llvm.org/trusty/ llvm-toolchain-trusty 6.0 main"`
 
-* Ubuntu 16.04 (Xenial)
-- `sudo add-apt-repository "deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial 6.0 main"`
+* Ubuntu 16.04 (Xenial)  
+`sudo add-apt-repository "deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial 6.0 main"`
 
-* Ubuntu 18.04 (Bionic)
-- `sudo add-apt-repository "deb https://apt.llvm.org/bionic/ llvm-toolchain-bionic 6.0 main"`
+* Ubuntu 18.04 (Bionic)  
+`sudo add-apt-repository "deb https://apt.llvm.org/bionic/ llvm-toolchain-bionic 6.0 main"`
 
-- `sudo apt-get update`
-- `sudo apt-get install aptitude -y`
-- `sudo aptitude install -y -o Aptitude::ProblemResolver::SolutionCost='100*canceled-actions,200*removals' build-essential clang-6.0 libstdc++-7-dev git libboost-all-dev python-pip`
-- `sudo pip install cmake`
-- `export CC=clang-6.0`
-- `export CXX=clang++-6.0`
-- `git clone -b master --single-branch https://github.com/2acoin/2acoin`
-- `cd 2acoin`
-- `mkdir build`
-- `cd build`
-- `cmake ..`
-- `make`
+Then perform the following;
 
+    sudo apt-get update
+    sudo apt-get install aptitude -y
+    sudo aptitude install -y -o Aptitude::ProblemResolver::SolutionCost='100*canceled-actions,200*removals' build-essential clang-6.0 libstdc++-7-dev git libboost-all-dev python-pip
+    sudo pip install cmake
+    export CC=clang-6.0
+    export CXX=clang++-6.0
+    git clone -b master --single-branch https://github.com/2acoin/2acoin
+    cd 2acoin
+    mkdir build
+    cd build
+    cmake ..
+    make
+    
 The binaries will be in the `src` folder when you are complete.
 
-- `cd src`
-- `./2ACoind --version`
-
+    cd src
+    ./2ACoind --version
+    
 ##### Generic Linux
 
 Ensure you have the dependencies listed above.
 
 If you want to use clang, ensure you set the environment variables `CC` and `CXX`.
-See the ubuntu instructions for an example.
+See the Ubuntu instructions for an example.
 
-- `git clone -b master --single-branch https://github.com/2acoin/2acoin`
-- `cd 2acoin`
-- `mkdir build`
-- `cd build`
-- `cmake ..`
-- `make`
-
+    git clone -b master --single-branch https://github.com/2acoin/2acoin
+    cd 2acoin
+    mkdir build
+    cd build
+    cmake ..
+    make
+    
 The binaries will be in the `src` folder when you are complete.
 
-- `cd src`
-- `./2ACoind --version`
-
+    cd src
+    ./2ACoind --version
+    
 #### Apple
 
 ##### Prerequisites
@@ -105,24 +107,27 @@ The binaries will be in the `src` folder when you are complete.
 
 ##### Building
 
-- `git clone -b master --single-branch https://github.com/2acoin/2acoin`
-- `cd 2acoin`
-- `mkdir build && cd $_`
-- `cmake ..` or `cmake -DBOOST_ROOT=<path_to_boost_install> ..` when building
-  from a specific boost install. If you used brew to install boost, your path is most likely `/usr/local/include/boost.`
-- `make`
-
+    git clone -b master --single-branch https://github.com/2acoin/2acoin
+    cd 2acoin
+    mkdir build && cd $_
+    cmake ..
+    # or 
+    cmake -DBOOST_ROOT=<path_to_boost_install> .. 
+    # when building from a specific boost install. 
+    # If you used brew to install boost, your path is most likely /usr/local/include/boost.
+    make
+        
 The binaries will be in the `src` folder when you are complete.
 
-- `cd src`
-- `./2ACoind --version`
-
+    cd src
+    ./2ACoind --version
+    
 If your version of gcc is too old, you may need to run:
 
-- `brew install gcc@8`
-- `export CC=gcc-8`
-- `export CXX=g++-8`
-
+    brew install gcc@8
+    export CC=gcc-8
+    export CXX=g++-8
+    
 #### Windows
 
 ##### Prerequisites
@@ -133,20 +138,23 @@ If your version of gcc is too old, you may need to run:
 
 ##### Building
 
-- From the start menu, open 'x64 Native Tools Command Prompt for vs2017'.
-- `cd <your_2acoin_directory>`
-- `mkdir build`
-- `cd build`
-- `set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin";%PATH%`
-- `cmake -G "Visual Studio 15 2017 Win64" .. -DBOOST_ROOT=C:/local/boost_1_68_0` (Or your boost installed dir.)
-- `MSBuild TurtleCoin.sln /p:Configuration=Release /m`
+- From the start menu, open 'x64 Native Tools Command Prompt for vs2017'.  
 
+``
+
+    cd <your_2acoin_folder>
+    mkdir build  
+    cd build  
+    set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin";%PATH%  
+    cmake -G "Visual Studio 15 2017 Win64" .. -DBOOST_ROOT=C:/local/boost_1_68_0  #(Or your boost installed dir.)  
+    MSBuild 2ACoin.sln /p:Configuration=Release /m  
+               
 The binaries will be in the `src/Release` folder when you are complete.
 
-- `cd src`
-- `cd Release`
-- `2ACoind.exe --version`
-
+    cd src
+    cd Release
+    2ACoind.exe --version
+    
 #### Raspberry Pi 3 B+
 The following images are known to work. Your operation system image **MUST** be 64 bit.
 
@@ -160,18 +168,18 @@ Once you have a 64 bit image installed, setup proceeds the same as any Linux dis
 
 ##### Building
 
-- `git clone -b master --single-branch https://github.com/2acoin/2acoin`
-- `cd 2acoin`
-- `mkdir build`
-- `cd build`
-- `cmake ..`
-- `make`
+    git clone -b master --single-branch https://github.com/2acoin/2acoin
+    cd 2acoin
+    mkdir build
+    cd build
+    cmake ..
+    make
+    
+The binaries will be in the `src` folder when you're compile is done.
 
-The binaries will be in the `src` folder when you are complete.
-
-- `cd src`
-- `./2ACoind --version`
-
+    cd src
+    ./2ACoind --version
+    
 #### Thanks
 Cryptonote Developers, Bytecoin Developers, Monero Developers, Forknote Project, 2ACoin Community
 
