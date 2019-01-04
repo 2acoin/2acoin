@@ -41,7 +41,7 @@ namespace CryptoNote
           minMixin = CryptoNote::parameters::MINIMUM_MIXIN_V2;
           maxMixin = CryptoNote::parameters::MAXIMUM_MIXIN_V2;
         }
-        else if (height >= CryptoNote::parameters::MIXIN_LIMITS_V1_HEIGHT)
+        else
         {
           minMixin = CryptoNote::parameters::MINIMUM_MIXIN_V1;
           maxMixin = CryptoNote::parameters::MAXIMUM_MIXIN_V1;

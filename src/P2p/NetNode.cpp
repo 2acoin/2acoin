@@ -90,10 +90,6 @@ void addPortMapping(Logging::LoggerRef& logger, uint32_t port) {
   }
 }
 
-bool parse_peer_from_string(NetworkAddress& pe, const std::string& node_addr) {
-  return Common::parseIpAddressAndPort(pe.ip, pe.port, node_addr);
-}
-
 }
 
 
