@@ -1,82 +1,135 @@
 ### About 2ACoin ![](./2acoin_logo.png)
 2ACoin is an innovative crypto-currency that is designed/developed to protect American's Second Amendment Rights. 2ACoin provides the benefits of a crypto-currency utilizing the CryptoNote algorithm and also supports the NRA with annual crypto payments. 
+### Installing
+
+We offer binary images of the latest releases here: https://latest.turtlecoin.lol
+
+If you would like to compile yourself, read on.
 
 ### How To Compile
 
-#### Ubuntu 16.04+ and MacOS 10.10+
+#### Linux
 
-There is a bash installation script for Ubuntu 16.04+ and MacOS 10.10+ which can be used to checkout and build the project from source:
+##### Prerequisites
 
-`$ curl -sL "https://raw.githubusercontent.com/2acoin/2acoin/master/scripts/multi_installer.sh" | bash `
+You will need the following packages: boost, cmake (3.8 or higher), make, and git.
 
-On Ubuntu you will be asked for sudo rights to install software. The binaries will be in `./src` after compilation is complete.
+You will also need either GCC/G++, or Clang.
 
-This script can be used from inside the git repository to build the project from the checked out source, `./multi_installer.sh`
+If you are using GCC, you will need GCC-6.0 or higher.
 
-See the script for more installation details and please consider extending it for your operating system and distribution!
+If you are using Clang, you will need Clang 5.0 or higher. You will also need libstdc++\-6.0 or higher.
 
-If the script doesn't work for you:
+##### GCC setup, on Ubuntu
 
-#### [new!] Raspberry Pi 3 B+
-The following images are known to work.
+- `sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y`
+- `sudo apt-get update`
+- `sudo apt-get install aptitude -y`
+- `sudo aptitude install -y build-essential g++-8 gcc-8 git libboost-all-dev python-pip`
+- `sudo pip install cmake`
+- `export CC=gcc-8`
+- `export CXX=g++-8`
+- `git clone -b master --single-branch https://github.com/2acoin/2acoin`
+- `cd 2acoin`
+- `mkdir build`
+- `cd build`
+- `cmake ..`
+- `make`
 
-##### OS Distribution
+The binaries will be in the `src` folder when you are complete.
 
-- https://github.com/Crazyhead90/pi64/releases
-- https://fedoraproject.org/wiki/Architectures/ARM/Raspberry_Pi#aarch64_supported_images_for_Raspberry_Pi_3
-- https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3
+- `cd src`
+- `./2ACoind --version`
+
+##### Clang setup, on Ubuntu
+
+- `sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y`
+- `wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -`
+
+You need to modify the below command for your version of ubuntu - see https://apt.llvm.org/
+
+* Ubuntu 14.04 (Trusty)
+- `sudo add-apt-repository "deb https://apt.llvm.org/trusty/ llvm-toolchain-trusty 6.0 main"`
+
+* Ubuntu 16.04 (Xenial)
+- `sudo add-apt-repository "deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial 6.0 main"`
+
+* Ubuntu 18.04 (Bionic)
+- `sudo add-apt-repository "deb https://apt.llvm.org/bionic/ llvm-toolchain-bionic 6.0 main"`
+
+- `sudo apt-get update`
+- `sudo apt-get install aptitude -y`
+- `sudo aptitude install -y -o Aptitude::ProblemResolver::SolutionCost='100*canceled-actions,200*removals' build-essential clang-6.0 libstdc++-7-dev git libboost-all-dev python-pip`
+- `sudo pip install cmake`
+- `export CC=clang-6.0`
+- `export CXX=clang++-6.0`
+- `git clone -b master --single-branch https://github.com/2acoin/2acoin`
+- `cd 2acoin`
+- `mkdir build`
+- `cd build`
+- `cmake ..`
+- `make`
+
+The binaries will be in the `src` folder when you are complete.
+
+- `cd src`
+- `./2ACoind --version`
+
+##### Generic Linux
+
+Ensure you have the dependencies listed above.
+
+If you want to use clang, ensure you set the environment variables `CC` and `CXX`.
+See the ubuntu instructions for an example.
+
+- `git clone -b master --single-branch https://github.com/2acoin/2acoin`
+- `cd 2acoin`
+- `mkdir build`
+- `cd build`
+- `cmake ..`
+- `make`
+
+The binaries will be in the `src` folder when you are complete.
+
+- `cd src`
+- `./2ACoind --version`
+
+#### Apple
+
+##### Prerequisites
+
+- Install [cmake](https://cmake.org/). See [here](https://stackoverflow.com/questions/23849962/cmake-installer-for-mac-fails-to-create-usr-bin-symlinks) if you are unable to call `cmake` from the terminal after installing.
+- Install the [boost](http://www.boost.org/) libraries. Either compile boost manually or run `brew install boost`.
+- Install XCode and Developer Tools.
+
 
 ##### Building
 
 - `git clone -b master --single-branch https://github.com/2acoin/2acoin`
 - `cd 2acoin`
 - `mkdir build && cd $_`
-- `cmake ..`
-- `make`
-
-
-#### Linux
-
-##### Prerequisites
-
-- You will need the following packages: boost (1.55 or higher), rocksdb, cmake, git, gcc (4.9 or higher), g++ (4.9 or higher), make, and python. Most of these should already be installed on your system.
-- For example on Ubuntu: `sudo apt-get install -y build-essential python-dev gcc g++ git cmake libboost-all-dev`
-
-##### Building
-
-- `git clone https://github.com/2acoin/2acoin`
-- `cd 2acoin`
-- `mkdir build && cd $_`
-- `cmake ..`
-- `make`
-
-#### Apple
-
-##### Prerequisites
-
-- Install [cmake](https://cmake.org/). See [here](https://stackoverflow.com/questions/23849962/cmake-installer-for-mac-fails-to-create-usr-bin-symlinks) if you are unable call `cmake` from the terminal after installing.
-- Install the [boost](http://www.boost.org/) libraries. Either compile boost manually or run `brew install boost`.
-- Install XCode and Developer Tools.
-
-##### Building
-
-- `git clone https://github.com/2acoin/2acoin`
-- `cd 2acoin`
-- `mkdir build && cd $_`
 - `cmake ..` or `cmake -DBOOST_ROOT=<path_to_boost_install> ..` when building
   from a specific boost install. If you used brew to install boost, your path is most likely `/usr/local/include/boost.`
 - `make`
 
-The binaries will be in `./src` after compilation is complete.
+The binaries will be in the `src` folder when you are complete.
 
-Run `./src/2ACoind` to connect to the network and let it sync (it may take a while).
+- `cd src`
+- `./2ACoind --version`
 
-#### Windows 10
+If your version of gcc is too old, you may need to run:
+
+- `brew install gcc@8`
+- `export CC=gcc-8`
+- `export CXX=g++-8`
+
+#### Windows
 
 ##### Prerequisites
+
 - Install [Visual Studio 2017 Community Edition](https://www.visualstudio.com/thank-you-downloading-visual-studio/?sku=Community&rel=15&page=inlineinstall)
-- When installing Visual Studio, it is **required** that you install **Desktop development with C++** and the **VC++ v140 toolchain** when selecting features. The option to install the v140 toolchain can be found by expanding the "Desktop development with C++" node on the right. You will need this for the project to build correctly. This item will be called something like `VC++ 2015.3 v14.00 (v140) toolset for desktop`
-- Install [Boost 1.59.0](https://sourceforge.net/projects/boost/files/boost-binaries/1.59.0/), ensuring you download the installer for MSVC 14.
+- When installing Visual Studio, it is **required** that you install **Desktop development with C++**
+- Install the latest version of [Boost](https://sourceforge.net/projects/boost/files/boost-binaries/1.68.0/boost_1_68_0-msvc-14.1-64.exe/download) - Currently Boost 1.68.
 
 ##### Building
 
@@ -84,11 +137,40 @@ Run `./src/2ACoind` to connect to the network and let it sync (it may take a whi
 - `cd <your_2acoin_directory>`
 - `mkdir build`
 - `cd build`
-- Set the PATH variable for cmake: ie. `set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin";%PATH%`
-- `cmake -G "Visual Studio 14 Win64" .. -DBOOST_ROOT=C:/local/boost_1_59_0` (Or your boost installed dir.)
-- `MSBuild 2ACoin.sln /p:Configuration=Release /m`
-- If all went well, it will complete successfully, and you will find all your binaries in the '..\build\src\Release' directory.
-- Additionally, a `.sln` file will have been created in the `build` directory. If you wish to open the project in Visual Studio with this, you can.
+- `set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin";%PATH%`
+- `cmake -G "Visual Studio 15 2017 Win64" .. -DBOOST_ROOT=C:/local/boost_1_68_0` (Or your boost installed dir.)
+- `MSBuild TurtleCoin.sln /p:Configuration=Release /m`
+
+The binaries will be in the `src/Release` folder when you are complete.
+
+- `cd src`
+- `cd Release`
+- `2ACoind.exe --version`
+
+#### Raspberry Pi 3 B+
+The following images are known to work. Your operation system image **MUST** be 64 bit.
+
+##### Known working images
+
+- https://github.com/Crazyhead90/pi64/releases
+- https://fedoraproject.org/wiki/Architectures/ARM/Raspberry_Pi#aarch64_supported_images_for_Raspberry_Pi_3
+- https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3
+
+Once you have a 64 bit image installed, setup proceeds the same as any Linux distribution. Ensure you have at least 2GB of ram, or the build is likely to fail. You may need to setup swap space.
+
+##### Building
+
+- `git clone -b master --single-branch https://github.com/2acoin/2acoin`
+- `cd 2acoin`
+- `mkdir build`
+- `cd build`
+- `cmake ..`
+- `make`
+
+The binaries will be in the `src` folder when you are complete.
+
+- `cd src`
+- `./2ACoind --version`
 
 #### Thanks
 Cryptonote Developers, Bytecoin Developers, Monero Developers, Forknote Project, 2ACoin Community
