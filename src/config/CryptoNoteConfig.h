@@ -64,6 +64,8 @@ const uint64_t MAXIMUM_MIXIN_V1                              = 100;
 const uint64_t MINIMUM_MIXIN_V2                              = 0;
 const uint64_t MAXIMUM_MIXIN_V2                              = 7;
 
+/* We will revisit the Max Mixin in a later upgrade, seeting to 10 or 12 for security */
+/* also reset default mixin mentioned below in the later version. */
 const uint64_t MINIMUM_MIXIN_V3                              = 0;
 const uint64_t MAXIMUM_MIXIN_V3                              = 3;
 
@@ -134,10 +136,10 @@ static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
 const uint64_t FORK_HEIGHTS[] =
 {
      50000, //0
-     70000, //1
-    100000, //2
-    125000, //3
-    200000, //4
+     70000, //1 LWMA-2
+    100000, //2 MIXIN LIMITS V3
+    125000, //3 MIXIN MAX ADJUST
+    200000, //4 LWMA-3
     250000, //5
     300000  //6
 };
