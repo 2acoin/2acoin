@@ -33,13 +33,9 @@ uint64_t getDefaultMixinByHeight(const uint64_t height)
     {
         return CryptoNote::parameters::DEFAULT_MIXIN_V2;
     }
-    else if (height >= CryptoNote::parameters::MIXIN_LIMITS_V1_HEIGHT)
+    else 
     {
         return CryptoNote::parameters::DEFAULT_MIXIN_V1;
-    }
-    else
-    {
-        return CryptoNote::parameters::DEFAULT_MIXIN_V0;
     }
 }
 

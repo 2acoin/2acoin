@@ -2,7 +2,7 @@
 2ACoin is an innovative crypto-currency that is designed/developed to protect American's Second Amendment Rights. 2ACoin provides the benefits of a crypto-currency utilizing the CryptoNote algorithm and also supports the NRA with annual crypto payments. 
 ### Installing
 
-We offer binary images of the latest releases here: https://latest.2acoin.org
+We offer binary images of the latest releases here: [https://github.com/2acoin/2acoin/releases/latest](https://github.com/2acoin/2acoin/releases/latest)
 
 If you would like to compile yourself, read on.
 
