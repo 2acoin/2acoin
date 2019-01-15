@@ -1,5 +1,13 @@
 ### About 2ACoin ![](./2acoin_logo.png)
 2ACoin is an innovative crypto-currency that is designed/developed to protect American's Second Amendment Rights. 2ACoin provides the benefits of a crypto-currency utilizing the CryptoNote algorithm and also supports the NRA with annual crypto payments. 
+
+#### Master Build Status
+[![Build Status](https://travis-ci.org/2acoin/2acoin.svg?branch=master)](https://travis-ci.org/2acoin/2acoin) [![Build status](https://ci.appveyor.com/api/projects/status/github/2acoin/2acoin?branch=master&svg=true)](https://ci.appveyor.com/project/2acoin/2acoin)
+
+#### Development Build Status
+[![Build Status](https://travis-ci.org/2acoin/2acoin.svg?branch=development)](https://travis-ci.org/2acoin/2acoin) [![Build status](https://ci.appveyor.com/api/projects/status/github/2acoin/2acoin?branch=development&svg=true)](https://ci.appveyor.com/project/2acoin/2acoin)
+
+
 ### Installing
 
 We offer binary images of the latest releases here: [https://github.com/2acoin/2acoin/releases/latest](https://github.com/2acoin/2acoin/releases/latest)
