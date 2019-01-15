@@ -1,0 +1,48 @@
+os: Visual Studio 2017
+
+environment:
+  BOOST_ROOT: C:\Libraries\boost_1_67_0
+  BOOST_LIBRARYDIR: C:\Libraries\boost_1_67_0\lib64-msvc-14
+
+build_script:
+  - md build
+  - cd build
+  - cmake -G "Visual Studio 15 2017 Win64" ..
+  - MSBuild 2ACoin.sln /p:Configuration=Release /m
+
+after_build:
+  - if not defined APPVEYOR_REPO_TAG_NAME (set APPVEYOR_REPO_TAG_NAME=%APPVEYOR_REPO_COMMIT%)
+  - cd src\Release
+  - mkdir 2acoin-%APPVEYOR_REPO_TAG_NAME%
+  - copy *.exe 2acoin-%APPVEYOR_REPO_TAG_NAME%
+  - copy ..\..\..\LICENSE 2acoin-%APPVEYOR_REPO_TAG_NAME%
+  - 7z a 2acoin-%APPVEYOR_REPO_TAG_NAME%-windows.zip 2acoin-%APPVEYOR_REPO_TAG_NAME%
+  - copy 2acoin-%APPVEYOR_REPO_TAG_NAME%-windows.zip ..\..\..\
+
+artifacts:
+  - path: 2acoin-$(APPVEYOR_REPO_TAG_NAME)-windows.zip
+    name: 2ACoinRelease
+
+deploy:
+  - provider: GitHub
+    auth_token:
+      secure: #####KFrN1rc9FJN3BEoX99whHEuK5iPHHLmDcZ1Ac7tgT9oR6AxyjL0B+XMQu4wqo+fK
+    artifact: 2ACoinRelease
+    draft: false
+    prerelease: false
+    on:
+      appveyor_repo_name: 2acoin/2acoin
+      appveyor_repo_tag: true
+
+  - provider: S3
+    access_key_id:
+      secure: f6E1aAWppFCM/EWOe8+SHQEf50Dc9KXQSCocQkaedZ4=
+    secret_access_key:
+      secure: 465c0S53qpmIPFTS29OyHNABI5O1I0C40JYYB5TRu84ztrwHECUk1fN8a6Vh7rwE
+    bucket: olk-2acoin
+    region: us-east-1
+    set_public: true
+    folder: 2acoin
+    artifact: 2ACoinRelease
+    on:
+      appveyor_repo_name: 2acoin/2acoin
