@@ -1,0 +1,183 @@
+sudo: false
+language: cpp
+
+matrix:
+  include:
+
+  # Ubuntu, g++-8
+  - os: linux
+    compiler: gcc
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages: 
+          - libboost1.55-all-dev
+          - g++-8
+          - gcc-8
+    env:
+    - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+    - LABEL="linux"
+    - _DEPLOYABLE="true"
+    - STRIP="strip"
+
+  # Ubuntu, g++-7
+  - os: linux
+    compiler: gcc
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages: 
+          - libboost1.55-all-dev
+          - g++-7
+          - gcc-7
+    env:
+    - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+    - LABEL="linux-g++-7"
+    - STRIP="strip"
+
+  # Ubuntu, clang-6
+  - os: linux
+    compiler: clang
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - llvm-toolchain-trusty-6.0
+        packages: 
+          - libboost1.55-all-dev
+          - clang-6.0
+          - libstdc++-7-dev
+    env:
+    - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+    - LABEL="linux-clang-6"
+    - STRIP="strip"
+
+  # Ubuntu, clang-5
+  - os: linux
+    compiler: clang
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - llvm-toolchain-trusty-5.0
+        packages: 
+          - libboost1.55-all-dev
+          - clang-5.0
+          - libstdc++-6-dev
+    env:
+    - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+    - LABEL="linux-clang-5"
+    - STRIP="strip"
+
+  ## OSX, g++-8
+  - os: osx
+    osx_image: xcode10
+    compiler: gcc
+    env:
+    # Need to uninstall oclint to get newer gcc installed https://github.com/travis-ci/travis-ci/issues/8826
+    - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+    - LABEL="osx"
+    - _DEPLOYABLE="true"
+    - STRIP="strip"
+
+  # OSX, g++-7
+  - os: osx
+    osx_image: xcode10
+    compiler: gcc
+    env:
+    - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+    - LABEL="osx-g++-7"
+    - STRIP="strip"
+
+  # OSX, clang
+  - os: osx
+    osx_image: xcode10
+    compiler: clang
+    env:
+    - MATRIX_EVAL="CC=clang && CXX=clang++"
+    - LABEL="osx-clang"
+    - STRIP="strip"
+
+  # Arm (aarch64) cross compile
+  - os: linux
+    env:
+    - MATRIX_EVAL="CC=aarch64-linux-gnu-gcc && CXX=aarch64-linux-gnu-g++"
+    - LABEL="aarch64"
+    - _DEPLOYABLE="true"
+    - STRIP="aarch64-linux-gnu-strip"
+
+before_install:
+- eval $MATRIX_EVAL
+
+install:
+# Need to uninstall oclint to get newer gcc installed https://github.com/travis-ci/travis-ci/issues/8826
+- if [[ "${LABEL:0:3}" == "osx" ]]; then brew cask uninstall --force oclint || true ; fi
+
+# Install the correct gcc version
+- if [[ "$LABEL" == "osx" ]]; then brew install gcc@8 ; fi
+- if [[ "$LABEL" == "osx-g++-7" ]]; then brew install gcc@7 ; fi
+
+- if [[ "$LABEL" == "aarch64" ]]; then export BASEDIR=`pwd` ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then cd $HOME ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-a/8.2-2018.08/gcc-arm-8.2-2018.08-x86_64-aarch64-linux-gnu.tar.xz ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.gz ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then mkdir toolchain && cd toolchain ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then tar xfv ../gcc-arm-8.2-2018.08-x86_64-aarch64-linux-gnu.tar.xz >/dev/null ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then cd gcc-arm-8.2-2018.08-x86_64-aarch64-linux-gnu ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then tar zxvf ../../boost_1_55_0.tar.gz >/dev/null ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then cd boost_1_55_0 ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then ./bootstrap.sh ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then curl https://raw.githubusercontent.com/2acoin/2acoin/development/scripts/fix_boost_aarch64.sh | sh ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then ./b2 toolset=gcc-aarch64 --with-system --with-filesystem --with-thread --with-date_time --with-chrono --with-regex --with-serialization --with-program_options >/dev/null; fi
+- if [[ "$LABEL" == "aarch64" ]]; then export CUSTOM_BOOST_ROOT="-DBOOST_ROOT=`pwd`" ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then export CUSTOM_TOOLCHAIN="-DCMAKE_TOOLCHAIN_FILE=../scripts/cross-aarch64.cmake" ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then export STRIP="$HOME/toolchain/gcc-arm-8.2-2018.08-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu-strip" ; fi
+- if [[ "$LABEL" == "aarch64" ]]; then cd $BASEDIR ; fi
+
+script:
+- eval $MATRIX_EVAL
+- mkdir build && cd build
+- cmake -DCMAKE_BUILD_TYPE=Release -DSTATIC=true .. ${CUSTOM_TOOLCHAIN} ${CUSTOM_BOOST_ROOT} && make -j2
+
+before_deploy:
+- if [[ "${TRAVIS_TAG}" == "" ]]; then export TRAVIS_TAG=${TRAVIS_COMMIT} ; fi
+- cd src
+- ${STRIP} 2ACoind miner zedwallet 2acoin-service
+- rm -rf 2acoin-${TRAVIS_TAG} 
+- mkdir 2acoin-${TRAVIS_TAG}
+- cp 2ACoind miner zedwallet 2acoin-service  2acoin-${TRAVIS_TAG}/
+- cp ../../LICENSE 2acoin-${TRAVIS_TAG}/
+- tar cvfz 2acoin-${TRAVIS_TAG}-${LABEL}.tar.gz 2acoin-${TRAVIS_TAG}/
+- mkdir builds
+- cp 2acoin-${TRAVIS_TAG}-${LABEL}.tar.gz builds
+- cd ..
+
+deploy:
+  - provider: releases
+    api_key:
+      secure: KOIIPdqHmlGDIuKTgvgxTNTfw50cALzBTEAmf+nXmsrTE6VluQoUDzO6mWehQkfVossXb/0CkvKDeIEpl91dMGDb0BmZeTQA075/NjWpcntnoFv1c9pE6KkJEVBJ/DWUON+LWtf2aI9/rSiF6mta4VEyGEXbeaqZpbDfLhGY0GAtGzHqwl9ZDkwIe+nYxpchGd+F/s6MHkHfzwF7SuiKuBSSthrbbtBCUf2+LcZzI42Io/CpTS6Dm2GsCJ09w0XnfCi19tPpN1GcPnHmdPmozg0wCopccJI7N9GHQfNtANAc7rU92x3aCZon3AxHqXUvN0BOH5VYur9QZGpJhINf0ehkvVkMUUqvhjpuSMUqXcnDaqE4FauG3pfQneZQAOrq0lbPUIDEfvP4Hg3ab1u062nZp9pnCoIJr+/pojzDFhfTYUZMNTG1NyU/2Aacm6IvmeBkTyJXYvsM8yJTPKrOqi6Hz6CsC4X+b2bzYbmRFzh49pvrU1OeuqVqVw+ktOhRgx+oOsj0OrN8wLL0sQ9mTCGr0BIcVJTi5HHpLPt7jYgYnSlUwu+p0lRrhoR6xyI2OqvHrKcu1HM9ZqItSLKVX/zoSmnyslb0A7rPJ6P6mhRb6w/bFCHO+vXhc0dMkZZTNGzOeteOGFTchV6vktCl4Osam3N/46+bFcUZijj0TBw=
+    file:
+      - 2acoin-${TRAVIS_TAG}-${LABEL}.tar.gz
+    skip_cleanup: true
+    on:
+      repo: 2acoin/2acoin
+      tags: true
+      condition: "$_DEPLOYABLE = true"
+
+  - provider: s3
+    access_key_id:
+      secure: WBT2p+c/Z919ILd3OEY9oYNf5zDHrNNtn0RNhdEbXuxDmHMeLMzJrOsf93ZFBd1K2q1VkGMROWC1Xa+CX1ftG8xaog9dYBVpA6fTVRXmjX5yTxdz9F3Bf6Rg7oqG4I+D6ZsbFQoOwB8pFQV9WJSfqjYrQqSuB7go35AYRzwABNMYeA1XoqnktH29KI5/XymfEjBGY/vqfJvaZz4Z+spba8nu48cjQBBPFPzlv/BBGF2UGu69MHDU0ND0zaSoKubYt2U+JKY7zuBOAqF2MRdVyIgtEuX8BHRFFccynhmL2J+wwwz/2OM2JWZa1XbNGtKXuybnlpegjx1lKSjiLNQi8ovgDqKlP43AF2FqYOVRV9hBvQHqssi/EUoaJUubrGBA83jn50UtONr8mykwHGBXsp66+PNP8fXHO/T4j5v5PAULwIAtOAJA4aCCQbNaw7AmYPTH8gVRAlMFcNEA8NfgAKKnA6aKBAYpJN6lmz9bgmewkwT05rze6oTnjCv+T9RggOuYIm7rDe41tzPwk1EfLVmSdDPVRHwW0RDBmMt6L/WhMmWH7yNSGEPydGE+bles8vUSLPLN6YQSC0iSE8A0huAqzob/3x56XNh6+PDqMNvCx49Bz8D1zbgQn+s2yhm4r2N27f3Ui3dmjw4jIxapH7LothdH5s0g33p3R7r+1mU=
+    secret_access_key:
+      secure: Ada79+MpDjZrxUihka5u5381AQlBzAwTWQekxZ/WWDx9xxu7LgQuSDDmetk/Fjcnuqew4CyxuHmyUOjUb2QEwJaOorJlxJOhXyLQJUT8CnWXy6uvCNNn/NenBGqcJvK4w3k8wIqAk3UZxemO1d3xkVQCWRuvKn+AFjewVu1Db4miac33jwccejC6TJUmC02bIFP+CuJvn8cA3exiPMGzc3LeNxL0AapGlP2Vf/ECVCgEVcapVp5Zayr8go7axKkSuZqx9lBUOKkc9AIswFJboy2JL5HKJWCr1486ayWJAKSLS81Vi+vYZHtl6bUz1MKTSdLE6c5mcD+FjLjPpOzxQPW/ytZnBJ9WvFZzMFGHL+5v3T9SO5xAU+IngXjktbbziMJX7B7M3Z2TeXqiLgFEk1hymPWLetgjf/SMXhmcSITZb7n8RtLdLP4JDKwORsIX2oLJyC6dLndAmcYwC0JUkkIYp/btz/L/X+GRW/JXrFEuEchn7DkezWvRWj3p+j0GTKnvpduUxuQQ7ZlUYiqwocx5hsHpzRPbcxUaFt3EPP/pUErRgVE/XGntxMY623YFHjYNv1ToVxN0svQUNLJvCc11flinH2FP1kAVwrc1FxCkigdqBGTJM4z8/SQWpU0UaICEcMnfCcH8eOnHFLPViNnd5oLOaSm704fR0Glcjf4=
+    bucket: olk-2acoin
+    skip_cleanup: true
+    acl: public_read
+    region: us-east-2
+    upload-dir: 2acoin
+    local-dir: src/builds
+    on:
+      repo: 2acoin/2acoin
+      all_branches: true
+      condition: "$_DEPLOYABLE = true"
