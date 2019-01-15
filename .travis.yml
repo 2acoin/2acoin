@@ -174,7 +174,7 @@ deploy:
     bucket: olk-2acoin
     skip_cleanup: true
     acl: public_read
-    region: us-east-2
+    region: us-east-1
     upload-dir: 2acoin
     local-dir: src/builds
     on:
