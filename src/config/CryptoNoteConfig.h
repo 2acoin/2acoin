@@ -40,8 +40,8 @@ const uint8_t  ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION      = 3;
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX                 = 5;      //v3
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V2              = 50000;  //v4
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V3              = 70000;  //v5
-# Postpone implementation of LWMA-3 until proved out to be better = bump to block 900000
-# may even remove LWMA-3 in a future release
+/*   Postpone implementation of LWMA-3 until proved out to be better = bump to block 900000 */
+/*   may even remove LWMA-3 in a future release                                             */
 const uint64_t LWMA_3_DIFFICULTY_BLOCK_INDEX                 = 900000; //V6
 
 const unsigned EMISSION_SPEED_FACTOR                         = 21;
