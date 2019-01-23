@@ -28,7 +28,7 @@ deploy:
     auth_token:
       secure: AOtonaRkm/3AeJ3y3TsadNYz9ksJPwaN/hNBkzDkYTsT0jYmeBz9mhznpIKpQIlr
     artifact: 2ACoinRelease
-    draft: false
+    draft: true
     prerelease: false
     on:
       appveyor_repo_name: 2acoin/2acoin
