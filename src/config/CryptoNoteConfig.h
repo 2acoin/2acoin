@@ -40,7 +40,9 @@ const uint8_t  ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION      = 3;
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX                 = 5;      //v3
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V2              = 50000;  //v4
 const uint64_t LWMA_2_DIFFICULTY_BLOCK_INDEX_V3              = 70000;  //v5
-const uint64_t LWMA_3_DIFFICULTY_BLOCK_INDEX                 = 200000; //V6
+# Postpone implementation of LWMA-3 until proved out to be better = bump to block 900000
+# may even remove LWMA-3 in a future release
+const uint64_t LWMA_3_DIFFICULTY_BLOCK_INDEX                 = 900000; //V6
 
 const unsigned EMISSION_SPEED_FACTOR                         = 21;
 const uint64_t GENESIS_BLOCK_REWARD                          = UINT64_C(214920000000000);
@@ -137,9 +139,10 @@ const uint64_t FORK_HEIGHTS[] =
      70000, //1 LWMA-2
     100000, //2 MIXIN LIMITS V3
     125000, //3 MIXIN MAX ADJUST
-    200000, //4 LWMA-3
-    250000, //5
-    300000  //6
+    225000, //4
+    250000, //5 CN-ARMOR
+    300000, //6
+    900000  //n LWMA-3
 };
 
 /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
