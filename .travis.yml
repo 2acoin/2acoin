@@ -160,7 +160,7 @@ deploy:
     api_key:
       secure: KOIIPdqHmlGDIuKTgvgxTNTfw50cALzBTEAmf+nXmsrTE6VluQoUDzO6mWehQkfVossXb/0CkvKDeIEpl91dMGDb0BmZeTQA075/NjWpcntnoFv1c9pE6KkJEVBJ/DWUON+LWtf2aI9/rSiF6mta4VEyGEXbeaqZpbDfLhGY0GAtGzHqwl9ZDkwIe+nYxpchGd+F/s6MHkHfzwF7SuiKuBSSthrbbtBCUf2+LcZzI42Io/CpTS6Dm2GsCJ09w0XnfCi19tPpN1GcPnHmdPmozg0wCopccJI7N9GHQfNtANAc7rU92x3aCZon3AxHqXUvN0BOH5VYur9QZGpJhINf0ehkvVkMUUqvhjpuSMUqXcnDaqE4FauG3pfQneZQAOrq0lbPUIDEfvP4Hg3ab1u062nZp9pnCoIJr+/pojzDFhfTYUZMNTG1NyU/2Aacm6IvmeBkTyJXYvsM8yJTPKrOqi6Hz6CsC4X+b2bzYbmRFzh49pvrU1OeuqVqVw+ktOhRgx+oOsj0OrN8wLL0sQ9mTCGr0BIcVJTi5HHpLPt7jYgYnSlUwu+p0lRrhoR6xyI2OqvHrKcu1HM9ZqItSLKVX/zoSmnyslb0A7rPJ6P6mhRb6w/bFCHO+vXhc0dMkZZTNGzOeteOGFTchV6vktCl4Osam3N/46+bFcUZijj0TBw=
     file:
-      - 2ACoin-${TRAVIS_TAG}-${LABEL}.tar.gz
+      - src/builds/2ACoin-${TRAVIS_TAG}-${LABEL}.tar.gz
     skip_cleanup: true
     draft: true
     on:
