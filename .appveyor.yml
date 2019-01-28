@@ -13,14 +13,14 @@ build_script:
 after_build:
   - if not defined APPVEYOR_REPO_TAG_NAME (set APPVEYOR_REPO_TAG_NAME=%APPVEYOR_REPO_COMMIT%)
   - cd src\Release
-  - mkdir 2acoin-%APPVEYOR_REPO_TAG_NAME%
-  - copy *.exe 2acoin-%APPVEYOR_REPO_TAG_NAME%
-  - copy ..\..\..\LICENSE 2acoin-%APPVEYOR_REPO_TAG_NAME%
-  - 7z a 2acoin-%APPVEYOR_REPO_TAG_NAME%-windows.zip 2acoin-%APPVEYOR_REPO_TAG_NAME%
-  - copy 2acoin-%APPVEYOR_REPO_TAG_NAME%-windows.zip ..\..\..\
+  - mkdir 2ACoin-%APPVEYOR_REPO_TAG_NAME%
+  - copy *.exe 2ACoin-%APPVEYOR_REPO_TAG_NAME%
+  - copy ..\..\..\LICENSE 2ACoin-%APPVEYOR_REPO_TAG_NAME%
+  - 7z a 2ACoin-%APPVEYOR_REPO_TAG_NAME%-windows.zip 2ACoin-%APPVEYOR_REPO_TAG_NAME%
+  - copy 2ACoin-%APPVEYOR_REPO_TAG_NAME%-windows.zip ..\..\..\
 
 artifacts:
-  - path: 2acoin-$(APPVEYOR_REPO_TAG_NAME)-windows.zip
+  - path: 2ACoin-$(APPVEYOR_REPO_TAG_NAME)-windows.zip
     name: 2ACoinRelease
 
 deploy:

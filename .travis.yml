@@ -145,13 +145,13 @@ before_deploy:
 - if [[ "${TRAVIS_TAG}" == "" ]]; then export TRAVIS_TAG=${TRAVIS_COMMIT} ; fi
 - cd src
 - ${STRIP} 2ACoind miner zedwallet 2acoin-service
-- rm -rf 2acoin-${TRAVIS_TAG} 
-- mkdir 2acoin-${TRAVIS_TAG}
-- cp 2ACoind miner zedwallet 2acoin-service  2acoin-${TRAVIS_TAG}/
-- cp ../../LICENSE 2acoin-${TRAVIS_TAG}/
-- tar cvfz 2acoin-${TRAVIS_TAG}-${LABEL}.tar.gz 2acoin-${TRAVIS_TAG}/
+- rm -rf 2ACoin-${TRAVIS_TAG} 
+- mkdir 2ACoin-${TRAVIS_TAG}
+- cp 2ACoind miner zedwallet 2acoin-service  2ACoin-${TRAVIS_TAG}/
+- cp ../../LICENSE 2ACoin-${TRAVIS_TAG}/
+- tar cvfz 2ACoin-${TRAVIS_TAG}-${LABEL}.tar.gz 2ACoin-${TRAVIS_TAG}/
 - mkdir builds
-- cp 2acoin-${TRAVIS_TAG}-${LABEL}.tar.gz builds
+- cp 2ACoin-${TRAVIS_TAG}-${LABEL}.tar.gz builds
 - cd ..
 
 deploy:
@@ -159,7 +159,7 @@ deploy:
     api_key:
       secure: KOIIPdqHmlGDIuKTgvgxTNTfw50cALzBTEAmf+nXmsrTE6VluQoUDzO6mWehQkfVossXb/0CkvKDeIEpl91dMGDb0BmZeTQA075/NjWpcntnoFv1c9pE6KkJEVBJ/DWUON+LWtf2aI9/rSiF6mta4VEyGEXbeaqZpbDfLhGY0GAtGzHqwl9ZDkwIe+nYxpchGd+F/s6MHkHfzwF7SuiKuBSSthrbbtBCUf2+LcZzI42Io/CpTS6Dm2GsCJ09w0XnfCi19tPpN1GcPnHmdPmozg0wCopccJI7N9GHQfNtANAc7rU92x3aCZon3AxHqXUvN0BOH5VYur9QZGpJhINf0ehkvVkMUUqvhjpuSMUqXcnDaqE4FauG3pfQneZQAOrq0lbPUIDEfvP4Hg3ab1u062nZp9pnCoIJr+/pojzDFhfTYUZMNTG1NyU/2Aacm6IvmeBkTyJXYvsM8yJTPKrOqi6Hz6CsC4X+b2bzYbmRFzh49pvrU1OeuqVqVw+ktOhRgx+oOsj0OrN8wLL0sQ9mTCGr0BIcVJTi5HHpLPt7jYgYnSlUwu+p0lRrhoR6xyI2OqvHrKcu1HM9ZqItSLKVX/zoSmnyslb0A7rPJ6P6mhRb6w/bFCHO+vXhc0dMkZZTNGzOeteOGFTchV6vktCl4Osam3N/46+bFcUZijj0TBw=
     file:
-      - 2acoin-${TRAVIS_TAG}-${LABEL}.tar.gz
+      - 2ACoin-${TRAVIS_TAG}-${LABEL}.tar.gz
     skip_cleanup: true
     draft: true
     on:
