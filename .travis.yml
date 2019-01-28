@@ -146,6 +146,7 @@ before_deploy:
 - cd src
 - ${STRIP} 2ACoind miner zedwallet 2acoin-service
 - rm -rf 2ACoin-${TRAVIS_TAG} 
+- rm -rf builds 
 - mkdir 2ACoin-${TRAVIS_TAG}
 - cp 2ACoind miner zedwallet 2acoin-service  2ACoin-${TRAVIS_TAG}/
 - cp ../../LICENSE 2ACoin-${TRAVIS_TAG}/
