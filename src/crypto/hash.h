@@ -11,7 +11,6 @@
 #include <stddef.h>
 
 #include <CryptoTypes.h>
-#include "generic-ops.h"
 
 // Standard Cryptonight Definitions
 #define CN_PAGE_SIZE                    2097152
@@ -22,6 +21,16 @@
 #define CN_LITE_PAGE_SIZE               2097152
 #define CN_LITE_SCRATCHPAD              1048576
 #define CN_LITE_ITERATIONS              524288
+
+// Standard CryptoNight Dark
+#define CN_DARK_PAGE_SIZE               524288
+#define CN_DARK_SCRATCHPAD              524288
+#define CN_DARK_ITERATIONS              262144
+
+// Standard CryptoNight Armor
+#define CN_ARMOR_PAGE_SIZE             262144
+#define CN_ARMOR_SCRATCHPAD            262144
+#define CN_ARMOR_ITERATIONS            131072
 
 // CryptoNight Soft Shell Definitions
 #define CN_SOFT_SHELL_MEMORY            262144 // This defines the lowest memory utilization for our curve
@@ -81,7 +90,59 @@ namespace Crypto {
   inline void cn_lite_slow_hash_v2(const void *data, size_t length, Hash &hash) {
     cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 1, 2, 0, CN_LITE_PAGE_SIZE, CN_LITE_SCRATCHPAD, CN_LITE_ITERATIONS);
   }
-  
+
+  // Standard CryptoNight Dark
+  inline void cn_dark_slow_hash_v0(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 0, 0, 0, CN_DARK_PAGE_SIZE, CN_DARK_SCRATCHPAD, CN_DARK_ITERATIONS);
+  }
+
+  inline void cn_dark_slow_hash_v1(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 0, 1, 0, CN_DARK_PAGE_SIZE, CN_DARK_SCRATCHPAD, CN_DARK_ITERATIONS);
+  }
+
+  inline void cn_dark_slow_hash_v2(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 0, 2, 0, CN_DARK_PAGE_SIZE, CN_DARK_SCRATCHPAD, CN_DARK_ITERATIONS);
+  }
+
+  // Standard CryptoNight Dark Lite
+  inline void cn_dark_lite_slow_hash_v0(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 1, 0, 0, CN_DARK_PAGE_SIZE, CN_DARK_SCRATCHPAD, CN_DARK_ITERATIONS);
+  }
+
+  inline void cn_dark_lite_slow_hash_v1(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 1, 1, 0, CN_DARK_PAGE_SIZE, CN_DARK_SCRATCHPAD, CN_DARK_ITERATIONS);
+  }
+
+  inline void cn_dark_lite_slow_hash_v2(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 1, 2, 0, CN_DARK_PAGE_SIZE, CN_DARK_SCRATCHPAD, CN_DARK_ITERATIONS);
+  }
+
+  // Standard CryptoNight Armor
+  inline void cn_armor_slow_hash_v0(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 0, 0, 0, CN_ARMOR_PAGE_SIZE, CN_ARMOR_SCRATCHPAD, CN_ARMOR_ITERATIONS);
+  }
+
+  inline void cn_armor_slow_hash_v1(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 0, 1, 0, CN_ARMOR_PAGE_SIZE, CN_ARMOR_SCRATCHPAD, CN_ARMOR_ITERATIONS);
+  }
+
+  inline void cn_armor_slow_hash_v2(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 0, 2, 0, CN_ARMOR_PAGE_SIZE, CN_ARMOR_SCRATCHPAD, CN_ARMOR_ITERATIONS);
+  }
+
+  // Standard CryptoNight Armor Lite
+  inline void cn_armor_lite_slow_hash_v0(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 1, 0, 0, CN_ARMOR_PAGE_SIZE, CN_ARMOR_SCRATCHPAD, CN_ARMOR_ITERATIONS);
+  }
+
+  inline void cn_armor_lite_slow_hash_v1(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 1, 1, 0, CN_ARMOR_PAGE_SIZE, CN_ARMOR_SCRATCHPAD, CN_ARMOR_ITERATIONS);
+  }
+
+  inline void cn_armor_lite_slow_hash_v2(const void *data, size_t length, Hash &hash) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), 1, 2, 0, CN_ARMOR_PAGE_SIZE, CN_ARMOR_SCRATCHPAD, CN_ARMOR_ITERATIONS);
+  }
+
   // CryptoNight Soft Shell
   inline  void cn_soft_shell_slow_hash_v0(const void *data, size_t length, Hash &hash, uint32_t height) {
     uint32_t base_offset = (height % CN_SOFT_SHELL_WINDOW);
@@ -137,5 +198,3 @@ namespace Crypto {
     tree_hash_from_branch(reinterpret_cast<const char (*)[HASH_SIZE]>(branch), depth, reinterpret_cast<const char *>(&leaf), path, reinterpret_cast<char *>(&root_hash));
   }
 }
-
-CRYPTO_MAKE_HASHABLE(Hash)
