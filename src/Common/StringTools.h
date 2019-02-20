@@ -105,15 +105,18 @@ template<typename T> void toString(const T& value, std::string& text) { // Does 
   text += stream.str();
 }
 
-bool loadFileToString(const std::string& filepath, std::string& buf);
 bool saveStringToFile(const std::string& filepath, const std::string& buf);
 
-
-std::string base64Decode(std::string const& encoded_string);
 
 std::string ipAddressToString(uint32_t ip);
 bool parseIpAddressAndPort(uint32_t& ip, uint32_t& port, const std::string& addr);
 
 std::string timeIntervalToString(uint64_t intervalInSeconds);
+
+void trim(std::string &str);
+
+void leftTrim(std::string &str);
+
+void rightTrim(std::string &str);
 
 }
