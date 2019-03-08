@@ -4,10 +4,10 @@
 #define PROJECT_NAME "2ACoin"
 #define PROJECT_SITE "http://www.2acoin.org"
 #define PROJECT_COPYRIGHT "Copyright 2018, 2ACoin Developers"
-#define APP_VER_MAJOR 1
-#define APP_VER_MINOR 1
-#define APP_VER_REV 5
-#define APP_VER_BUILD 58
+#define APP_VER_MAJOR 2
+#define APP_VER_MINOR 0
+#define APP_VER_REV 0
+#define APP_VER_BUILD 59
 
 #define BUILD_COMMIT_ID "@VERSION@"
 #define PROJECT_VERSION STR(APP_VER_MAJOR) "." STR(APP_VER_MINOR) "." STR(APP_VER_REV)
