@@ -1,4 +1,5 @@
 // Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2019, 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
@@ -19,7 +20,7 @@
 
 #include <iostream>
 
-#include <zedwallet/ColouredMsg.h>
+#include <Utilities/ColouredMsg.h>
 #include <zedwallet/PasswordContainer.h>
 #include <config/WalletConfig.h>
 

@@ -1,4 +1,5 @@
 // Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2019, 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
@@ -13,7 +14,7 @@
 
 #include <Wallet/WalletErrors.h>
 
-#include <zedwallet/ColouredMsg.h>
+#include <Utilities/ColouredMsg.h>
 #include <zedwallet/CommandImplementations.h>
 #include <zedwallet/Tools.h>
 #include <zedwallet/Transfer.h>
@@ -104,10 +105,10 @@ std::shared_ptr<WalletInfo> mnemonicImportWallet(CryptoNote::WalletGreen
         auto [error, privateSpendKey]
             = Mnemonics::MnemonicToPrivateKey(mnemonicPhrase);
 
-        if (!error.empty())
+        if (error)
         {
             std::cout << std::endl
-                      << WarningMsg(error)
+                      << WarningMsg(error.getErrorMessage())
                       << std::endl << std::endl;
         }
         else
