@@ -3,7 +3,6 @@
 // Copyright (c) 2018, The BBSCoin Developers
 // Copyright (c) 2018, The Karbo Developers
 // Copyright (c) 2018, The TurtleCoin Developers
-// Copyright (c) 2018, 2ACoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -121,7 +120,7 @@ uint64_t calculateDonationAmount(uint64_t freeAmount, uint64_t donationThreshold
 
 namespace CryptoNote {
 
-WalletGreen::WalletGreen(System::Dispatcher& dispatcher, const Currency& currency, INode& node, Logging::ILogger& logger, uint32_t transactionSoftLockTime) :
+WalletGreen::WalletGreen(System::Dispatcher& dispatcher, const Currency& currency, INode& node, std::shared_ptr<Logging::ILogger> logger, uint32_t transactionSoftLockTime) :
   m_dispatcher(dispatcher),
   m_currency(currency),
   m_node(node),
@@ -168,15 +167,6 @@ void WalletGreen::createViewWallet(const std::string &path,
     createAddress(publicKeys.spendPublicKey, scanHeight, newAddress);
 }
 
-void WalletGreen::initialize(const std::string& path, const std::string& password) {
-  Crypto::PublicKey viewPublicKey;
-  Crypto::SecretKey viewSecretKey;
-  Crypto::generate_keys(viewPublicKey, viewSecretKey);
-
-  initWithKeys(path, password, viewPublicKey, viewSecretKey, 0, true);
-  m_logger(INFO, BRIGHT_WHITE) << "New container initialized, public view key " << viewPublicKey;
-}
-
 void WalletGreen::initializeWithViewKey(const std::string& path, const std::string& password, const Crypto::SecretKey& viewSecretKey, const uint64_t scanHeight, const bool newAddress) {
   Crypto::PublicKey viewPublicKey;
   if (!Crypto::secret_key_to_public_key(viewSecretKey, viewPublicKey)) {
@@ -214,24 +204,6 @@ void WalletGreen::doShutdown() {
   std::swap(m_events, noEvents);
 
   m_state = WalletState::NOT_INITIALIZED;
-}
-
-void WalletGreen::clearCacheAndShutdown()
-{
-  if (m_walletsContainer.size() != 0) {
-    m_synchronizer.unsubscribeConsumerNotifications(m_viewPublicKey, this);
-  }
-
-  stopBlockchainSynchronizer();
-  m_blockchainSynchronizer.removeObserver(this);
-
-  clearCaches(true, true);
-
-  saveWalletCache(m_containerStorage, m_key, WalletSaveLevel::SAVE_ALL, "");
-
-  m_walletsContainer.clear();
-
-  shutdown();
 }
 
 void WalletGreen::clearCaches(bool clearTransactions, bool clearCachedData) {
@@ -1392,29 +1364,6 @@ WalletTransaction WalletGreen::getTransaction(size_t transactionIndex) const {
   return m_transactions.get<RandomAccessIndex>()[transactionIndex];
 }
 
-size_t WalletGreen::getTransactionTransferCount(size_t transactionIndex) const {
-  throwIfNotInitialized();
-  throwIfStopped();
-
-  auto bounds = getTransactionTransfersRange(transactionIndex);
-  return static_cast<size_t>(std::distance(bounds.first, bounds.second));
-}
-
-WalletTransfer WalletGreen::getTransactionTransfer(size_t transactionIndex, size_t transferIndex) const {
-  throwIfNotInitialized();
-  throwIfStopped();
-
-  auto bounds = getTransactionTransfersRange(transactionIndex);
-
-  if (transferIndex >= static_cast<size_t>(std::distance(bounds.first, bounds.second))) {
-    m_logger(ERROR, BRIGHT_RED) << "Failed to get transfer: invalid transfer index " << transferIndex << ". Transaction index " << transactionIndex <<
-      " transfer count " << std::distance(bounds.first, bounds.second);
-    throw std::system_error(make_error_code(std::errc::invalid_argument));
-  }
-
-  return std::next(bounds.first, transferIndex)->second;
-}
-
 WalletGreen::TransfersRange WalletGreen::getTransactionTransfersRange(size_t transactionIndex) const {
   auto val = std::make_pair(transactionIndex, WalletTransfer());
 
@@ -1488,7 +1437,8 @@ size_t WalletGreen::transfer(const TransactionParameters& transactionParameters)
 
 uint64_t WalletGreen::getBalanceMinusDust(const std::vector<std::string>& addresses)
 {
-    std::vector<WalletOuts> wallets = pickWallets(addresses);
+    std::vector<WalletOuts> wallets = addresses.empty() ? pickWalletsWithMoney() : pickWallets(addresses);
+
     std::vector<OutputToTransfer> unused;
 
     /* We want to get the full balance, so don't stop getting outputs early */
@@ -1527,8 +1477,7 @@ void WalletGreen::prepareTransaction(std::vector<WalletOuts>&& wallets,
     throw std::system_error(make_error_code(error::WRONG_AMOUNT), "Not enough money");
   }
 
-  typedef CryptoNote::COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::outs_for_amount outs_for_amount;
-  std::vector<outs_for_amount> mixinResult;
+  std::vector<RandomOuts> mixinResult;
 
   if (mixIn != 0) {
     requestMixinOuts(selectedTransfers, mixIn, mixinResult);
@@ -1568,11 +1517,14 @@ void WalletGreen::validateSourceAddresses(const std::vector<std::string>& source
   }
 }
 
-void WalletGreen::checkIfEnoughMixins(std::vector<CryptoNote::COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::outs_for_amount>& mixinResult, uint16_t mixIn) const {
+void WalletGreen::checkIfEnoughMixins(std::vector<RandomOuts>& mixinResult, uint16_t mixIn) const {
   assert(mixIn != 0);
 
   auto notEnoughIt = std::find_if(mixinResult.begin(), mixinResult.end(),
-    [mixIn](const CryptoNote::COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::outs_for_amount& ofa) { return ofa.outs.size() < mixIn; });
+  [mixIn](const auto ofa)
+  {
+      return ofa.outs.size() < mixIn;
+  });
 
   if (notEnoughIt != mixinResult.end()) {
     m_logger(ERROR, BRIGHT_RED) << "Mixin is too big: " << mixIn;
@@ -2397,7 +2349,7 @@ AccountKeys WalletGreen::makeAccountKeys(const WalletRecord& wallet) const {
 void WalletGreen::requestMixinOuts(
   const std::vector<OutputToTransfer>& selectedTransfers,
   uint16_t mixIn,
-  std::vector<CryptoNote::COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::outs_for_amount>& mixinResult) {
+  std::vector<CryptoNote::RandomOuts>& mixinResult) {
 
   std::vector<uint64_t> amounts;
   for (const auto& out: selectedTransfers) {
@@ -2545,11 +2497,9 @@ CryptoNote::WalletGreen::ReceiverAmounts WalletGreen::splitAmount(
 
 void WalletGreen::prepareInputs(
   const std::vector<OutputToTransfer>& selectedTransfers,
-  std::vector<CryptoNote::COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::outs_for_amount>& mixinResult,
+  std::vector<CryptoNote::RandomOuts>& mixinResult,
   uint16_t mixIn,
   std::vector<InputInfo>& keysInfo) {
-
-  typedef CryptoNote::COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::out_entry out_entry;
 
   size_t i = 0;
   for (const auto& input: selectedTransfers) {
@@ -2558,7 +2508,7 @@ void WalletGreen::prepareInputs(
 
     if(mixinResult.size()) {
       std::sort(mixinResult[i].outs.begin(), mixinResult[i].outs.end(),
-        [] (const out_entry& a, const out_entry& b) { return a.global_amount_index < b.global_amount_index; });
+        [] (const auto& a, const auto& b) { return a.global_amount_index < b.global_amount_index; });
       for (auto& fakeOut: mixinResult[i].outs) {
 
         if (input.out.globalOutputIndex == fakeOut.global_amount_index) {
@@ -3228,8 +3178,7 @@ size_t WalletGreen::createFusionTransaction(uint64_t threshold, uint16_t mixin,
     return WALLET_INVALID_TRANSACTION_ID;
   }
 
-  typedef CryptoNote::COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::outs_for_amount outs_for_amount;
-  std::vector<outs_for_amount> mixinResult;
+  std::vector<RandomOuts> mixinResult;
   if (mixin != 0) {
     requestMixinOuts(fusionInputs, mixin, mixinResult);
   }
