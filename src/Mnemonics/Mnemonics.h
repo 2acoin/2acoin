@@ -4,14 +4,18 @@
 // Please see the included LICENSE file for more information.
 
 #include "CryptoNote.h"
+
 #include <tuple>
+
 #include <vector>
+
+#include <Errors/Errors.h>
 
 namespace Mnemonics
 {
-    std::tuple<std::string, Crypto::SecretKey> MnemonicToPrivateKey(const std::string words);
+    std::tuple<Error, Crypto::SecretKey> MnemonicToPrivateKey(const std::string words);
 
-    std::tuple<std::string, Crypto::SecretKey> MnemonicToPrivateKey(const std::vector<std::string> words);
+    std::tuple<Error, Crypto::SecretKey> MnemonicToPrivateKey(const std::vector<std::string> words);
 
     std::string PrivateKeyToMnemonic(const Crypto::SecretKey privateKey);
 
