@@ -1,21 +1,13 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
+// Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2019, 2ACoin Developers
 //
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
+// Please see the included LICENSE file for more information.
 
 #pragma once
+
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <CryptoNote.h>
 
@@ -64,6 +56,18 @@ public:
   virtual bool queryBlocksLite(const std::vector<Crypto::Hash>& knownBlockHashes, uint64_t timestamp,
                                uint32_t& startIndex, uint32_t& currentIndex, uint32_t& fullOffset,
                                std::vector<BlockShortInfo>& entries) const = 0;
+  virtual bool queryBlocksDetailed(const std::vector<Crypto::Hash>& knownBlockHashes, uint64_t timestamp,
+                              uint64_t& startIndex, uint64_t& currentIndex, uint64_t& fullOffset,
+                              std::vector<BlockDetails>& entries, uint32_t blockCount) const = 0;
+
+  virtual bool getWalletSyncData(const std::vector<Crypto::Hash> &knownBlockHashes, uint64_t startHeight,
+                                 uint64_t startTimestamp, std::vector<WalletTypes::WalletBlockInfo> &blocks) const = 0;
+
+  virtual bool getTransactionsStatus(
+    std::unordered_set<Crypto::Hash> transactionHashes,
+    std::unordered_set<Crypto::Hash> &transactionsInPool,
+    std::unordered_set<Crypto::Hash> &transactionsInBlock,
+    std::unordered_set<Crypto::Hash> &transactionsUnknown) const = 0;
 
   virtual bool hasTransaction(const Crypto::Hash& transactionHash) const = 0;
   virtual void getTransactions(const std::vector<Crypto::Hash>& transactionHashes,
@@ -83,9 +87,15 @@ public:
   virtual bool getRandomOutputs(uint64_t amount, uint16_t count, std::vector<uint32_t>& globalIndexes,
                                 std::vector<Crypto::PublicKey>& publicKeys) const = 0;
 
+  virtual bool getGlobalIndexesForRange(
+    const uint64_t startHeight,
+    const uint64_t endHeight,
+    std::unordered_map<Crypto::Hash, std::vector<uint64_t>> &indexes) const = 0;
+
   virtual bool addTransactionToPool(const BinaryArray& transactionBinaryArray) = 0;
 
   virtual std::vector<Crypto::Hash> getPoolTransactionHashes() const = 0;
+  virtual std::tuple<bool, CryptoNote::BinaryArray> getPoolTransaction(const Crypto::Hash& transactionHash) const = 0;
   virtual bool getPoolChanges(const Crypto::Hash& lastBlockHash, const std::vector<Crypto::Hash>& knownHashes,
                               std::vector<BinaryArray>& addedTransactions,
                               std::vector<Crypto::Hash>& deletedTransactions) const = 0;
@@ -103,7 +113,6 @@ public:
 
   virtual BlockDetails getBlockDetails(const Crypto::Hash& blockHash) const = 0;
   virtual TransactionDetails getTransactionDetails(const Crypto::Hash& transactionHash) const = 0;
-  virtual std::vector<Crypto::Hash> getAlternativeBlockHashesByIndex(uint32_t blockIndex) const = 0;
   virtual std::vector<Crypto::Hash> getBlockHashesByTimestamps(uint64_t timestampBegin, size_t secondsCount) const = 0;
   virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const = 0;
 };

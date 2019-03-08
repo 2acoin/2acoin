@@ -99,7 +99,7 @@ bool serialize(PackedOutIndex& value, Common::StringView name, CryptoNote::ISeri
   return serializer(value.packedValue, name);
 }
 
-BlockchainCache::BlockchainCache(const std::string& filename, const Currency& currency, Logging::ILogger& logger_,
+BlockchainCache::BlockchainCache(const std::string& filename, const Currency& currency, std::shared_ptr<Logging::ILogger> logger_,
                                  IBlockchainCache* parent, uint32_t splitBlockIndex)
     : filename(filename), currency(currency), logger(logger_, "BlockchainCache"), parent(parent), storage(new BlockchainStorage(100)) {
   if (parent == nullptr) {
@@ -505,6 +505,40 @@ size_t BlockchainCache::getKeyOutputsCountForAmount(uint64_t amount, uint32_t bl
   return it->second.startIndex + static_cast<size_t>(std::distance(it->second.outputs.begin(), lowerBound));
 }
 
+std::tuple<bool, uint64_t> BlockchainCache::getBlockHeightForTimestamp(uint64_t timestamp) const
+{
+    const auto& index = blockInfos.get<BlockIndexTag>();
+
+    /* Timestamp is too great for this segment */
+    if (index.back().timestamp < timestamp)
+    {
+        return {false, 0};
+    }
+
+    /* Timestamp is in this segment */
+    if (index.front().timestamp >= timestamp)
+    {
+        const auto bound = std::lower_bound(index.begin(), index.end(), timestamp,
+        [](const auto &blockInfo, uint64_t value)
+        {
+            return blockInfo.timestamp < value;
+        });
+
+        uint64_t result = startIndex + std::distance(index.begin(), bound);
+
+        return {true, result};
+    }
+
+    /* No parent, we're at the start of the chain */
+    if (parent == nullptr)
+    {
+        return {false, 0};
+    }
+
+    /* Try the parent */
+    return parent->getBlockHeightForTimestamp(timestamp);
+}
+
 uint32_t BlockchainCache::getTimestampLowerBoundBlockIndex(uint64_t timestamp) const {
   assert(!blockInfos.empty());
 
@@ -559,6 +593,90 @@ size_t BlockchainCache::getTransactionCount() const {
 
   count += transactions.size();
   return count;
+}
+
+std::vector<RawBlock> BlockchainCache::getBlocksByHeight(
+    const uint64_t startHeight, uint64_t endHeight) const
+{
+    if (endHeight < startIndex)
+    {
+        return parent->getBlocksByHeight(startHeight, endHeight);
+    }
+
+    std::vector<RawBlock> blocks;
+
+    if (startHeight < startIndex)
+    {
+        blocks = parent->getBlocksByHeight(startHeight, startIndex);
+    }
+
+    uint64_t startOffset = std::max(startHeight, static_cast<uint64_t>(startIndex));
+
+    uint64_t blockCount = storage->getBlockCount();
+    
+    /* Make sure we don't overflow the storage (for example, the block might
+       not exist yet) */
+    if (endHeight > startIndex + blockCount)
+    {
+        endHeight = startIndex + blockCount;
+    }
+
+    for (uint64_t i = startOffset; i < endHeight; i++)
+    {
+        blocks.push_back(storage->getBlockByIndex(i - startIndex));
+    }
+
+    logger(Logging::DEBUGGING)
+            << "\n\n"
+            << "\n============================================="
+            << "\n======= GetBlockByHeight (in memory) ========"
+            << "\n* Start height: " << startHeight
+            << "\n* End height: " << endHeight
+            << "\n* Start index: " << startIndex 
+            << "\n* Start offset: " << startIndex 
+            << "\n* Block count: " << startIndex 
+            << "\n============================================="
+            << "\n\n\n";
+
+    return blocks;
+}
+
+std::unordered_map<Crypto::Hash, std::vector<uint64_t>> BlockchainCache::getGlobalIndexes(
+    const std::vector<Crypto::Hash> transactionHashes) const
+{
+    std::unordered_map<Crypto::Hash, std::vector<uint64_t>> indexes;
+
+    auto &availableTransactions = transactions.get<TransactionHashTag>();
+
+    std::vector<Crypto::Hash> remainingTransactions;
+
+    for (const auto hash : transactionHashes)
+    {
+        const auto tx = availableTransactions.find(hash);
+
+        /* Found the transaction, pop it in the result */
+        if (tx != availableTransactions.end())
+        {
+            indexes[hash].assign(tx->globalIndexes.begin(), tx->globalIndexes.end());
+        }
+        /* Couldn't find, query the parent for it */
+        else
+        {
+            remainingTransactions.push_back(hash);
+        }
+    }
+
+    /* Didn't find all the transactions in this segment, query parent */
+    if (!remainingTransactions.empty())
+    {
+        /* Query the parent for the transactions we couldn't find */
+        auto parentResult = parent->getGlobalIndexes(remainingTransactions);
+
+        /* Insert the transactions we found from the parent */
+        indexes.insert(parentResult.begin(), parentResult.end());
+    }
+
+    return indexes;
 }
 
 RawBlock BlockchainCache::getBlockByIndex(uint32_t index) const {
@@ -722,7 +840,7 @@ std::vector<uint32_t> BlockchainCache::getRandomOutsByAmount(Amount amount, size
         }
     }
 
-    const std::vector<PackedOutIndex> outs = it->second.outputs;
+    const std::vector<PackedOutIndex> &outs = it->second.outputs;
 
     /* Starting from the end of the outputs vector, return the first output
        that is unlocked */
@@ -834,9 +952,9 @@ ExtractOutputKeysResult BlockchainCache::extractKeyOutputs(
                                  << " because global index is greater than the last available: " << (startGlobalIndex + outputs.size());
       return ExtractOutputKeysResult::INVALID_GLOBAL_INDEX;
     }
-    
+
     auto outputIndex = outputs[globalIndex - startGlobalIndex];
-    
+
     assert(outputIndex.blockIndex >= startIndex);
     assert(outputIndex.blockIndex <= blockIndex);
 
@@ -1053,6 +1171,8 @@ uint8_t BlockchainCache::getBlockMajorVersionForHeight(uint32_t height) const {
   UpgradeManager upgradeManager;
   upgradeManager.addMajorBlockVersion(BLOCK_MAJOR_VERSION_2, currency.upgradeHeight(BLOCK_MAJOR_VERSION_2));
   upgradeManager.addMajorBlockVersion(BLOCK_MAJOR_VERSION_3, currency.upgradeHeight(BLOCK_MAJOR_VERSION_3));
+  upgradeManager.addMajorBlockVersion(BLOCK_MAJOR_VERSION_4, currency.upgradeHeight(BLOCK_MAJOR_VERSION_4));
+  upgradeManager.addMajorBlockVersion(BLOCK_MAJOR_VERSION_5, currency.upgradeHeight(BLOCK_MAJOR_VERSION_5));
   return upgradeManager.getBlockMajorVersion(height);
 }
 
