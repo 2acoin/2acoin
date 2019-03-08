@@ -78,6 +78,7 @@ const uint32_t MIXIN_LIMITS_V2_HEIGHT                        = 250;
 const uint32_t MIXIN_LIMITS_V3_HEIGHT                        = 100000;
 
 /* The mixin to use by default with zedwallet and 2acoin-service */
+const uint64_t DEFAULT_MIXIN_V0                              = 3;
 const uint64_t DEFAULT_MIXIN_V1                              = MAXIMUM_MIXIN_V1;
 const uint64_t DEFAULT_MIXIN_V2                              = MAXIMUM_MIXIN_V2;
 const uint64_t DEFAULT_MIXIN_V3                              = MAXIMUM_MIXIN_V3;
