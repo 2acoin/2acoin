@@ -1,6 +1,6 @@
 sudo: false
 language: cpp
-
+cache: ccache
 matrix:
   include:
 
@@ -54,32 +54,13 @@ matrix:
     - LABEL="linux-clang-6"
     - STRIP="strip"
 
-  # Ubuntu, clang-5
-  - os: linux
-    compiler: clang
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        - llvm-toolchain-trusty-5.0
-        packages: 
-          - libboost1.55-all-dev
-          - clang-5.0
-          - libstdc++-6-dev
-    env:
-    - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
-    - LABEL="linux-clang-5"
-    - STRIP="strip"
-
   ## OSX, g++-8
   - os: osx
     osx_image: xcode10
     compiler: gcc
     env:
-    # Need to uninstall oclint to get newer gcc installed https://github.com/travis-ci/travis-ci/issues/8826
     - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
-    - LABEL="osx"
-    - _DEPLOYABLE="true"
+    - LABEL="osx-g++-8"
     - STRIP="strip"
 
   # OSX, g++-7
@@ -96,8 +77,9 @@ matrix:
     osx_image: xcode10
     compiler: clang
     env:
-    - MATRIX_EVAL="CC=clang && CXX=clang++"
-    - LABEL="osx-clang"
+    - MATRIX_EVAL="CC=/usr/local/opt/llvm/bin/clang && CXX=/usr/local/opt/llvm/bin/clang++"
+    - LABEL="osx"
+    - _DEPLOYABLE="true"
     - STRIP="strip"
 
   # Arm (aarch64) cross compile
@@ -115,8 +97,15 @@ install:
 # Need to uninstall oclint to get newer gcc installed https://github.com/travis-ci/travis-ci/issues/8826
 - if [[ "${LABEL:0:3}" == "osx" ]]; then brew cask uninstall --force oclint || true ; fi
 
+# Need a newer version of llvm to link against to get std::filesystem / std::experimental::filesystem 
+- if [[ "${LABEL:0:3}" == "osx" ]]; then brew install llvm || brew upgrade llvm ; fi
+
+# Neeed to install ccache
+- if [[ "${LABEL:0:3}" == "osx" ]]; then brew install ccache ; fi
+- if [[ "${LABEL:0:3}" == "osx" ]]; then export PATH="/usr/local/opt/ccache/libexec:$PATH" ; fi
+
 # Install the correct gcc version
-- if [[ "$LABEL" == "osx" ]]; then brew install gcc@8 ; fi
+- if [[ "$LABEL" == "osx-g++-8" ]]; then brew install gcc@8 ; fi
 - if [[ "$LABEL" == "osx-g++-7" ]]; then brew install gcc@7 ; fi
 
 - if [[ "$LABEL" == "aarch64" ]]; then export BASEDIR=`pwd` ; fi
@@ -139,18 +128,20 @@ install:
 script:
 - eval $MATRIX_EVAL
 - mkdir build && cd build
-- cmake -DCMAKE_BUILD_TYPE=Release -DSTATIC=true .. ${CUSTOM_TOOLCHAIN} ${CUSTOM_BOOST_ROOT} && make -j2
+- cmake -DCMAKE_BUILD_TYPE=Release -DSTATIC=true .. ${CUSTOM_TOOLCHAIN} ${CUSTOM_BOOST_ROOT}
+- make -j2
 
 before_deploy:
 - if [[ "${TRAVIS_TAG}" == "" ]]; then export TRAVIS_TAG=${TRAVIS_COMMIT} ; fi
 - cd src
-- ${STRIP} 2ACoind miner zedwallet 2acoin-service
+- TARGETS="2ACoind miner zedwallet 2acoin-service zedwallet-beta cryptotest wallet-api"
+- ${STRIP} ${TARGETS}
 - rm -rf 2ACoin-${TRAVIS_TAG} 
-- rm -rf builds 
 - mkdir 2ACoin-${TRAVIS_TAG}
-- cp 2ACoind miner zedwallet 2acoin-service  2ACoin-${TRAVIS_TAG}/
+- cp ${TARGETS} 2ACcoin-${TRAVIS_TAG}/
 - cp ../../LICENSE 2ACoin-${TRAVIS_TAG}/
 - tar cvfz 2ACoin-${TRAVIS_TAG}-${LABEL}.tar.gz 2ACoin-${TRAVIS_TAG}/
+- rm -rf builds
 - mkdir builds
 - cp 2ACoin-${TRAVIS_TAG}-${LABEL}.tar.gz builds
 - cd ..
@@ -160,7 +151,7 @@ deploy:
     api_key:
       secure: KOIIPdqHmlGDIuKTgvgxTNTfw50cALzBTEAmf+nXmsrTE6VluQoUDzO6mWehQkfVossXb/0CkvKDeIEpl91dMGDb0BmZeTQA075/NjWpcntnoFv1c9pE6KkJEVBJ/DWUON+LWtf2aI9/rSiF6mta4VEyGEXbeaqZpbDfLhGY0GAtGzHqwl9ZDkwIe+nYxpchGd+F/s6MHkHfzwF7SuiKuBSSthrbbtBCUf2+LcZzI42Io/CpTS6Dm2GsCJ09w0XnfCi19tPpN1GcPnHmdPmozg0wCopccJI7N9GHQfNtANAc7rU92x3aCZon3AxHqXUvN0BOH5VYur9QZGpJhINf0ehkvVkMUUqvhjpuSMUqXcnDaqE4FauG3pfQneZQAOrq0lbPUIDEfvP4Hg3ab1u062nZp9pnCoIJr+/pojzDFhfTYUZMNTG1NyU/2Aacm6IvmeBkTyJXYvsM8yJTPKrOqi6Hz6CsC4X+b2bzYbmRFzh49pvrU1OeuqVqVw+ktOhRgx+oOsj0OrN8wLL0sQ9mTCGr0BIcVJTi5HHpLPt7jYgYnSlUwu+p0lRrhoR6xyI2OqvHrKcu1HM9ZqItSLKVX/zoSmnyslb0A7rPJ6P6mhRb6w/bFCHO+vXhc0dMkZZTNGzOeteOGFTchV6vktCl4Osam3N/46+bFcUZijj0TBw=
     file:
-      - src/builds/2ACoin-${TRAVIS_TAG}-${LABEL}.tar.gz
+      - 2ACoin-${TRAVIS_TAG}-${LABEL}.tar.gz
     skip_cleanup: true
     draft: true
     on:
@@ -182,4 +173,3 @@ deploy:
     on:
       repo: 2acoin/2acoin
       all_branches: true
-      condition: "$_DEPLOYABLE = true"
