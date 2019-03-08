@@ -141,9 +141,10 @@ const uint64_t FORK_HEIGHTS[] =
      70000, //1 LWMA-2
     100000, //2 MIXIN LIMITS V3
     125000, //3 MIXIN MAX ADJUST
-    225000, //4
-    250000, //5 CN-ARMOR
-    300000, //6
+    210000, //4 CN_ARMOR Testing
+    225000, //5
+    250000, //6 CN-ARMOR
+    300000, //7
     900000  //n LWMA-3
 };
 
@@ -190,9 +191,14 @@ const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT        =  10000;  //by def
 const size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT            =  100;    //by default, blocks count in blocks downloading
 const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT         =  1000;
 
-const int      P2P_DEFAULT_PORT                              =  17890;
-const int      RPC_DEFAULT_PORT                              =  17910;
-const int      SERVICE_DEFAULT_PORT                          =  17760;
+// const int      P2P_DEFAULT_PORT                              =  17890;
+// const int      RPC_DEFAULT_PORT                              =  17910;
+// const int      SERVICE_DEFAULT_PORT                          =  17760;
+
+// TestNet Ports for 2ACoin
+const int      P2P_DEFAULT_PORT                              =  12890;
+const int      RPC_DEFAULT_PORT                              =  12910;
+const int      SERVICE_DEFAULT_PORT                          =  12760;
 
 const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  1000;
 const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  5000;
@@ -228,16 +234,26 @@ const uint16_t DATABASE_DEFAULT_BACKGROUND_THREADS_COUNT     = 2;
 
 const char     LATEST_VERSION_URL[]                          = "https://github.com/2acoin/2acoin/releases/latest";
 const std::string LICENSE_URL                                = "https://github.com/2acoin/2acoin/blob/master/LICENSE";
+
+/* MainNet Network Identifier for 2ACoin
 const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
 };
+*/
+
+/* TestNet Network Identifier for 2ACoin */
+const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+{
+    {  0xfa, 0xfa, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
+};
 
 const char* const SEED_NODES[] = {
-  "45.63.35.51:17890",    //seed01-Seattle
+/*  "45.63.35.51:17890",    //seed01-Seattle
   "144.202.29.252:17890", //seed02-Atlanta
   "207.148.3.16:17890",   //seed01-Dallas
-  "207.148.6.195:17890",  //seed02-Dallas
-  "45.76.232.71:17890"    //Dallas
+*/
+  "207.148.6.195:12890",  //seed02-Dallas
+  "45.76.232.71:12890"    //Dallas
 };
 } // CryptoNote
