@@ -138,7 +138,7 @@ before_deploy:
 - ${STRIP} ${TARGETS}
 - rm -rf 2ACoin-${TRAVIS_TAG} 
 - mkdir 2ACoin-${TRAVIS_TAG}
-- cp ${TARGETS} 2ACcoin-${TRAVIS_TAG}/
+- cp ${TARGETS} 2ACoin-${TRAVIS_TAG}/
 - cp ../../LICENSE 2ACoin-${TRAVIS_TAG}/
 - tar cvfz 2ACoin-${TRAVIS_TAG}-${LABEL}.tar.gz 2ACoin-${TRAVIS_TAG}/
 - rm -rf builds
