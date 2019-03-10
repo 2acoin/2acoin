@@ -192,14 +192,9 @@ const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT        =  10000;  //by def
 const size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT            =  100;    //by default, blocks count in blocks downloading
 const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT         =  1000;
 
-// const int      P2P_DEFAULT_PORT                              =  17890;
-// const int      RPC_DEFAULT_PORT                              =  17910;
-// const int      SERVICE_DEFAULT_PORT                          =  17760;
-
-// TestNet Ports for 2ACoin
-const int      P2P_DEFAULT_PORT                              =  12890;
-const int      RPC_DEFAULT_PORT                              =  12910;
-const int      SERVICE_DEFAULT_PORT                          =  12760;
+const int      P2P_DEFAULT_PORT                              =  17890;
+const int      RPC_DEFAULT_PORT                              =  17910;
+const int      SERVICE_DEFAULT_PORT                          =  17760;
 
 const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  1000;
 const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  5000;
@@ -250,11 +245,10 @@ const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 };
 
 const char* const SEED_NODES[] = {
-/*  "45.63.35.51:17890",    //seed01-Seattle
-  "144.202.29.252:17890", //seed02-Atlanta
-  "207.148.3.16:17890",   //seed01-Dallas
-*/
-  "207.148.6.195:12890",  //seed02-Dallas
-  "45.76.232.71:12890"    //Dallas
-};
+  "207.148.3.16:17890",     //US-CENTRAL - Dallas
+  "207.148.6.195:17890",    //US-CENTRAL-02 - Dallas
+  "45.76.232.71:17890",     //US-CENTRAL-03 - Dallas
+  "144.202.29.252:17890",   //US-EAST -Atlanta
+  "45.63.35.51:17890"       //US-WEST -Seattle
+  };
 } // CryptoNote
