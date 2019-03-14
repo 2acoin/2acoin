@@ -126,7 +126,7 @@ const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;
 const uint32_t UPGRADE_HEIGHT_V2                             = 1;
 const uint32_t UPGRADE_HEIGHT_V3                             = 2;
 const uint32_t UPGRADE_HEIGHT_V4                             = 3;       // Upgrade height for CN-Lite Variant 1 switch.
-const uint32_t UPGRADE_HEIGHT_V5                             = 209500;  // Upgrade height for CN-Armor Variant 2 switch.
+const uint32_t UPGRADE_HEIGHT_V5                             = 213000;  // Upgrade height for CN-Armor Variant 2 switch.
 const uint32_t UPGRADE_HEIGHT_CURRENT                        = UPGRADE_HEIGHT_V5;
 
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
@@ -142,7 +142,7 @@ const uint64_t FORK_HEIGHTS[] =
      70000, //1 LWMA-2
     100000, //2 MIXIN LIMITS V3
     125000, //3 MIXIN MAX ADJUST
-    209500, //4 CN_ARMOR Testing
+    213000, //4 CN_ARMOR Testing
     225000, //5
     250000, //6 CN-ARMOR
     300000, //7
