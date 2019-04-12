@@ -1,7 +1,7 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2014-2018, The Monero Project
 // Copyright (c) 2018, The TurtleCoin Developers
-// Copyright (c) 2018, 2ACoin Developers
+// Copyright (c) 2019, 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
@@ -58,6 +58,13 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
 {  190000, "13fdded80f99b3f1f70bfe120348fa923cd1b81baf2fab595f5ad82af58ea3b6"},
 {  195000, "8954e615af112889d622ec3516670f6f862482d0d9e757040df4bbe771063ce0"},
 {  200000, "b7ae0128ad23ec3d7880b6d41b7ab51a00cefa4cb84e68a94941dbd2e1b19d61"},
-{  205000, "187df654c6bdf824e1002a19d2d858454ab4abc7d444677e186b9ecf883fc269"}
+{  205000, "187df654c6bdf824e1002a19d2d858454ab4abc7d444677e186b9ecf883fc269"},
+{  210000, "2978d7f79fbf9318082810f789f8c46f966e2647253c6d7206d73a11273fca16"},
+{  215000, "221e2e160e842ae01056bf82104fc1685b47044d1a21348170793d6abf5e6902"},
+{  220000, "05a8fe603dab53278d787ebc7cadef30ded5b17e3a9b13dda78d6ee7212d2543"},
+{  225000, "130b88386742f74e6b042b35910afced9c9cb2970ba0dbe5033eddbb1f64f590"},
+{  230000, "cb04f89c948a68a66641dab0be375b4285a17101f2b6d7ba12a1164d9df6a405"},
+{  235000, "541f937266d63be88cb0ec66e2ec76e9d4d03443faef92060b9577bd9bcef027"},
+{  240000, "6b37cbdac5bd82501659897b32dce6e8b3397a5d604fe1a0fbe38212cc8aed01"}
 };
 }
