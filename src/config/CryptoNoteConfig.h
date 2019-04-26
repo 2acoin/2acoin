@@ -230,18 +230,19 @@ const uint16_t DATABASE_DEFAULT_BACKGROUND_THREADS_COUNT     = 2;
 const char     LATEST_VERSION_URL[]                          = "https://github.com/2acoin/2acoin/releases/latest";
 const std::string LICENSE_URL                                = "https://github.com/2acoin/2acoin/blob/master/LICENSE";
 
-/* MainNet Network Identifier for 2ACoin
+/* MainNet Network Identifier for 2ACoin */
 const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
 };
-*/
 
-/* TestNet Network Identifier for 2ACoin */
+
+/* TestNet Network Identifier for 2ACoin 
 const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xfa, 0xfa, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
 };
+*/
 
 const char* const SEED_NODES[] = {
   "207.148.3.16:17890",     //US-CENTRAL - Dallas
