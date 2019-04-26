@@ -5,8 +5,8 @@
 #define PROJECT_SITE "http://www.2acoin.org"
 #define PROJECT_COPYRIGHT "Copyright 2018, 2ACoin Developers"
 #define APP_VER_MAJOR 1
-#define APP_VER_MINOR 6
-#define APP_VER_REV 0
+#define APP_VER_MINOR 1
+#define APP_VER_REV 6
 #define APP_VER_BUILD 67
 
 #define BUILD_COMMIT_ID "@VERSION@"
