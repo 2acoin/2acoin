@@ -246,7 +246,36 @@ std::string Error::getErrorMessage() const
                    "which was specified (0 for fusion transactions). Almost "
                    "certainly a programmer error. Cancelling transaction.";
         }
-
+        case NEGATIVE_VALUE_GIVEN:
+        {
+            return "The input for this operation must be greater than or "
+                   "equal to zero, but a negative number was given.";
+        }
+        case INVALID_KEY_FORMAT:
+        {
+            return "The public/private key or hash given is not a 64 char "
+                   "hex string.";
+        }
+        case HASH_WRONG_LENGTH:
+        {
+            return "The hash given is not 64 characters long.";
+        }
+        case HASH_INVALID:
+        {
+            return "The hash given is not a hex string (A-Za-z0-9)";
+        }
+        case NON_INTEGER_GIVEN:
+        {
+            return "The number given is a float, not an integer.";
+        }
+        case INVALID_PUBLIC_KEY:
+        {
+            return "The public key given is not a valid ed25519 public key.";
+        }
+        case INVALID_PRIVATE_KEY:
+        {
+            return "The private key given is not a valid ed25519 public key.";
+        }
         /* No default case so the compiler warns us if we missed one */
     }
 }

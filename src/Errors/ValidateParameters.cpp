@@ -11,10 +11,17 @@
 #include <config/CryptoNoteConfig.h>
 #include <config/WalletConfig.h>
 
+extern "C"
+{
+    #include <crypto/crypto-ops.h>
+}
+
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 #include <CryptoNoteCore/CryptoNoteTools.h>
 #include <CryptoNoteCore/Mixins.h>
 #include <CryptoNoteCore/TransactionExtra.h>
+
+#include <regex>
 
 #include <Utilities/Addresses.h>
 #include <Utilities/Utilities.h>
@@ -134,6 +141,23 @@ Error validateIntegratedAddresses(
     return SUCCESS;
 }
 
+Error validateHash(const std::string hash)
+{
+    if (hash.length() != 64)
+    {
+        return HASH_WRONG_LENGTH;
+    }
+
+    std::regex hexRegex("[a-zA-Z0-9]{64}");
+    
+    if (!std::regex_match(hash, hexRegex))
+    {
+        return HASH_INVALID;
+    }
+
+    return SUCCESS;
+}
+
 Error validatePaymentID(const std::string paymentID)
 {
     if (paymentID.empty())
@@ -146,15 +170,42 @@ Error validatePaymentID(const std::string paymentID)
         return PAYMENT_ID_WRONG_LENGTH;
     }
 
-    std::vector<uint8_t> extra;
-
-    /* Verify the extracted payment ID is valid */
-    if (!CryptoNote::createTxExtraWithPaymentId(paymentID, extra))
+    std::regex hexRegex("[a-zA-Z0-9]{64}");
+    
+    if (!std::regex_match(paymentID, hexRegex))
     {
         return PAYMENT_ID_INVALID;
     }
 
     return SUCCESS;
+}
+
+Error validatePrivateKey(const Crypto::SecretKey &privateViewKey)
+{
+    const bool valid = sc_check(reinterpret_cast<const unsigned char *>(&privateViewKey)) == 0;
+
+    if (valid)
+    {
+        return SUCCESS;
+    }
+    else
+    {
+        return INVALID_PRIVATE_KEY;
+    }
+}
+
+Error validatePublicKey(const Crypto::PublicKey &publicKey)
+{
+    const bool valid = Crypto::check_key(publicKey);
+
+    if (valid)
+    {
+        return SUCCESS;
+    }
+    else
+    {
+        return INVALID_PUBLIC_KEY;
+    }
 }
 
 Error validateMixin(const uint64_t mixin, const uint64_t height)
