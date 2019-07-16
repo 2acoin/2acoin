@@ -12,7 +12,7 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages: 
-          - libboost1.58-all-dev
+          - libboost-all-dev
           - g++-8
           - gcc-8
     env:
@@ -29,7 +29,7 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages: 
-          - libboost1.58-all-dev
+          - libboost-all-dev
           - g++-7
           - gcc-7
     env:
@@ -39,14 +39,15 @@ matrix:
 
   # Ubuntu, clang-6
   - os: linux
+    dist: xenial
     compiler: clang
     addons:
       apt:
         sources:
         - ubuntu-toolchain-r-test
-        - llvm-toolchain-trusty-6.0
+        # - llvm-toolchain-trusty-6.0
         packages: 
-          - libboost1.58-all-dev
+          - libboost-all-dev
           - clang-6.0
           - libstdc++-7-dev
     env:
