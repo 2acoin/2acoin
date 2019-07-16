@@ -339,15 +339,15 @@ int main(int argc, char** argv)
         
         std::cout << std::endl;
 
-        TEST_HASH_FUNCTION(cn_turtle_slow_hash_v0, CN_TURTLE_SLOW_HASH_V0);
-        TEST_HASH_FUNCTION(cn_turtle_slow_hash_v1, CN_TURTLE_SLOW_HASH_V1);
-        TEST_HASH_FUNCTION(cn_turtle_slow_hash_v2, CN_TURTLE_SLOW_HASH_V2);
+        TEST_HASH_FUNCTION(cn_armor_slow_hash_v0, CN_ARMOR_SLOW_HASH_V0);
+        TEST_HASH_FUNCTION(cn_armor_slow_hash_v1, CN_ARMOR_SLOW_HASH_V1);
+        TEST_HASH_FUNCTION(cn_armor_slow_hash_v2, CN_ARMOR_SLOW_HASH_V2);
 
         std::cout << std::endl;
 
-        TEST_HASH_FUNCTION(cn_turtle_lite_slow_hash_v0, CN_TURTLE_LITE_SLOW_HASH_V0);
-        TEST_HASH_FUNCTION(cn_turtle_lite_slow_hash_v1, CN_TURTLE_LITE_SLOW_HASH_V1);
-        TEST_HASH_FUNCTION(cn_turtle_lite_slow_hash_v2, CN_TURTLE_LITE_SLOW_HASH_V2);
+        TEST_HASH_FUNCTION(cn_armor_lite_slow_hash_v0, CN_ARMOR_LITE_SLOW_HASH_V0);
+        TEST_HASH_FUNCTION(cn_armor_lite_slow_hash_v1, CN_ARMOR_LITE_SLOW_HASH_V1);
+        TEST_HASH_FUNCTION(cn_armor_lite_slow_hash_v2, CN_ARMOR_LITE_SLOW_HASH_V2);
 
         std::cout << std::endl;
 
