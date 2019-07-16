@@ -12,7 +12,7 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages: 
-          - libboost-all-dev
+          - libboost1.58-all-dev
           - g++-8
           - gcc-8
     env:
@@ -29,7 +29,7 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages: 
-          - libboost-all-dev
+          - libboost1.58-all-dev
           - g++-7
           - gcc-7
     env:
@@ -46,7 +46,7 @@ matrix:
         - ubuntu-toolchain-r-test
         - llvm-toolchain-trusty-6.0
         packages: 
-          - libboost-all-dev
+          - libboost1.58-all-dev
           - clang-6.0
           - libstdc++-7-dev
     env:
