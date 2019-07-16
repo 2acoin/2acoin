@@ -1,14 +1,18 @@
 // Copyright (c) 2018, The TurtleCoin Developers
-// 
+//
 // Please see the included LICENSE file for more information.
 
 #include <atomic>
+
+#include <chrono>
 
 #include <Common/SignalHandler.h>
 
 #include <config/CliHeader.h>
 
 #include <iostream>
+
+#include <Logger/Logger.h>
 
 #include <thread>
 
@@ -18,6 +22,8 @@
 int main(int argc, char **argv)
 {
     Config config = parseArguments(argc, argv);
+
+    Logger::logger.setLogLevel(config.logLevel);
 
     std::cout << CryptoNote::getProjectCLIHeader() << std::endl;
 
@@ -41,8 +47,12 @@ int main(int argc, char **argv)
         /* Launch the API */
         apiThread = std::thread(&ApiDispatcher::start, api.get());
 
+        /* Give the underlying ApiDispatcher time to start and possibly
+           fail before continuing on and confusing users */
+        std::this_thread::sleep_for(std::chrono::milliseconds(250));
+
         std::cout << "Want documentation on how to use the wallet-api?\n"
-                     "See https://www.futuregadget.xyz/api-docs/\n\n";
+                     "See https://2acoin.github.io/wallet-api-docs/\n\n";
 
         std::string address = "http://" + config.rpcBindIp + ":" + std::to_string(config.port);
 
