@@ -582,22 +582,22 @@ BOOL SetLockPagesPrivilege(HANDLE hProcess, BOOL bEnable)
  * the allocated buffer.
  */
 
-void slow_hash_allocate_state(uint32_t PAGE_SIZE)
+void slow_hash_allocate_state(uint32_t page_size)
 {
     if(hp_state != NULL)
         return;
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
     SetLockPagesPrivilege(GetCurrentProcess(), TRUE);
-    hp_state = (uint8_t *) VirtualAlloc(hp_state, PAGE_SIZE, MEM_LARGE_PAGES |
+    hp_state = (uint8_t *) VirtualAlloc(hp_state, page_size, MEM_LARGE_PAGES |
                                         MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 #else
 #if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || \
   defined(__DragonFly__) || defined(__NetBSD__)
-    hp_state = mmap(0, PAGE_SIZE, PROT_READ | PROT_WRITE,
+    hp_state = mmap(0, page_size, PROT_READ | PROT_WRITE,
                     MAP_PRIVATE | MAP_ANON, 0, 0);
 #else
-    hp_state = mmap(0, PAGE_SIZE, PROT_READ | PROT_WRITE,
+    hp_state = mmap(0, page_size, PROT_READ | PROT_WRITE,
                     MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, 0, 0);
 #endif
     if(hp_state == MAP_FAILED)
@@ -607,7 +607,7 @@ void slow_hash_allocate_state(uint32_t PAGE_SIZE)
     if(hp_state == NULL)
     {
         hp_allocated = 0;
-        hp_state = (uint8_t *) malloc(PAGE_SIZE);
+        hp_state = (uint8_t *) malloc(page_size);
     }
 }
 
@@ -615,7 +615,7 @@ void slow_hash_allocate_state(uint32_t PAGE_SIZE)
  *@brief frees the state allocated by slow_hash_allocate_state
  */
 
-void slow_hash_free_state(uint32_t PAGE_SIZE)
+void slow_hash_free_state(uint32_t page_size)
 {
     if(hp_state == NULL)
         return;
@@ -627,7 +627,7 @@ void slow_hash_free_state(uint32_t PAGE_SIZE)
 #if defined(_MSC_VER) || defined(__MINGW32__)
         VirtualFree(hp_state, 0, MEM_RELEASE);
 #else
-        munmap(hp_state, PAGE_SIZE);
+        munmap(hp_state, page_size);
 #endif
     }
 
@@ -665,9 +665,9 @@ void slow_hash_free_state(uint32_t PAGE_SIZE)
  * @param length the length in bytes of the data
  * @param hash a pointer to a buffer in which the final 256 bit hash will be stored
  */
-void cn_slow_hash(const void *data, size_t length, char *hash, int light, int variant, int prehashed, uint32_t PAGE_SIZE, uint32_t scratchpad, uint32_t iterations)
+void cn_slow_hash(const void *data, size_t length, char *hash, int light, int variant, int prehashed, uint32_t page_size, uint32_t scratchpad, uint32_t iterations)
 {
-  uint32_t TOTALBLOCKS = (PAGE_SIZE / AES_BLOCK_SIZE);
+  uint32_t TOTALBLOCKS = (page_size / AES_BLOCK_SIZE);
   uint32_t init_rounds = (scratchpad / INIT_SIZE_BYTE);
   uint32_t aes_rounds = (iterations / 2);
   size_t lightFlag = (light ? 2: 1);
@@ -692,7 +692,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash, int light, int va
       hash_extra_blake, hash_extra_groestl, hash_extra_jh, hash_extra_skein
   };
 
-  slow_hash_allocate_state(PAGE_SIZE);
+  slow_hash_allocate_state(page_size);
 
   /* CryptoNight Step 1:  Use Keccak1600 to initialize the 'state' (and 'text') buffers from the data. */
   if (prehashed) {
@@ -802,7 +802,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash, int light, int va
   memcpy(state.init, text, INIT_SIZE_BYTE);
   hash_permutation(&state.hs);
   extra_hashes[state.hs.b[0] & 3](&state, 200, hash);
-  slow_hash_free_state(PAGE_SIZE);
+  slow_hash_free_state(page_size);
 }
 
 #elif !defined NO_AES && (defined(__arm__) || defined(__aarch64__))
@@ -1036,9 +1036,9 @@ STATIC INLINE void aligned_free(void *ptr)
 }
 #endif /* FORCE_USE_HEAP */
 
-void cn_slow_hash(const void *data, size_t length, char *hash, int light, int variant, int prehashed, uint32_t PAGE_SIZE, uint32_t scratchpad, uint32_t iterations)
+void cn_slow_hash(const void *data, size_t length, char *hash, int light, int variant, int prehashed, uint32_t page_size, uint32_t scratchpad, uint32_t iterations)
 {
-  uint32_t TOTALBLOCKS = (PAGE_SIZE / AES_BLOCK_SIZE);
+  uint32_t TOTALBLOCKS = (page_size / AES_BLOCK_SIZE);
   uint32_t init_rounds = (scratchpad / INIT_SIZE_BYTE);
   uint32_t aes_rounds = (iterations / 2);
   size_t lightFlag = (light ? 2: 1);
@@ -1046,9 +1046,10 @@ void cn_slow_hash(const void *data, size_t length, char *hash, int light, int va
   RDATA_ALIGN16 uint8_t expandedKey[240];
 
 #ifndef FORCE_USE_HEAP
-  RDATA_ALIGN16 uint8_t hp_state[PAGE_SIZE];
+  RDATA_ALIGN16 uint8_t hp_state[page_size];
 #else
-  uint8_t *hp_state = (uint8_t *)aligned_malloc(PAGE_SIZE,16);
+#warning "ACTIVATING FORCE_USE_HEAP IN aarch64 + crypto in slow-hash.c"
+  uint8_t *hp_state = (uint8_t *)aligned_malloc(page_size,16);
 #endif
 
   uint8_t text[INIT_SIZE_BYTE];
@@ -1256,7 +1257,7 @@ STATIC INLINE void xor_blocks(uint8_t* a, const uint8_t* b)
   U64(a)[1] ^= U64(b)[1];
 }
 
-void cn_slow_hash(const void *data, size_t length, char *hash, int light, int variant, int prehashed, uint32_t PAGE_SIZE, uint32_t scratchpad, uint32_t iterations)
+void cn_slow_hash(const void *data, size_t length, char *hash, int light, int variant, int prehashed, uint32_t page_size, uint32_t scratchpad, uint32_t iterations)
 {
   uint32_t init_rounds = (scratchpad / INIT_SIZE_BYTE);
   uint32_t aes_rounds = (iterations / 2);
@@ -1282,9 +1283,10 @@ void cn_slow_hash(const void *data, size_t length, char *hash, int light, int va
   };
 
 #ifndef FORCE_USE_HEAP
-  uint8_t long_state[PAGE_SIZE];
+  uint8_t long_state[page_size];
 #else
-  uint8_t *long_state = (uint8_t *)malloc(PAGE_SIZE);
+#warning "ACTIVATING FORCE_USE_HEAP IN aarch64 && !crypto in slow-hash.c"
+  uint8_t *long_state = (uint8_t *)malloc(page_size);
 #endif
 
   if (prehashed) {
@@ -1316,7 +1318,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash, int light, int va
 
   for(i = 0; i < aes_rounds; i++)
   {
-    #define MASK(div) ((uint32_t)(((PAGE_SIZE / AES_BLOCK_SIZE) / (div) - 1) << 4))
+    #define MASK(div) ((uint32_t)(((page_size / AES_BLOCK_SIZE) / (div) - 1) << 4))
     #define state_index(x,div) ((*(uint32_t *) x) & MASK(div))
 
     // Iteration 1
@@ -1461,16 +1463,17 @@ union cn_slow_hash_state {
 };
 #pragma pack(pop)
 
-void cn_slow_hash(const void *data, size_t length, char *hash, int light, int variant, int prehashed, uint32_t PAGE_SIZE, uint32_t scratchpad, uint32_t iterations)
+void cn_slow_hash(const void *data, size_t length, char *hash, int light, int variant, int prehashed, uint32_t page_size, uint32_t scratchpad, uint32_t iterations)
 {
   uint32_t init_rounds = (scratchpad / INIT_SIZE_BYTE);
   uint32_t aes_rounds = (iterations / 2);
-  size_t aes_init = (PAGE_SIZE / AES_BLOCK_SIZE);
+  size_t aes_init = (page_size / AES_BLOCK_SIZE);
 
 #ifndef FORCE_USE_HEAP
-  uint8_t long_state[PAGE_SIZE];
+  uint8_t long_state[page_size];
 #else
-  uint8_t *long_state = (uint8_t *)malloc(PAGE_SIZE);
+#warning "ACTIVATING FORCE_USE_HEAP IN portable slow-hash.c"
+  uint8_t *long_state = (uint8_t *)malloc(page_size);
 #endif
 
   union cn_slow_hash_state state;
@@ -1521,7 +1524,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash, int light, int va
     VARIANT2_PORTABLE_SHUFFLE_ADD(long_state, j);
     copy_block(&long_state[j], c1);
     xor_blocks(&long_state[j], b);
-    assert(j == e2i(a, aes_init);
+    assert(j == e2i(a, aes_init));
     VARIANT1_1(&long_state[j]);
     /* Iteration 2 */
     j = e2i(c1, aes_init);
@@ -1536,7 +1539,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash, int light, int va
     xor_blocks(c1, c2);
     VARIANT1_2(c2 + 8);
     copy_block(&long_state[j], c2);
-    assert(j == e2i(a, aes_init);
+    assert(j == e2i(a, aes_init));
     if (variant == 2) {
       copy_block(b + AES_BLOCK_SIZE, b);
     }
