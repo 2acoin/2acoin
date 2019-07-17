@@ -107,12 +107,9 @@ const size_t   MAX_BLOCK_SIZE_INITIAL                        = 100000;
 const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR         = 100 * 1024;
 const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_DENOMINATOR       = 365 * 24 * 60 * 60 / DIFFICULTY_TARGET;
 const uint64_t MAX_EXTRA_SIZE                                = 140000;
-const uint64_t MAX_EXTRA_SIZE_V2                             = 1024;
-const uint64_t MAX_EXTRA_SIZE_V2_HEIGHT                      = 375000;
-
-/* For new projects forked from this code base, this value should be
-   changed to 0 to prevent a possible transaction bloat exploit */
-const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 400000;
+const uint64_t MAX_EXTRA_SIZE_V2                             = 2048;
+const uint64_t MAX_EXTRA_SIZE_V2_HEIGHT                      = 335000;
+const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 340000;
 
 const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS     = 1;
 const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS    = DIFFICULTY_TARGET * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS;
@@ -148,8 +145,7 @@ const uint64_t FORK_HEIGHTS[] =
     350000, //5
     400000, //6 Extra Limit (1024)
     425000, //7 
-    500000, //8 CN-ARMOR
-    900000  //n LWMA-3
+    500000  //8 CN-ARMOR
 };
 
 /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
@@ -235,18 +231,17 @@ const char     LATEST_VERSION_URL[]                          = "https://github.c
 const std::string LICENSE_URL                                = "https://github.com/2acoin/2acoin/blob/master/LICENSE";
 
 /* MainNet Network Identifier for 2ACoin */
-const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+/*const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
 };
+*/
 
-
-/* TestNet Network Identifier for 2ACoin 
+/* TestNet Network Identifier for 2ACoin */
 const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xfa, 0xfa, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
 };
-*/
 
 const char* const SEED_NODES[] = {
   "45.63.35.51:17890",       //US-WEST - Seattle(1)
