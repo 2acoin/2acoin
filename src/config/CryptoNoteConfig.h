@@ -107,9 +107,9 @@ const size_t   MAX_BLOCK_SIZE_INITIAL                        = 100000;
 const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR         = 100 * 1024;
 const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_DENOMINATOR       = 365 * 24 * 60 * 60 / DIFFICULTY_TARGET;
 const uint64_t MAX_EXTRA_SIZE                                = 140000;
-const uint64_t MAX_EXTRA_SIZE_V2                             = 2048;
+const uint64_t MAX_EXTRA_SIZE_V2                             = 5 * 1024;    //5k Extra
 const uint64_t MAX_EXTRA_SIZE_V2_HEIGHT                      = 335000;
-const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 340000;
+const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 335200;
 
 const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS     = 1;
 const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS    = DIFFICULTY_TARGET * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS;
