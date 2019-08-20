@@ -16,7 +16,7 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-          - libboost1.55-all-dev
+          - libboost-all-dev
           - libssl-dev
           - g++-8
           - gcc-8
@@ -34,7 +34,7 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-          - libboost1.55-all-dev
+          - libboost-all-dev
           - libssl-dev
           - g++-7
           - gcc-7
