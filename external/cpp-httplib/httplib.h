@@ -2,7 +2,8 @@
 //  httplib.h
 //
 //  Copyright (c) 2017 Yuji Hirose. All rights reserved.
-//  Copyright (c) 2018 The TurtleCoin Developers. All rights reserved.
+//  Copyright (c) 2018-2019 The TurtleCoin Developers. All rights reserved.
+//  Copyright (c) 2019 2ACoin Developers. All rights reserved.
 //  MIT License
 //
 
@@ -373,7 +374,7 @@ class SSLClient : public Client {
 public:
     SSLClient(
         const char* host,
-        int port = 80,
+        int port = 443,
         time_t timeout_sec = 300);
 
     virtual ~SSLClient();
