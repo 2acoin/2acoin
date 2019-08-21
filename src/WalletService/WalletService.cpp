@@ -25,8 +25,8 @@
 #include "CryptoNote.h"
 #include "CryptoNoteCore/CryptoNoteFormatUtils.h"
 #include "CryptoNoteCore/CryptoNoteBasicImpl.h"
-#include "CryptoNoteCore/CryptoNoteTools.h"
-#include "CryptoNoteCore/TransactionExtra.h"
+#include "Common/CryptoNoteTools.h"
+#include "Common/TransactionExtra.h"
 #include "CryptoNoteCore/Account.h"
 #include "CryptoNoteCore/Mixins.h"
 
@@ -42,6 +42,8 @@
 #include "WalletServiceErrorCategory.h"
 
 #include "Mnemonics/Mnemonics.h"
+
+#include <Utilities/Addresses.h>
 
 namespace PaymentService {
 
@@ -314,7 +316,7 @@ std::tuple<std::string, std::string> decodeIntegratedAddress(const std::string& 
     
     /* Parse the AccountPublicAddress into a standard wallet address */
     /* Use the calculated prefix from earlier for less typing :p */
-    std::string address = CryptoNote::getAccountAddressAsStr(prefix, addr);
+    std::string address = Utilities::getAccountAddressAsStr(prefix, addr);
     
     /* Check the extracted address is good. */
     validateAddresses({address}, currency, logger);
@@ -379,7 +381,7 @@ void generateNewWallet(const CryptoNote::Currency& currency, const WalletConfigu
     CryptoNote::KeyPair spendKey;
 
     Crypto::generate_keys(spendKey.publicKey, spendKey.secretKey);
-    CryptoNote::AccountBase::generateViewFromSpend(spendKey.secretKey, private_view_key);
+    Crypto::crypto_ops::generateViewFromSpend(spendKey.secretKey, private_view_key);
 
     wallet->initializeWithViewKey(conf.walletFile, conf.walletPassword, private_view_key, 0, true);
     address = wallet->createAddress(spendKey.secretKey, 0, true);
@@ -400,7 +402,7 @@ void generateNewWallet(const CryptoNote::Currency& currency, const WalletConfigu
 
     Crypto::SecretKey private_view_key;
 
-    CryptoNote::AccountBase::generateViewFromSpend(private_spend_key, private_view_key);
+    Crypto::crypto_ops::generateViewFromSpend(private_spend_key, private_view_key);
 
     wallet->initializeWithViewKey(conf.walletFile, conf.walletPassword, private_view_key, conf.scanHeight, false);
 
@@ -799,7 +801,7 @@ std::error_code WalletService::getMnemonicSeed(const std::string& address, std::
 
     Crypto::SecretKey deterministic_private_view_key;
 
-    CryptoNote::AccountBase::generateViewFromSpend(key.secretKey, deterministic_private_view_key);
+    Crypto::crypto_ops::generateViewFromSpend(key.secretKey, deterministic_private_view_key);
 
     bool deterministic_private_keys = deterministic_private_view_key == viewKey.secretKey;
 
@@ -1022,7 +1024,7 @@ std::error_code WalletService::sendTransaction(SendTransaction::Request& request
       validateAddresses({ request.changeAddress }, currency, logger);
     }
 
-    auto [success, error, error_code] = CryptoNote::Mixins::validate(request.anonymity, node.getLastKnownBlockHeight());
+    auto [success, error, error_code] = Utilities::validate(request.anonymity, node.getLastKnownBlockHeight());
 
     if (!success)
     {
@@ -1341,7 +1343,7 @@ std::error_code WalletService::createIntegratedAddress(const std::string &addres
   CryptoNote::AccountPublicAddress addr;
 
   /* Get the private + public key from the address */
-  CryptoNote::parseAccountAddressString(prefix, addr, address);
+  Utilities::parseAccountAddressString(prefix, addr, address);
 
   /* Pack as a binary array */
   CryptoNote::BinaryArray ba;
