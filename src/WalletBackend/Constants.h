@@ -1,8 +1,11 @@
 // Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2019, 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
 #pragma once
+
+#include <config/CryptoNoteConfig.h>
 
 namespace Constants
 {
@@ -44,6 +47,10 @@ namespace Constants
     /* Save a block hash checkpoint every BLOCK_HASH_CHECKPOINTS_INTERVAL
        blocks */
     const uint32_t BLOCK_HASH_CHECKPOINTS_INTERVAL = 5000;
+
+    /* The amount of blocks since an input has been spent that we remove it
+       from the container */
+    const uint64_t PRUNE_SPENT_INPUTS_INTERVAL = CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY * 2;
 
     /* When we get the global indexes, we pass in a range of blocks, to obscure
        which transactions we are interested in - the ones that belong to us.
