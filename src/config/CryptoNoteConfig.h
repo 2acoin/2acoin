@@ -111,6 +111,7 @@ const uint64_t MAX_EXTRA_SIZE_V2                             = 5 * 1024;    //5k
 const uint64_t MAX_EXTRA_SIZE_V2_HEIGHT                      = 365000;
 const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 365500;
 
+/* Update to allow for these to implement in production when ready */
 const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT               = 400000;
 const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 400000;
 
