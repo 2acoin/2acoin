@@ -1,6 +1,7 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2018, The TurtleCoin Developers
 // Copyright (c) 2018, The Karai Developers
+// Copyright (c) 2019, 2ACoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -15,8 +16,10 @@
 #include <config/CryptoNoteConfig.h>
 
 #include <CryptoNoteCore/Core.h>
-#include <CryptoNoteCore/CryptoNoteTools.h>
-#include <CryptoNoteCore/TransactionExtra.h>
+#include <CryptoNoteCore/CryptoNoteFormatUtils.h>
+
+#include <Common/CryptoNoteTools.h>
+#include <Common/TransactionExtra.h>
 
 #include <CryptoNoteProtocol/CryptoNoteProtocolHandlerCommon.h>
 
@@ -987,7 +990,7 @@ bool RpcServer::on_getblockhash(const COMMAND_RPC_GETBLOCKHASH::request& req, CO
 
   uint32_t h = static_cast<uint32_t>(req[0]);
   Crypto::Hash blockId = m_core.getBlockHashByIndex(h - 1);
-  if (blockId == NULL_HASH) {
+  if (blockId == Constants::NULL_HASH) {
     throw JsonRpc::JsonRpcError{
       CORE_RPC_ERROR_CODE_TOO_BIG_HEIGHT,
       std::string("Too big height: ") + std::to_string(h) + ", current blockchain height = " + std::to_string(m_core.getTopBlockIndex() + 1)
@@ -1037,7 +1040,7 @@ bool RpcServer::on_getblocktemplate(const COMMAND_RPC_GETBLOCKTEMPLATE::request&
 
   BinaryArray block_blob = toBinaryArray(blockTemplate);
   PublicKey tx_pub_key = CryptoNote::getTransactionPublicKeyFromExtra(blockTemplate.baseTransaction.extra);
-  if (tx_pub_key == NULL_PUBLIC_KEY) {
+  if (tx_pub_key == Constants::NULL_PUBLIC_KEY) {
     logger(ERROR) << "Failed to find tx pub key in coinbase extra";
     throw JsonRpc::JsonRpcError{ CORE_RPC_ERROR_CODE_INTERNAL_ERROR, "Internal error: failed to find tx pub key in coinbase extra" };
   }
