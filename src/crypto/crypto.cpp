@@ -22,6 +22,7 @@
 namespace Crypto {
 
   extern "C" {
+#include "keccak.h"
 #include "crypto-ops.h"
   }
 
@@ -534,4 +535,26 @@ namespace Crypto {
 
         return sc_isnonzero(reinterpret_cast<unsigned char*>(&h)) == 0;
     }
+
+    void crypto_ops::generateViewFromSpend(
+        const Crypto::SecretKey &spend,
+        Crypto::SecretKey &viewSecret) {
+
+      /* If we don't need the pub key */
+      Crypto::PublicKey unused_dummy_variable;
+      generateViewFromSpend(spend, viewSecret, unused_dummy_variable);
+    }
+
+    void crypto_ops::generateViewFromSpend(
+        const Crypto::SecretKey &spend,
+        Crypto::SecretKey &viewSecret,
+        Crypto::PublicKey &viewPublic) {
+
+        Crypto::SecretKey viewKeySeed;
+
+        keccak((uint8_t *)&spend, sizeof(spend), (uint8_t *)&viewKeySeed, sizeof(viewKeySeed));
+
+        Crypto::generate_deterministic_keys(viewPublic, viewSecret, viewKeySeed);
+    }
+
 }
