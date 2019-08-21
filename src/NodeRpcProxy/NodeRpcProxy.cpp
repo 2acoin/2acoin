@@ -1,5 +1,6 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2019, 2ACoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -23,7 +24,7 @@
 
 #include "Common/StringTools.h"
 #include "CryptoNoteCore/CryptoNoteBasicImpl.h"
-#include "CryptoNoteCore/CryptoNoteTools.h"
+#include "Common/CryptoNoteTools.h"
 
 #include <Logging/DummyLogger.h>
 
@@ -100,8 +101,8 @@ void NodeRpcProxy::resetInternalState() {
   lastLocalBlockHeaderInfo.majorVersion = 0;
   lastLocalBlockHeaderInfo.minorVersion = 0;
   lastLocalBlockHeaderInfo.timestamp = 0;
-  lastLocalBlockHeaderInfo.hash = CryptoNote::NULL_HASH;
-  lastLocalBlockHeaderInfo.prevHash = CryptoNote::NULL_HASH;
+  lastLocalBlockHeaderInfo.hash = Constants::NULL_HASH;
+  lastLocalBlockHeaderInfo.prevHash = Constants::NULL_HASH;
   lastLocalBlockHeaderInfo.nonce = 0;
   lastLocalBlockHeaderInfo.isAlternative = false;
   lastLocalBlockHeaderInfo.depth = 0;
