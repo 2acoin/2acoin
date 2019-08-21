@@ -1,7 +1,7 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2014-2018, The Monero Project
 // Copyright (c) 2018, The TurtleCoin Developers
-// Copyright (c) 2019, 2ACoin Developers
+// Copyright (c) 2018-2019, 2ACoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -15,12 +15,11 @@
 #include <ctime>
 
 #include <config/CryptoNoteConfig.h>
+#include <config/WalletConfig.h>
 
-#include <CryptoNoteCore/Core.h>
+#include <iomanip>
 
 #include <Rpc/CoreRpcServerCommandsDefinitions.h>
-
-#include <config/WalletConfig.h>
 
 namespace Utilities
 {
@@ -353,6 +352,14 @@ std::string prettyPrintBytes(uint64_t input)
         << suffixes[selectedSuffix];
 
     return msg.str();
+}
+
+std::string unixTimeToDate(const uint64_t timestamp)
+{
+    const std::time_t time = timestamp;
+    char buffer[100];
+    std::strftime(buffer, sizeof(buffer), "%F %R", std::localtime(&time));
+    return std::string(buffer);
 }
 
 } // namespace Utilities
