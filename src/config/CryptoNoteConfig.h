@@ -112,8 +112,8 @@ const uint64_t MAX_EXTRA_SIZE_V2_HEIGHT                      = 365000;
 const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 365500;
 
 /* Update to allow for these to implement in production when ready */
-const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT               = 400000;
-const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 400000;
+const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT               = 367000;
+const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 367100;
 
 const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS     = 1;
 const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS    = DIFFICULTY_TARGET * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS;
@@ -147,7 +147,7 @@ const uint64_t FORK_HEIGHTS[] =
     125000, //3 MIXIN MAX ADJUST
     300000, //4
     365000, //5 Extra Limit (5120)
-    365500, //6 Extra Limit (5120)
+    365500, //6 Transaction_Signature_Count_Validation
     425000, //7 
     500000  //8 CN-ARMOR
 };
@@ -235,17 +235,17 @@ const char     LATEST_VERSION_URL[]                          = "https://github.c
 const std::string LICENSE_URL                                = "https://github.com/2acoin/2acoin/blob/master/LICENSE";
 
 /* MainNet Network Identifier for 2ACoin */
-const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+/*const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
 };
+*/
 
 /* TestNet Network Identifier for 2ACoin */
-/*const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xfa, 0xfa, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
 };
-*/
 
 const char* const SEED_NODES[] = {
   "45.63.35.51:17890",       //US-WEST - Seattle(1)
