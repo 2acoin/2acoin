@@ -110,10 +110,8 @@ const uint64_t MAX_EXTRA_SIZE                                = 140000;
 const uint64_t MAX_EXTRA_SIZE_V2                             = 5 * 1024;    //5k Extra
 const uint64_t MAX_EXTRA_SIZE_V2_HEIGHT                      = 365000;
 const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 365500;
-
-/* Update to allow for these to implement in production when ready */
-const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT               = 367000;
-const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 367100;
+const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT               = 390000;
+const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 391000;
 
 const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS     = 1;
 const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS    = DIFFICULTY_TARGET * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS;
@@ -148,12 +146,14 @@ const uint64_t FORK_HEIGHTS[] =
     300000, //4
     365000, //5 Extra Limit (5120)
     365500, //6 Transaction_Signature_Count_Validation
-    425000, //7 
-    500000  //8 CN-ARMOR
+    390000, //7 Block Blob Shuffle
+    391000, //8 Trans Input Blocktime
+    425000, //9 
+    500000  //10 CN-ARMOR
 };
 
 /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
-const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 7;
+const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 8;
 
 const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
@@ -235,17 +235,17 @@ const char     LATEST_VERSION_URL[]                          = "https://github.c
 const std::string LICENSE_URL                                = "https://github.com/2acoin/2acoin/blob/master/LICENSE";
 
 /* MainNet Network Identifier for 2ACoin */
-/*const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
 };
-*/
 
 /* TestNet Network Identifier for 2ACoin */
-const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+/*const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
 {
     {  0xfa, 0xfa, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
 };
+*/
 
 const char* const SEED_NODES[] = {
   "45.63.35.51:17890",       //US-WEST - Seattle(1)
