@@ -6,7 +6,6 @@
 #pragma once
 
 #include <CryptoTypes.h>
-
 #include <vector>
 
 namespace Constants
@@ -68,4 +67,4 @@ namespace Constants
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
     });
-}
+} // namespace Constants
