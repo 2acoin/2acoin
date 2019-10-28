@@ -58,7 +58,7 @@ _set_wd() {
             esac
         fi
         mkdir 2acoin
-        git clone -q https://github.com/2acoin/2acoin 2acoin   >>build.log 2>&1 || _fail "Unable to clone git repository. Please see build.log for more information"
+        git clone -b master https://github.com/2acoin/2acoin 2acoin   >>build.log 2>&1 || _fail "Unable to clone git repository. Please see build.log for more information"
         cd 2acoin
     fi
 }
