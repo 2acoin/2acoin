@@ -3,11 +3,14 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "BlockingQueue.h"
+#pragma once
 
-namespace
+#include "crypto/hash.h"
+
+#include <cstdint>
+#include <vector>
+
+namespace CryptoNote
 {
-#ifdef MSVC
-    char suppressMSVCWarningLNK4221;
-#endif
-} // namespace
+    bool check_hash(const Crypto::Hash &hash, uint64_t difficulty);
+}
