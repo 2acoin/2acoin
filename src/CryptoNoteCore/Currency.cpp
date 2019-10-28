@@ -1,6 +1,7 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2014-2018, The Monero Project
 // Copyright (c) 2018-2019, The TurtleCoin Developers
+// Copyright (c) 2018-2019, 2ACoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -127,7 +128,12 @@ namespace CryptoNote
 
     size_t Currency::difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion, uint32_t height) const
     {
-        if (height >= CryptoNote::parameters::LWMA_2_DIFFICULTY_BLOCK_INDEX)
+        if (height >= CryptoNote::parameters::LWMA_2_DIFFICULTY_BLOCK_INDEX_V3)
+        {
+			// special block count for 2acoin
+            return CryptoNote::parameters::DIFFICULTY_BLOCKS_COUNT_V4;
+        }
+        else if (height >= CryptoNote::parameters::LWMA_2_DIFFICULTY_BLOCK_INDEX)
         {
             return CryptoNote::parameters::DIFFICULTY_BLOCKS_COUNT_V3;
         }
