@@ -1,14 +1,13 @@
-// Copyright (c) 2018, The TurtleCoin Developers
+// Copyright (c) 2018-2019, The TurtleCoin Developers
 //
 // Please see the included LICENSE file for more information.
 
 #pragma once
 
 #include <config/CryptoNoteConfig.h>
+#include <logger/Logger.h>
 
-#include <Logger/Logger.h>
-
-struct Config
+struct ApiConfig
 {
     /* The IP to listen for requests on */
     std::string rpcBindIp;
@@ -24,6 +23,11 @@ struct Config
 
     /* Controls what level of messages to log */
     Logger::LogLevel logLevel = Logger::DISABLED;
+
+    /* Controls whether an interactive console is provided */
+    bool noConsole = false;
+
+    unsigned int threads;
 };
 
-Config parseArguments(int argc, char **argv);
+ApiConfig parseArguments(int argc, char **argv);

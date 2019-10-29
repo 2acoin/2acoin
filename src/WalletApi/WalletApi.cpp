@@ -1,28 +1,20 @@
-// Copyright (c) 2018, The TurtleCoin Developers
-// Copyright (c) 2018-2019, 2ACoin Developers
+// Copyright (c) 2018-2019, The TurtleCoin Developers
 //
 // Please see the included LICENSE file for more information.
 
 #include <atomic>
-
 #include <chrono>
-
-#include <Common/SignalHandler.h>
-
+#include <common/SignalHandler.h>
 #include <config/CliHeader.h>
-
 #include <iostream>
-
-#include <Logger/Logger.h>
-
+#include <logger/Logger.h>
 #include <thread>
-
-#include <WalletApi/ApiDispatcher.h>
-#include <WalletApi/ParseArguments.h>
+#include <walletapi/ApiDispatcher.h>
+#include <walletapi/ParseArguments.h>
 
 int main(int argc, char **argv)
 {
-    Config config = parseArguments(argc, argv);
+    ApiConfig config = parseArguments(argc, argv);
 
     Logger::logger.setLogLevel(config.logLevel);
 
@@ -41,9 +33,7 @@ int main(int argc, char **argv)
 
         /* Init the API */
         api = std::make_shared<ApiDispatcher>(
-            config.port, config.rpcBindIp, config.rpcPassword,
-            config.corsHeader
-        );
+            config.port, config.rpcBindIp, config.rpcPassword, config.corsHeader, config.threads);
 
         /* Launch the API */
         apiThread = std::thread(&ApiDispatcher::start, api.get());
@@ -53,25 +43,37 @@ int main(int argc, char **argv)
         std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
         std::cout << "Want documentation on how to use the wallet-api?\n"
-                     "See https://2acoin.github.io/wallet-api-docs/\n\n";
+                     "See https://turtlecoin.github.io/wallet-api-docs/\n\n";
 
         std::string address = "http://" + config.rpcBindIp + ":" + std::to_string(config.port);
 
-        std::cout << "The api has been launched on " << address
-                  << ".\nType exit to save and shutdown." << std::endl;
+        std::cout << "The api has been launched on " << address << "." << std::endl;
+
+        if (!config.noConsole)
+        {
+            std::cout << "Type exit to save and shutdown." << std::endl;
+        }
 
         while (!ctrl_c)
         {
-            std::string input;
-
-            if (!std::getline(std::cin, input) || input == "exit" || input == "quit")
+            /* If we are providing an interactive console we will do so here. */
+            if (!config.noConsole)
             {
-                break;
+                std::string input;
+
+                if (!std::getline(std::cin, input) || input == "exit" || input == "quit")
+                {
+                    break;
+                }
+
+                if (input == "help")
+                {
+                    std::cout << "Type exit to save and shutdown." << std::endl;
+                }
             }
-
-            if (input == "help")
+            else /* If not, then a brief sleep helps stop the thread from running away */
             {
-                std::cout << "Type exit to save and shutdown." << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(250));
             }
         }
     }
