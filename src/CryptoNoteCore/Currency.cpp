@@ -171,10 +171,12 @@ namespace CryptoNote
         {
             return m_upgradeHeightV4;
         }
+        /* skipped Block 5 for 2ACoin  
         else if (majorVersion == BLOCK_MAJOR_VERSION_5)
         {
             return m_upgradeHeightV5;
         }
+        */
         else if (majorVersion == BLOCK_MAJOR_VERSION_6)
         {
             return m_upgradeHeightV6;
