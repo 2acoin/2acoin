@@ -131,11 +131,11 @@ elseif (UNIX)
     target_link_libraries(__filesystem INTERFACE stdc++fs)
 endif ()
 
-if(MSVC)
+if (MSVC)
     target_link_libraries(2ACoind System CryptoNoteCore rocksdb lz4 sqlite3 Errors ${Boost_LIBRARIES})
-else()
+else ()
     target_link_libraries(2ACoind System CryptoNoteCore rocksdblib lz4 sqlite3 Errors ${Boost_LIBRARIES})
-endif()
+endif ()
 
 # Add the dependencies we need
 target_link_libraries(Common __filesystem)
