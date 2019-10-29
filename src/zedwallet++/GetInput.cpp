@@ -1,4 +1,5 @@
 // Copyright (c) 2018-2019, The TurtleCoin Developers
+// Copyright (c) 2018-2019, 2ACoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -32,7 +33,7 @@ std::string yellowANSIMsg(const std::string msg)
 
 std::string getPrompt(std::shared_ptr<WalletBackend> walletBackend)
 {
-    const int promptLength = 20;
+    const int promptLength = 22;
     const std::string extension = ".wallet";
 
     const std::string walletFileName = walletBackend->getWalletLocation();
