@@ -132,8 +132,8 @@ namespace CryptoNote
         const uint32_t UPGRADE_HEIGHT_V2                             = 1;
         const uint32_t UPGRADE_HEIGHT_V3                             = 2;
         const uint32_t UPGRADE_HEIGHT_V4                             = 3;       // Upgrade height for CN-Lite Variant 1 switch.
-        const uint32_t UPGRADE_HEIGHT_V5                             = 500000;  // Upgrade height for CN_Armor Variant 2 switch.
-        const uint32_t UPGRADE_HEIGHT_V6                             = 500000;  // Upgrade height for ARGON2 switch.
+        const uint32_t UPGRADE_HEIGHT_V5                             = 450000;  // Upgrade height for CN_Armor Variant 2 switch (never used).
+        const uint32_t UPGRADE_HEIGHT_V6                             = 450000;  // Upgrade height for ARGON2 switch.
         const uint32_t UPGRADE_HEIGHT_CURRENT                        = UPGRADE_HEIGHT_V6;
 
         const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
@@ -155,7 +155,7 @@ namespace CryptoNote
             390000, //7 Block Blob Shuffle
             391000, //8 Trans Input Blocktime
             425000, //9
-            500000, //10 CN-ARMOR/ARGON2
+            450000, //10 CN-ARMOR/ARGON2
             600000, //11
             700000, //12
             800000, //13
@@ -163,7 +163,7 @@ namespace CryptoNote
         };
 
         /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
-        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 10;
+        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 11;
 
         const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
@@ -204,12 +204,12 @@ namespace CryptoNote
 
     const std::unordered_map<uint8_t, std::function<void(const void *data, size_t length, Crypto::Hash &hash)>>
         HASHING_ALGORITHMS_BY_BLOCK_VERSION = {
-            {BLOCK_MAJOR_VERSION_1, Crypto::cn_slow_hash_v0},             /* From zero */
-            {BLOCK_MAJOR_VERSION_2, Crypto::cn_slow_hash_v0},             /* UPGRADE_HEIGHT_V2 */
-            {BLOCK_MAJOR_VERSION_3, Crypto::cn_slow_hash_v0},             /* UPGRADE_HEIGHT_V3 */
-            {BLOCK_MAJOR_VERSION_4, Crypto::cn_lite_slow_hash_v1},        /* UPGRADE_HEIGHT_V4 */
+            {BLOCK_MAJOR_VERSION_1, Crypto::cn_slow_hash_v0},              /* From zero */
+            {BLOCK_MAJOR_VERSION_2, Crypto::cn_slow_hash_v0},              /* UPGRADE_HEIGHT_V2 */
+            {BLOCK_MAJOR_VERSION_3, Crypto::cn_slow_hash_v0},              /* UPGRADE_HEIGHT_V3 */
+            {BLOCK_MAJOR_VERSION_4, Crypto::cn_lite_slow_hash_v1},         /* UPGRADE_HEIGHT_V4 */
             {BLOCK_MAJOR_VERSION_5, Crypto::cn_turtle_lite_slow_hash_v2},  /* UPGRADE_HEIGHT_V5 */
-            {BLOCK_MAJOR_VERSION_6, Crypto::chukwa_slow_hash}             /* UPGRADE_HEIGHT_V6 */
+            {BLOCK_MAJOR_VERSION_6, Crypto::chukwa_slow_hash}              /* UPGRADE_HEIGHT_V6 */
     };
 
     const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT        =  10000;  //by default, blocks ids count in synchronizing
