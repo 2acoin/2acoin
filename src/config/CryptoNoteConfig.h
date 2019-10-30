@@ -2,7 +2,7 @@
 // Copyright (c) 2014-2018, The Monero Project
 // Copyright (c) 2018, The TurtleCoin Developers
 // Copyright (c) 2019, 2ACoin Developers
-// 
+//
 // Please see the included LICENSE file for more information.
 
 #pragma once
@@ -15,9 +15,9 @@
 #include <limits>
 #include <string>
 
-namespace CryptoNote 
+namespace CryptoNote
 {
-    namespace parameters 
+    namespace parameters
     {
         const uint64_t DIFFICULTY_TARGET                             = 90; // seconds
         const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
@@ -91,7 +91,7 @@ namespace CryptoNote
 
         const uint32_t DUST_THRESHOLD_V2_HEIGHT                      = MIXIN_LIMITS_V2_HEIGHT;
         const uint32_t FUSION_DUST_THRESHOLD_HEIGHT_V2               = 50000;
-        
+
         const size_t   DIFFICULTY_WINDOW                             = 17;
         const size_t   DIFFICULTY_WINDOW_V1                          = 960;
         const size_t   DIFFICULTY_WINDOW_V2                          = 960;
@@ -135,7 +135,7 @@ namespace CryptoNote
         const uint32_t UPGRADE_HEIGHT_V5                             = 500000;  // Upgrade height for CN_Armor Variant 2 switch.
         const uint32_t UPGRADE_HEIGHT_V6                             = 500000;  // Upgrade height for ARGON2 switch.
         const uint32_t UPGRADE_HEIGHT_CURRENT                        = UPGRADE_HEIGHT_V6;
-        
+
         const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
         const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
         const uint32_t UPGRADE_WINDOW                                = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -154,7 +154,7 @@ namespace CryptoNote
             365500, //6 Transaction_Signature_Count_Validation
             390000, //7 Block Blob Shuffle
             391000, //8 Trans Input Blocktime
-            425000, //9 
+            425000, //9
             500000, //10 CN-ARMOR/ARGON2
             600000, //11
             700000, //12
@@ -211,7 +211,7 @@ namespace CryptoNote
             {BLOCK_MAJOR_VERSION_5, Crypto::cn_turtle_lite_slow_hash_v2},  /* UPGRADE_HEIGHT_V5 */
             {BLOCK_MAJOR_VERSION_6, Crypto::chukwa_slow_hash}             /* UPGRADE_HEIGHT_V6 */
     };
-    
+
     const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT        =  10000;  //by default, blocks ids count in synchronizing
     const uint64_t BLOCKS_SYNCHRONIZING_DEFAULT_COUNT            =  100;    //by default, blocks count in blocks downloading
     const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT         =  1000;
@@ -256,17 +256,17 @@ namespace CryptoNote
     const std::string LICENSE_URL                                = "https://github.com/2acoin/2acoin/blob/master/LICENSE";
 
     /* MainNet Network Identifier for 2ACoin */
-    const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+    /*const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
     {
         {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
     };
-
+    */
+    
     /* TestNet Network Identifier for 2ACoin */
-    /*const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+    const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
     {
         {  0xfa, 0xfa, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
     };
-    */
 
     const char* const SEED_NODES[] = {
       "45.63.35.51:17890",       //US-WEST - Seattle(1)
