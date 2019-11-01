@@ -16,7 +16,7 @@ If you would like to compile yourself, read on.
 
 ### How To Compile
 
-####Build Optimization
+#### Build Optimization
 
 The CMake build system will, by default, create optimized native builds for your particular system type when you build the software. Using this method, the binaries created provide a better experience and all together faster performance.
 
@@ -26,7 +26,7 @@ However, if you wish to create portable binaries that can be shared between syst
 
 ##### Prerequisites
 
-You will need the following packages: [Boost](https://www.boost.org/), [OpenSSL](https://www.openssl.org/),cmake (3.8 or higher), make, and git.
+You will need the following packages: [Boost](https://www.boost.org/), [OpenSSL](https://www.openssl.org/), cmake (3.8 or higher), make, and git.
 
 You will also need either GCC/G++, or Clang.
 
