@@ -352,7 +352,7 @@ namespace CryptoNote
                 ss << "You are " << std::abs(diff) << " blocks (" << days << " days) ahead ";
             }
 
-            ss << "the current peer you're connected to. Slow and steady wins the race! ";
+            ss << "the current peer you're connected to. Please be patient! ";
 
             auto logLevel = Logging::TRACE;
             /* Log at different levels depending upon if we're ahead, behind, and if it's
