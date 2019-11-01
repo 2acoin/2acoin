@@ -16,17 +16,23 @@ If you would like to compile yourself, read on.
 
 ### How To Compile
 
+####Build Optimization
+
+The CMake build system will, by default, create optimized native builds for your particular system type when you build the software. Using this method, the binaries created provide a better experience and all together faster performance.
+
+However, if you wish to create portable binaries that can be shared between systems, specify -DARCH=default in your CMake arguments during the build process. Note that portable binaries will have a noticable difference in performance than native binaries. For this reason, it is always best to build for your particular system if possible.
+
 #### Linux
 
 ##### Prerequisites
 
-You will need the following packages: boost, cmake (3.8 or higher), make, and git.
+You will need the following packages: [Boost](https://www.boost.org/), [OpenSSL](https://www.openssl.org/),cmake (3.8 or higher), make, and git.
 
 You will also need either GCC/G++, or Clang.
 
-If you are using GCC, you will need GCC-6.0 or higher.
+If you are using GCC, you will need GCC-7.0 or higher.
 
-If you are using Clang, you will need Clang 5.0 or higher. You will also need libstdc++\-6.0 or higher.
+If you are using Clang, you will need Clang 6.0 or higher. You will also need libstdc++\-6.0 or higher.
 
 ##### GCC setup, on Ubuntu
 
@@ -104,25 +110,26 @@ The binaries will be in the `src` folder when you are complete.
     cd src
     ./2ACoind --version
     
-#### Apple
+#### OSX/Apple, using Clang
 
 ##### Prerequisites
 
-- Install [cmake](https://cmake.org/). See [here](https://stackoverflow.com/questions/23849962/cmake-installer-for-mac-fails-to-create-usr-bin-symlinks) if you are unable to call `cmake` from the terminal after installing.
-- Install the [boost](http://www.boost.org/) libraries. Either compile boost manually or run `brew install boost`.
 - Install XCode and Developer Tools.
 
 
 ##### Building
 
+    which brew || /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    brew install --force cmake boost llvm@8 openssl
+    brew link --force llvm@8
+    ln -s /usr/local/opt/llvm@8 /usr/local/opt/llvm
+    export CC=/usr/local/opt/llvm@8/bin/clang
+    export CXX=/usr/local/opt/llvm@8/bin/clang++
     git clone -b master --single-branch https://github.com/2acoin/2acoin
     cd 2acoin
-    mkdir build && cd $_
+    mkdir build
+    cd build
     cmake ..
-    # or 
-    cmake -DBOOST_ROOT=<path_to_boost_install> .. 
-    # when building from a specific boost install. 
-    # If you used brew to install boost, your path is most likely /usr/local/include/boost.
     make
         
 The binaries will be in the `src` folder when you are complete.
@@ -130,38 +137,52 @@ The binaries will be in the `src` folder when you are complete.
     cd src
     ./2ACoind --version
     
-If your version of gcc is too old, you may need to run:
-
-    brew install gcc@8
-    export CC=gcc-8
-    export CXX=g++-8
     
 #### Windows
 
 ##### Prerequisites
 
-- Install [Visual Studio 2017 Community Edition](https://www.visualstudio.com/thank-you-downloading-visual-studio/?sku=Community&rel=15&page=inlineinstall)
-- When installing Visual Studio, it is **required** that you install **Desktop development with C++**
-- Install the latest version of [Boost](https://sourceforge.net/projects/boost/files/boost-binaries/1.68.0/boost_1_68_0-msvc-14.1-64.exe/download) - Currently Boost 1.68.
+You can build for 32-bit or 64-bit Windows. **If you're not sure, pick 64-bit.**
+
+- Download the [Build Tools for Visual Studio 2019](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=16) Installer
+- When it opens up select **C++ build tools**, it automatically selects the needed parts
+- Install Boost (1.69 works the latest is 1.70 and doesn't work). Select the appropriate version for your system:
+	- [Boost 64-bit](https://bintray.com/boostorg/release/download_file?file_path=1.69.0%2Fbinaries%2Fboost_1_69_0-msvc-14.1-64.exe)
+	- [Boost 32-bit](https://bintray.com/boostorg/release/download_file?file_path=1.69.0%2Fbinaries%2Fboost_1_69_0-msvc-14.1-32.exe)
+- Install the latest full LTS version of OpenSSL (currently OpenSSL 1.1.0L). Select the appropriate version for your system:
+	- [OpenSSL 64-bit](https://slproweb.com/download/Win64OpenSSL-1_1_0L.exe)
+	- [OpenSSL 32-bit](https://slproweb.com/download/Win32OpenSSL-1_1_0L.exe)
+
 
 ##### Building
 
-- From the start menu, open 'x64 Native Tools Command Prompt for vs2017'.  
+**For 64-bit:**
 
-``
+From the start menu, open 'x64 Native Tools Command Prompt for VS 2019'.
 
-    cd <your_2acoin_folder>
-    mkdir build  
-    cd build  
-    set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin";%PATH%  
-    cmake -G "Visual Studio 15 2017 Win64" .. -DBOOST_ROOT=C:/local/boost_1_68_0  #(Or your boost installed dir.)  
-    MSBuild 2ACoin.sln /p:Configuration=Release /m  
-               
-The binaries will be in the `src/Release` folder when you are complete.
+    cd <your_accoin_directory>
+    mkdir build
+    cd build
+    cmake -G "Visual Studio 16 2019" -A x64 .. -DBOOST_ROOT=C:/local/boost_1_69_0
+    MSBuild 2ACoin.sln /p:Configuration=Release /m or MSBuild src\cli.vcxproj /p:Configuration=Release /m
+
+**For 32-bit:**
+
+From the start menu, open 'x86 Native Tools Command Prompt for VS 2019'.
+
+    cd <your_2acoin_directory>
+    mkdir build
+    cd build
+    cmake -G "Visual Studio 16 2019" -A Win32 .. -DBOOST_ROOT=C:/local/boost_1_69_0
+    MSBuild 2ACoin.sln /p:Configuration=Release /p:Platform=Win32 /m
+    
+The binaries will be in the src/Release folder when you are complete.
 
     cd src
     cd Release
     2ACoind.exe --version
+    
+
     
 #### Raspberry Pi 3 B+
 The following images are known to work. Your operation system image **MUST** be 64 bit.
