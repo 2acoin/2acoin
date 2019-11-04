@@ -132,8 +132,8 @@ namespace CryptoNote
         const uint32_t UPGRADE_HEIGHT_V2                             = 1;
         const uint32_t UPGRADE_HEIGHT_V3                             = 2;
         const uint32_t UPGRADE_HEIGHT_V4                             = 3;       // Upgrade height for CN-Lite Variant 1 switch.
-        const uint32_t UPGRADE_HEIGHT_V5                             = 450000;  // Upgrade height for CN_Armor Variant 2 switch (never used).
-        const uint32_t UPGRADE_HEIGHT_V6                             = 450000;  // Upgrade height for ARGON2 switch.
+        const uint32_t UPGRADE_HEIGHT_V5                             = 455000;  // Upgrade height for CN_Armor Variant 2 switch (never used).
+        const uint32_t UPGRADE_HEIGHT_V6                             = 455000;  // Upgrade height for ARGON2 switch.
         const uint32_t UPGRADE_HEIGHT_CURRENT                        = UPGRADE_HEIGHT_V6;
 
         const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
@@ -155,7 +155,7 @@ namespace CryptoNote
             390000, //7 Block Blob Shuffle
             391000, //8 Trans Input Blocktime
             425000, //9
-            450000, //10 CN-ARMOR/ARGON2
+            455000, //10 CN-ARMOR/ARGON2
             600000, //11
             700000, //12
             800000, //13
@@ -256,17 +256,17 @@ namespace CryptoNote
     const std::string LICENSE_URL                                = "https://github.com/2acoin/2acoin/blob/master/LICENSE";
 
     /* MainNet Network Identifier for 2ACoin */
-    /*const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+    const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
     {
         {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
     };
-    */
-    
+
     /* TestNet Network Identifier for 2ACoin */
-    const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+    /*const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
     {
         {  0xfa, 0xfa, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
     };
+    */
 
     const char* const SEED_NODES[] = {
       "45.63.35.51:17890",       //US-WEST - Seattle(1)
