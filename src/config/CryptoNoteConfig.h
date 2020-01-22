@@ -118,6 +118,16 @@ namespace CryptoNote
         const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT               = 390000;
         const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 391000;
 
+        /* 4,477,500 ARMS -> Max supply / mixin+1 outputs                 */
+        /* This is enforced on the daemon side. An output > 4,477,500 causes an invalid block.   */
+        const uint64_t MAX_OUTPUT_SIZE_NODE   = 4'477'500'00000000;
+
+        /* 1 million ARMS                                                   */
+        /* Enforced on the client side. An output > 1 million will not be created in a transaction */
+        const uint64_t MAX_OUTPUT_SIZE_CLIENT = 1'000'000'00000000;
+
+        const uint64_t MAX_OUTPUT_SIZE_HEIGHT = 600000;
+
         const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS     = 1;
         const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS    = DIFFICULTY_TARGET * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS;
 
@@ -156,14 +166,14 @@ namespace CryptoNote
             391000, //8 Trans Input Blocktime
             425000, //9
             455000, //10 CN-ARMOR/ARGON2
-            600000, //11
+            600000, //11 MAX_OUTPUT_SIZE
             700000, //12
             800000, //13
             900000  //14
         };
 
         /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
-        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 11;
+        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 12;
 
         const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
@@ -225,8 +235,8 @@ namespace CryptoNote
 
     // P2P Network Configuration Section - This defines our current P2P network version
     // and the minimum version for communication between nodes
-    const uint8_t  P2P_CURRENT_VERSION                           = 6;
-    const uint8_t  P2P_MINIMUM_VERSION                           = 5;
+    const uint8_t  P2P_CURRENT_VERSION                           = 7;
+    const uint8_t  P2P_MINIMUM_VERSION                           = 6;
 
     // This defines the minimum P2P version required for lite blocks propogation
     const uint8_t P2P_LITE_BLOCKS_PROPOGATION_VERSION            = 4;
