@@ -21,8 +21,6 @@
 #include "cryptonotecore/DatabaseBlockchainCache.h"
 #include "cryptonotecore/DatabaseBlockchainCacheFactory.h"
 #include "cryptonotecore/MainChainStorage.h"
-#include "cryptonotecore/MainChainStorageRocksdb.h"
-#include "cryptonotecore/MainChainStorageSqlite.h"
 #include "cryptonotecore/RocksDBWrapper.h"
 #include "cryptonoteprotocol/CryptoNoteProtocolHandler.h"
 #include "p2p/NetNode.h"
@@ -183,8 +181,6 @@ int main(int argc, char *argv[])
             config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKS_FILENAME,
             config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKINDEXES_FILENAME,
             config.dataDirectory + "/" + CryptoNote::parameters::P2P_NET_DATA_FILENAME,
-            config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKS_FILENAME + ".sqlite3",
-            config.dataDirectory + "/" + CryptoNote::parameters::CRYPTONOTE_BLOCKS_FILENAME + ".rocksdb",
             config.dataDirectory + "/DB"};
 
         for (const auto path : removablePaths)
@@ -197,6 +193,24 @@ int main(int argc, char *argv[])
                 exit(1);
             }
         }
+    }
+
+    if (config.p2pPort < 0 || config.p2pPort > 65535)
+    {
+        std::cout << "P2P Port must be between 0 and 65,535" << std::endl;
+        exit(1);
+    }
+
+    if (config.p2pExternalPort < 0 || config.p2pExternalPort > 65535)
+    {
+        std::cout << "P2P External Port must be between 0 and 65,535" << std::endl;
+        exit(1);
+    }
+
+    if (config.rpcPort < 0 || config.rpcPort > 65535)
+    {
+        std::cout << "RPC Port must be between 0 and 65,535" << std::endl;
+        exit(1);
     }
 
     try
@@ -256,20 +270,8 @@ int main(int argc, char *argv[])
         if (config.rewindToHeight > 0)
         {
             logger(INFO) << "Rewinding blockchain to: " << config.rewindToHeight << std::endl;
-            std::unique_ptr<IMainChainStorage> mainChainStorage;
 
-            if (config.useSqliteForLocalCaches)
-            {
-                mainChainStorage = createSwappedMainChainStorageSqlite(config.dataDirectory, currency);
-            }
-            else if (config.useRocksdbForLocalCaches)
-            {
-                mainChainStorage = createSwappedMainChainStorageRocksdb(config.dataDirectory, currency, dbConfig);
-            }
-            else
-            {
-                mainChainStorage = createSwappedMainChainStorage(config.dataDirectory, currency);
-            }
+            std::unique_ptr<IMainChainStorage> mainChainStorage = createSwappedMainChainStorage(config.dataDirectory, currency);
 
             mainChainStorage->rewindTo(config.rewindToHeight);
 
@@ -337,19 +339,7 @@ int main(int argc, char *argv[])
         System::Dispatcher dispatcher;
         logger(INFO) << "Initializing core...";
 
-        std::unique_ptr<IMainChainStorage> tmainChainStorage;
-        if (config.useSqliteForLocalCaches)
-        {
-            tmainChainStorage = createSwappedMainChainStorageSqlite(config.dataDirectory, currency);
-        }
-        else if (config.useRocksdbForLocalCaches)
-        {
-            tmainChainStorage = createSwappedMainChainStorageRocksdb(config.dataDirectory, currency, dbConfig);
-        }
-        else
-        {
-            tmainChainStorage = createSwappedMainChainStorage(config.dataDirectory, currency);
-        }
+        std::unique_ptr<IMainChainStorage> tmainChainStorage = createSwappedMainChainStorage(config.dataDirectory, currency);
 
         CryptoNote::Core ccore(
             currency,
@@ -364,7 +354,7 @@ int main(int argc, char *argv[])
 
         CryptoNote::CryptoNoteProtocolHandler cprotocol(currency, dispatcher, ccore, nullptr, logManager);
         CryptoNote::NodeServer p2psrv(dispatcher, cprotocol, logManager);
-        CryptoNote::RpcServer rpcServer(dispatcher, logManager, ccore, p2psrv, cprotocol);
+        CryptoNote::RpcServer rpcServer(dispatcher, logManager, ccore, p2psrv, cprotocol, config.enableBlockExplorerDetailed);
 
         cprotocol.set_p2p_endpoint(&p2psrv);
         DaemonCommandsHandler dch(ccore, p2psrv, logManager, &rpcServer);
