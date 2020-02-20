@@ -9,7 +9,7 @@ include_directories(${CMAKE_SOURCE_DIR}/external/nlohmann-json)
 include_directories(${CMAKE_SOURCE_DIR}/external/rapidjson)
 include_directories(${CMAKE_SOURCE_DIR}/external/cxxopts)
 include_directories(${CMAKE_SOURCE_DIR}/external/cryptopp)
-include_directories(${CMAKE_SOURCE_DIR}/external/sqlite3)
+include_directories(${CMAKE_SOURCE_DIR}/external/zstd)
 include_directories(${CMAKE_SOURCE_DIR}/external/lz4)
 include_directories(${CMAKE_SOURCE_DIR}/external/argon2/include)
 
@@ -43,6 +43,7 @@ file(GLOB_RECURSE Wallet wallet/*)
 file(GLOB_RECURSE WalletApi walletapi/*)
 file(GLOB_RECURSE WalletBackend walletbackend/*)
 file(GLOB_RECURSE WalletService walletservice/*)
+file(GLOB_RECURSE WalletUpgrader walletupgrader/*)
 file(GLOB_RECURSE zedwallet zedwallet/*)
 file(GLOB_RECURSE zedwallet++ zedwallet++/*)
 
@@ -100,6 +101,9 @@ if (MSVC)
     set(WALLET_API_SOURCES_OS
             binaryinfo/walletapi.rc
             )
+    set(WALLET_UPGRADER_SOURCES_OS
+            binaryinfo/walletupgrader.rc
+            )
 endif ()
 
 add_executable(cryptotest ${CryptoTest} ${CT_SOURCES_OS})
@@ -107,6 +111,7 @@ add_executable(miner ${miner} ${MINER_SOURCES_OS})
 add_executable(WalletService ${WalletService} ${PG_SOURCES_OS})
 add_executable(2ACoind ${2ACoind} ${DAEMON_SOURCES_OS})
 add_executable(WalletApi ${WalletApi} ${WALLET_API_SOURCES_OS})
+add_executable(WalletUpgrader ${WalletUpgrader} ${WALLET_UPGRADER_SOURCES_OS})
 add_executable(zedwallet ${zedwallet} ${ZED_WALLET_SOURCES_OS})
 add_executable(zedwallet++ ${zedwallet++} ${ZED_WALLET_SOURCES_OS})
 
@@ -118,6 +123,7 @@ if (MSVC)
     target_link_libraries(WalletApi ws2_32 advapi32 crypt32 gdi32 user32)
     target_link_libraries(miner ws2_32 advapi32 crypt32 gdi32 user32)
     target_link_libraries(zedwallet ws2_32 advapi32 crypt32 gdi32 user32)
+    target_link_libraries(WalletUpgrader ws2_32 advapi32 crypt32 gdi32 user32)
 endif ()
 
 # A bit of hackery so we don't have to do the if/else/ for every target that
@@ -132,15 +138,15 @@ elseif (UNIX)
 endif ()
 
 if (MSVC)
-    target_link_libraries(2ACoind System CryptoNoteCore rocksdb lz4 sqlite3 Errors ${Boost_LIBRARIES})
+    target_link_libraries(2ACoind System CryptoNoteCore rocksdb zstd lz4 Errors ${Boost_LIBRARIES})
 else ()
-    target_link_libraries(2ACoind System CryptoNoteCore rocksdblib lz4 sqlite3 Errors ${Boost_LIBRARIES})
+    target_link_libraries(2ACoind System CryptoNoteCore rocksdblib zstd lz4 Errors ${Boost_LIBRARIES})
 endif ()
 
 # Add the dependencies we need
 target_link_libraries(Common __filesystem)
 target_link_libraries(Crypto argon2)
-target_link_libraries(CryptoNoteCore Utilities Common Logging Crypto P2P Rpc Http Serialization System sqlite3 ${Boost_LIBRARIES})
+target_link_libraries(CryptoNoteCore Utilities Common Logging Crypto P2P Rpc Http Serialization System ${Boost_LIBRARIES})
 target_link_libraries(cryptotest Crypto Common)
 target_link_libraries(Errors Crypto SubWallets Utilities)
 target_link_libraries(Logging Common)
@@ -157,6 +163,7 @@ target_link_libraries(Wallet NodeRpcProxy Transfers CryptoNoteCore Common Wallet
 target_link_libraries(WalletApi WalletBackend)
 target_link_libraries(WalletBackend Serialization Mnemonics Nigel cryptopp-static __filesystem Utilities SubWallets Logger Config Wallet)
 target_link_libraries(WalletService JsonRpcServer Wallet Mnemonics Errors)
+target_link_libraries(WalletUpgrader Utilities WalletBackend Common)
 target_link_libraries(zedwallet Mnemonics Wallet Utilities Errors)
 target_link_libraries(zedwallet++ WalletBackend)
 
@@ -177,6 +184,7 @@ add_dependencies(JsonRpcServer version)
 add_dependencies(P2P version)
 add_dependencies(Rpc version)
 add_dependencies(2ACoind version)
+add_dependencies(WalletUpgrader version)
 add_dependencies(WalletApi version)
 add_dependencies(WalletService version)
 add_dependencies(zedwallet version)
@@ -189,6 +197,7 @@ set_property(TARGET WalletService PROPERTY OUTPUT_NAME "2acoin-service")
 set_property(TARGET miner PROPERTY OUTPUT_NAME "miner")
 set_property(TARGET cryptotest PROPERTY OUTPUT_NAME "cryptotest")
 set_property(TARGET WalletApi PROPERTY OUTPUT_NAME "wallet-api")
+set_property(TARGET WalletUpgrader PROPERTY OUTPUT_NAME "wallet-upgrader")
 
 # Additional make targets, can be used to build a subset of the targets
 # e.g. make pool will build only 2ACoind and service
