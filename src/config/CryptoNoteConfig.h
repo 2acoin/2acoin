@@ -108,7 +108,8 @@ namespace CryptoNote
         const size_t   DIFFICULTY_LAG_V2                             = 15;
         static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
 
-        const size_t   MAX_BLOCK_SIZE_INITIAL                        = 100000;
+        /* Adjusted parmas for forks */
+		const size_t   MAX_BLOCK_SIZE_INITIAL                        = 100000;
         const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR         = 100 * 1024;
         const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_DENOMINATOR       = 365 * 24 * 60 * 60 / DIFFICULTY_TARGET;
         const uint64_t MAX_EXTRA_SIZE                                = 140000;
@@ -117,7 +118,8 @@ namespace CryptoNote
         const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 365500;
         const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT               = 390000;
         const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 391000;
-
+        const uint64_t MAX_OUTPUT_SIZE_HEIGHT                        = 541975;
+		
         /* 4,477,500 ARMS -> Max supply / mixin+1 outputs                 */
         /* This is enforced on the daemon side. An output > 4,477,500 causes an invalid block.   */
         const uint64_t MAX_OUTPUT_SIZE_NODE   = 4'477'500'00000000;
@@ -125,8 +127,6 @@ namespace CryptoNote
         /* 1 million ARMS                                                   */
         /* Enforced on the client side. An output > 1 million will not be created in a transaction */
         const uint64_t MAX_OUTPUT_SIZE_CLIENT = 1'000'000'00000000;
-
-        const uint64_t MAX_OUTPUT_SIZE_HEIGHT = 600000;
 
         const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS     = 1;
         const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS    = DIFFICULTY_TARGET * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS;
@@ -266,17 +266,16 @@ namespace CryptoNote
     const std::string LICENSE_URL                                = "https://github.com/2acoin/2acoin/blob/master/LICENSE";
 
     /* MainNet Network Identifier for 2ACoin */
-    const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+    /* const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
     {
         {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
-    };
+    }; */
 
     /* TestNet Network Identifier for 2ACoin */
-    /*const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+    const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
     {
         {  0xfa, 0xfa, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
     };
-    */
 
     const char* const SEED_NODES[] = {
       "45.63.35.51:17890",       //US-WEST - Seattle(1)
