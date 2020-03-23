@@ -118,7 +118,7 @@ namespace CryptoNote
         const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 365500;
         const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT               = 390000;
         const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 391000;
-        const uint64_t MAX_OUTPUT_SIZE_HEIGHT                        = 541975;
+        const uint64_t MAX_OUTPUT_SIZE_HEIGHT                        = 600000;
 		
         /* 4,477,500 ARMS -> Max supply / mixin+1 outputs                 */
         /* This is enforced on the daemon side. An output > 4,477,500 causes an invalid block.   */
@@ -266,22 +266,24 @@ namespace CryptoNote
     const std::string LICENSE_URL                                = "https://github.com/2acoin/2acoin/blob/master/LICENSE";
 
     /* MainNet Network Identifier for 2ACoin */
-    /* const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+    const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
     {
         {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
-    }; */
+    };
 
     /* TestNet Network Identifier for 2ACoin */
-    const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
+    /* const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
     {
         {  0xfa, 0xfa, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
     };
+	*/
 
     const char* const SEED_NODES[] = {
-      "45.63.35.51:17890",       //US-WEST - Seattle(1)
-      "144.202.29.252:17890",    //US-EAST - Atlanta (2)
-      "207.148.6.195:17890",     //US-CENTRAL-02 - Dallas (3)
-      "207.148.3.16:17890",      //US-CENTRAL - Dallas (4)
-      "45.76.232.71:17890"       //US-CENTRAL-03 - Dallas (5)
+      "45.63.35.51:17890",        //US-WEST - Seattle(1)
+      "144.202.29.252:17890",     //US-EAST - Atlanta (2)
+      "207.148.6.195:17890",      //US-CENTRAL-02 - Dallas (3)
+      "207.148.3.16:17890",       //US-CENTRAL - Dallas (4)
+      "45.76.232.71:17890",       //US-CENTRAL-03 - Dallas (5)
+      "95.179.141.4:17890"        //EU-WEST-06 - Amsterdam (6)
       };
 } // Namespace CryptoNote
