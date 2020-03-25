@@ -118,7 +118,7 @@ namespace CryptoNote
         const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 365500;
         const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT               = 390000;
         const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 391000;
-        const uint64_t MAX_OUTPUT_SIZE_HEIGHT                        = 600000;
+        const uint64_t MAX_OUTPUT_SIZE_HEIGHT                        = 582000;
 		
         /* 4,477,500 ARMS -> Max supply / mixin+1 outputs                 */
         /* This is enforced on the daemon side. An output > 4,477,500 causes an invalid block.   */
@@ -173,7 +173,7 @@ namespace CryptoNote
             391000, //8 Trans Input Blocktime
             425000, //9
             455000, //10 CN-ARMOR/ARGON2
-            600000, //11 MAX_OUTPUT_SIZE
+            582000, //11 MAX_OUTPUT_SIZE
             700000, //12
             800000, //13
             900000  //14
