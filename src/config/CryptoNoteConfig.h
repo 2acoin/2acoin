@@ -118,8 +118,8 @@ namespace CryptoNote
         const uint64_t TRANSACTION_SIGNATURE_COUNT_VALIDATION_HEIGHT = 365500;
         const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT               = 390000;
         const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 391000;
-        const uint64_t MAX_OUTPUT_SIZE_HEIGHT                        = 582000;
-		
+        const uint64_t MAX_OUTPUT_SIZE_HEIGHT                        = 585000;
+
         /* 4,477,500 ARMS -> Max supply / mixin+1 outputs                 */
         /* This is enforced on the daemon side. An output > 4,477,500 causes an invalid block.   */
         const uint64_t MAX_OUTPUT_SIZE_NODE   = 4'477'500'00000000;
@@ -143,8 +143,6 @@ namespace CryptoNote
             will be rejected from the pool and will not be added. This mechanism is in place
             to help curtail fusion transaction spam. */
         const size_t   FUSION_TX_MAX_POOL_COUNT 					 = 50;
-
-
 
         const uint32_t UPGRADE_HEIGHT_V2                             = 1;
         const uint32_t UPGRADE_HEIGHT_V3                             = 2;
@@ -173,7 +171,7 @@ namespace CryptoNote
             391000, //8 Trans Input Blocktime
             425000, //9
             455000, //10 CN-ARMOR/ARGON2
-            582000, //11 MAX_OUTPUT_SIZE
+            585000, //11 MAX_OUTPUT_SIZE
             700000, //12
             800000, //13
             900000  //14
