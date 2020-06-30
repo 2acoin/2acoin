@@ -1,5 +1,5 @@
 image:
-  - Previous Visual Studio 2019
+  - Visual Studio 2019
 
 cache:
   - c:\users\appveyor\clcache
