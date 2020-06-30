@@ -1,4 +1,5 @@
 // Copyright (c) 2018-2019, The TurtleCoin Developers
+// Copyright (c) 2020, 2ACoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -8,6 +9,7 @@
 #include "rapidjson/writer.h"
 
 #include <CryptoNote.h>
+#include <errors/Errors.h>
 #include <JsonHelper.h>
 #include <optional>
 #include <string>
@@ -139,6 +141,9 @@ namespace WalletTypes
         /* The transaction hash of the transaction that contains this input */
         Crypto::Hash parentTransactionHash;
 
+        /* The private ephemeral generated along with the key image */
+        std::optional<Crypto::SecretKey> privateEphemeral;
+
         bool operator==(const TransactionInput &other)
         {
             return keyImage == other.keyImage;
@@ -148,26 +153,43 @@ namespace WalletTypes
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.StartObject();
-            writer.Key("keyImage");
-            keyImage.toJSON(writer);
-            writer.Key("amount");
-            writer.Uint64(amount);
-            writer.Key("blockHeight");
-            writer.Uint64(blockHeight);
-            writer.Key("transactionPublicKey");
-            transactionPublicKey.toJSON(writer);
-            writer.Key("transactionIndex");
-            writer.Uint64(transactionIndex);
-            writer.Key("globalOutputIndex");
-            writer.Uint64(globalOutputIndex.value_or(0));
-            writer.Key("key");
-            key.toJSON(writer);
-            writer.Key("spendHeight");
-            writer.Uint64(spendHeight);
-            writer.Key("unlockTime");
-            writer.Uint64(unlockTime);
-            writer.Key("parentTransactionHash");
-            parentTransactionHash.toJSON(writer);
+            {
+                writer.Key("keyImage");
+                keyImage.toJSON(writer);
+
+                writer.Key("amount");
+                writer.Uint64(amount);
+
+                writer.Key("blockHeight");
+                writer.Uint64(blockHeight);
+
+                writer.Key("transactionPublicKey");
+                transactionPublicKey.toJSON(writer);
+
+                writer.Key("transactionIndex");
+                writer.Uint64(transactionIndex);
+
+                writer.Key("globalOutputIndex");
+                writer.Uint64(globalOutputIndex.value_or(0));
+
+                writer.Key("key");
+                key.toJSON(writer);
+
+                writer.Key("spendHeight");
+                writer.Uint64(spendHeight);
+
+                writer.Key("unlockTime");
+                writer.Uint64(unlockTime);
+
+                writer.Key("parentTransactionHash");
+                parentTransactionHash.toJSON(writer);
+
+                if (privateEphemeral)
+                {
+                    writer.Key("privateEphemeral");
+                    privateEphemeral->toJSON(writer);
+                }
+            }
             writer.EndObject();
         }
 
@@ -184,6 +206,13 @@ namespace WalletTypes
             spendHeight = getUint64FromJSON(j, "spendHeight");
             unlockTime = getUint64FromJSON(j, "unlockTime");
             parentTransactionHash.fromString(getStringFromJSON(j, "parentTransactionHash"));
+
+            if (j.HasMember("privateEphemeral"))
+            {
+                Crypto::SecretKey tmp;
+                tmp.fromString(getStringFromJSON(j, "privateEphemeral"));
+                privateEphemeral = tmp;
+            }
         }
     };
 
@@ -217,26 +246,39 @@ namespace WalletTypes
         /* The amount of the transaction output */
         uint64_t amount;
     };
+
     struct GlobalIndexKey
     {
         uint64_t index;
         Crypto::PublicKey key;
     };
+
     struct ObscuredInput
     {
         /* The outputs, including our real output, and the fake mixin outputs */
         std::vector<GlobalIndexKey> outputs;
+
         /* The index of the real output in the outputs vector */
         uint64_t realOutput;
+
         /* The real transaction public key */
         Crypto::PublicKey realTransactionPublicKey;
+
         /* The index in the transaction outputs vector */
         uint64_t realOutputTransactionIndex;
+
         /* The amount being sent */
         uint64_t amount;
+
         /* The owners keys, so we can sign the input correctly */
         Crypto::PublicKey ownerPublicSpendKey;
         Crypto::SecretKey ownerPrivateSpendKey;
+
+        /* The key image of the input */
+        Crypto::KeyImage keyImage;
+
+        /* The private ephemeral generated along with the key image */
+        std::optional<Crypto::SecretKey> privateEphemeral;
     };
 
     class Transaction
@@ -435,6 +477,79 @@ namespace WalletTypes
     {
         Crypto::Hash hash;
         uint64_t height;
+    };
+
+    class FeeType
+    {
+        public:
+            /* Fee will be specified as fee per byte, for example, 1 atomic ARMS per byte. */
+            bool isFeePerByte = false;
+
+            /* Fee for each byte, in atomic units. Allowed to be a double, since
+             * we will truncate it to an int upon performing the chunking. */
+            double feePerByte = 0;
+
+            /* Fee will be specified as a fixed fee */
+            bool isFixedFee = false;
+
+            /* Total fee to use */
+            uint64_t fixedFee = 0;
+
+            /* Fee will not be specified, use the minimum possible */
+            bool isMinimumFee = false;
+
+            static FeeType MinimumFee()
+            {
+                FeeType fee;
+                fee.isMinimumFee = true;
+                return fee;
+            }
+
+            static FeeType FeePerByte(const double feePerByte)
+            {
+                FeeType fee;
+                fee.isFeePerByte = true;
+                fee.feePerByte = feePerByte;
+                return fee;
+            }
+
+            static FeeType FixedFee(const uint64_t fixedFee)
+            {
+                FeeType fee;
+                fee.isFixedFee = true;
+                fee.fixedFee = fixedFee;
+                return fee;
+            }
+
+        private:
+            FeeType() = default;
+    };
+
+    struct TransactionResult
+    {
+        /* The error, if any */
+        Error error;
+
+        /* The raw transaction */
+        CryptoNote::Transaction transaction;
+
+        /* The transaction outputs, before converted into boost uglyness, used
+           for determining key inputs from the tx that belong to us */
+        std::vector<WalletTypes::KeyOutput> outputs;
+
+        /* The random key pair we generated */
+        CryptoNote::KeyPair txKeyPair;
+    };
+
+    struct PreparedTransactionInfo
+    {
+        uint64_t fee;
+        std::string paymentID;
+        std::vector<WalletTypes::TxInputAndOwner> inputs;
+        std::string changeAddress;
+        uint64_t changeRequired;
+        TransactionResult tx;
+        Crypto::Hash transactionHash;
     };
 
     inline void to_json(nlohmann::json &j, const TopBlock &t)
