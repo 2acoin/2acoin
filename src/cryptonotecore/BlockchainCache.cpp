@@ -238,7 +238,6 @@ namespace CryptoNote
         blockInfos.get<BlockIndexTag>().push_back(std::move(blockInfo));
 
         auto blockIndex = cachedBlock.getBlockIndex();
-        assert(blockIndex == blockInfos.size() + startIndex - 1);
 
         for (const auto &keyImage : validatorState.spentKeyImages)
         {
@@ -1290,7 +1289,7 @@ namespace CryptoNote
     uint32_t BlockchainCache::getTopBlockIndex() const
     {
         assert(!blockInfos.empty());
-        return startIndex + static_cast<uint32_t>(blockInfos.size()) - 1;
+        return startIndex + storage->getBlockCount() - 1;
     }
 
     const Crypto::Hash &BlockchainCache::getTopBlockHash() const

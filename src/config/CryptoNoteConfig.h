@@ -62,6 +62,20 @@ namespace CryptoNote
         const size_t   CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE        = 600;
         const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT              = 8;
         const uint64_t MINIMUM_FEE                                   = UINT64_C(50000);
+        /* Fee per byte is rounded up in chunks. This helps makes estimates
+         * more accurate. It's suggested to make this a power of two, to relate
+         * to the underlying storage cost / page sizes for storing a transaction. */
+        const uint64_t FEE_PER_BYTE_CHUNK_SIZE = 256;
+        
+        /* Fee to charge per byte of transaction. Will be applied in chunks, see
+         * above. This value comes out to 1.953125. We use this value instead of
+         * something like 2 because it makes for pretty resulting fees
+         * - 5 TRTL vs 5.12 TRTL. You can read this as.. the fee per chunk
+         * is 500 atomic units. The fee per byte is 500 / chunk size. */
+        const double MINIMUM_FEE_PER_BYTE_V1 = 500.00 / FEE_PER_BYTE_CHUNK_SIZE;
+        
+        /* Height for our first fee to byte change to take effect. */
+        const uint64_t MINIMUM_FEE_PER_BYTE_V1_HEIGHT = 2200000;
 
         /* This section defines our minimum and maximum mixin counts required for transactions */
         const uint64_t MINIMUM_MIXIN_V1                              = 0;
@@ -122,11 +136,11 @@ namespace CryptoNote
 
         /* 4,477,500 ARMS -> Max supply / mixin+1 outputs                 */
         /* This is enforced on the daemon side. An output > 4,477,500 causes an invalid block.   */
-        const uint64_t MAX_OUTPUT_SIZE_NODE   = 4'477'500'00000000;
+        const uint64_t MAX_OUTPUT_SIZE_NODE                          = 4'477'500'00000000;
 
         /* 1 million ARMS                                                   */
         /* Enforced on the client side. An output > 1 million will not be created in a transaction */
-        const uint64_t MAX_OUTPUT_SIZE_CLIENT = 1'000'000'00000000;
+        const uint64_t MAX_OUTPUT_SIZE_CLIENT                        = 1'000'000'00000000;
 
         const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS     = 1;
         const uint64_t CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS    = DIFFICULTY_TARGET * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS;
@@ -143,6 +157,8 @@ namespace CryptoNote
             will be rejected from the pool and will not be added. This mechanism is in place
             to help curtail fusion transaction spam. */
         const size_t   FUSION_TX_MAX_POOL_COUNT 					 = 50;
+        const size_t   NORMAL_TX_MAX_OUTPUT_COUNT_V1                 = 90;
+        const size_t   NORMAL_TX_MAX_OUTPUT_COUNT_V1_HEIGHT          = 725000;
 
         const uint32_t UPGRADE_HEIGHT_V2                             = 1;
         const uint32_t UPGRADE_HEIGHT_V3                             = 2;
@@ -240,8 +256,8 @@ namespace CryptoNote
 
     // P2P Network Configuration Section - This defines our current P2P network version
     // and the minimum version for communication between nodes
-    const uint8_t  P2P_CURRENT_VERSION                           = 7;
-    const uint8_t  P2P_MINIMUM_VERSION                           = 6;
+    const uint8_t  P2P_CURRENT_VERSION                           = 8;
+    const uint8_t  P2P_MINIMUM_VERSION                           = 7;
 
     // This defines the minimum P2P version required for lite blocks propogation
     const uint8_t P2P_LITE_BLOCKS_PROPOGATION_VERSION            = 4;
@@ -262,10 +278,14 @@ namespace CryptoNote
     const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000;          // 5 seconds
     const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "";
 
-    const uint64_t DATABASE_WRITE_BUFFER_MB_DEFAULT_SIZE         = 256;           // Recommended - 1 GB
-    const uint64_t DATABASE_READ_BUFFER_MB_DEFAULT_SIZE          = 256;           // Recommended - 1 GB
-    const uint32_t DATABASE_DEFAULT_MAX_OPEN_FILES               = 125;           // Recommended - 500 files
-    const uint16_t DATABASE_DEFAULT_BACKGROUND_THREADS_COUNT     = 4;             // Recommended - 10 DB Threads
+    const uint64_t ROCKSDB_WRITE_BUFFER_MB                       = 256;           // Recommended - 256 MB
+    const uint64_t ROCKSDB_READ_BUFFER_MB                        = 256;           // Recommended - 128 MB
+    const uint64_t ROCKSDB_MAX_OPEN_FILES                        = 125;           // Recommended - 125 files
+    const uint64_t ROCKSDB_BACKGROUND_THREADS                    = 4;             // Recommended - 4 DB Threads
+    const uint64_t LEVELDB_WRITE_BUFFER_MB                       = 64;            // 64 MB
+    const uint64_t LEVELDB_READ_BUFFER_MB                        = 64;            // 64 MB
+    const uint64_t LEVELDB_MAX_OPEN_FILES                        = 128;           // 128 files
+    const uint64_t LEVELDB_MAX_FILE_SIZE_MB                      = 1024;          // 1024MB = 1GB
 
     const char     LATEST_VERSION_URL[]                          = "https://github.com/2acoin/2acoin/releases/latest";
     const std::string LICENSE_URL                                = "https://github.com/2acoin/2acoin/blob/master/LICENSE";

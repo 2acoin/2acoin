@@ -6,7 +6,7 @@
 #pragma once
 
 #include "IDataBase.h"
-#include "rocksdb/db.h"
+#include "leveldb/db.h"
 
 #include <atomic>
 #include <logging/LoggerRef.h>
@@ -15,20 +15,20 @@
 
 namespace CryptoNote
 {
-    class RocksDBWrapper : public IDataBase
+    class LevelDBWrapper : public IDataBase
     {
       public:
-        RocksDBWrapper(std::shared_ptr<Logging::ILogger> logger);
+        LevelDBWrapper(std::shared_ptr<Logging::ILogger> logger);
 
-        virtual ~RocksDBWrapper();
+        virtual ~LevelDBWrapper();
 
-        RocksDBWrapper(const RocksDBWrapper &) = delete;
+        LevelDBWrapper(const LevelDBWrapper &) = delete;
 
-        RocksDBWrapper(RocksDBWrapper &&) = delete;
+        LevelDBWrapper(LevelDBWrapper &&) = delete;
 
-        RocksDBWrapper &operator=(const RocksDBWrapper &) = delete;
+        LevelDBWrapper &operator=(const LevelDBWrapper &) = delete;
 
-        RocksDBWrapper &operator=(RocksDBWrapper &&) = delete;
+        LevelDBWrapper &operator=(LevelDBWrapper &&) = delete;
 
         void init(const DataBaseConfig &config) override;
 
@@ -45,8 +45,6 @@ namespace CryptoNote
       private:
         std::error_code write(IWriteBatch &batch, bool sync);
 
-        rocksdb::Options getDBOptions(const DataBaseConfig &config);
-
         std::string getDataDir(const DataBaseConfig &config);
 
         enum State
@@ -57,7 +55,7 @@ namespace CryptoNote
 
         Logging::LoggerRef logger;
 
-        std::unique_ptr<rocksdb::DB> db;
+        std::unique_ptr<leveldb::DB> db;
 
         std::atomic<State> state;
     };
