@@ -27,7 +27,8 @@ Error validateFusionTransaction(
     const std::vector<std::string> subWalletsToTakeFrom,
     const std::string destinationAddress,
     const std::shared_ptr<SubWallets> subWallets,
-    const uint64_t currentHeight)
+    const uint64_t currentHeight,
+    const std::optional<uint64_t> optimizeTarget)
 {
     /* Validate the mixin */
     if (Error error = validateMixin(mixin, currentHeight); error != SUCCESS)
@@ -47,13 +48,18 @@ Error validateFusionTransaction(
         return error;
     }
 
+    if (Error error = validateOptimizeTarget(optimizeTarget); error != SUCCESS)
+    {
+        return error;
+    }
+
     return SUCCESS;
 }
 
 Error validateTransaction(
     const std::vector<std::pair<std::string, uint64_t>> destinations,
     const uint64_t mixin,
-    const uint64_t fee,
+    const WalletTypes::FeeType fee,
     const std::string paymentID,
     const std::vector<std::string> subWalletsToTakeFrom,
     const std::string changeAddress,
@@ -228,13 +234,18 @@ Error validateMixin(const uint64_t mixin, const uint64_t height)
 
 Error validateAmount(
     const std::vector<std::pair<std::string, uint64_t>> destinations,
-    const uint64_t fee,
+    const WalletTypes::FeeType fee,
     const std::vector<std::string> subWalletsToTakeFrom,
     const std::shared_ptr<SubWallets> subWallets,
     const uint64_t currentHeight)
 {
-    /* Verify the fee is valid */
-    if (fee < CryptoNote::parameters::MINIMUM_FEE)
+    if (!fee.isFeePerByte && !fee.isFixedFee && !fee.isMinimumFee)
+    {
+        throw std::runtime_error("Programmer error: fee type not specified");
+    }
+
+    /* Using a fee per byte, and doesn't meet the min fee per byte requirement. */
+    if (fee.isFeePerByte && fee.feePerByte < CryptoNote::parameters::MINIMUM_FEE_PER_BYTE_V1)
     {
         return FEE_TOO_SMALL;
     }
@@ -247,9 +258,18 @@ Error validateAmount(
         currentHeight);
 
     /* Get the total amount of the transaction */
-    uint64_t totalAmount = Utilities::getTransactionSum(destinations) + fee;
+    uint64_t totalAmount = Utilities::getTransactionSum(destinations);
 
-    std::vector<uint64_t> amounts {fee};
+    std::vector<uint64_t> amounts;
+
+    /* If we are using a fixed fee, we can calculate if we've got enough funds
+     * to cover the transaction. If we don't, we'll leave the verification until
+     * we have constructed the transaction */
+    if (fee.isFixedFee)
+    {
+        totalAmount += fee.fixedFee;
+        amounts.push_back(fee.fixedFee);
+    }
 
     std::transform(destinations.begin(), destinations.end(), std::back_inserter(amounts), [](const auto destination) {
         return destination.second;
@@ -411,6 +431,30 @@ Error validateOurAddresses(const std::vector<std::string> addresses, const std::
                 "The address given (" + address + ") does not exist in the wallet container, but it is "
                     + "required to exist for this operation.");
         }
+    }
+
+    return SUCCESS;
+}
+
+Error validateOptimizeTarget(const std::optional<uint64_t> optimizeTarget)
+{
+    if (!optimizeTarget)
+    {
+        return SUCCESS;
+    }
+
+    const uint64_t target = *optimizeTarget;
+
+    const std::string strTarget = std::to_string(target);
+
+    /* Take the first digit of the target, convert to int. Multiply by 10 ^ target len - 1.
+     * This will give us the original value minus any non significant digits - 
+     * i.e. 23456 -> 20000 */
+    const uint64_t validTarget = (strTarget[0] - '0') * pow(10, strTarget.length() - 1);
+
+    if (target != validTarget)
+    {
+        return AMOUNT_UGLY;
     }
 
     return SUCCESS;

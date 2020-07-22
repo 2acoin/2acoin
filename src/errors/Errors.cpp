@@ -68,7 +68,7 @@ std::string Error::getErrorMessage() const
         {
             return "Not enough unlocked funds were found to cover this "
                    "transaction in the subwallets specified (or all wallets, "
-                   "if not specified. (Sum of amounts + fee + node fee)";
+                   "if not specified). (Sum of amounts + fee + node fee)";
         }
         case ADDRESS_WRONG_LENGTH:
         {
@@ -276,9 +276,52 @@ std::string Error::getErrorMessage() const
         }
         case INVALID_PRIVATE_KEY:
         {
-            return "The private key given is not a valid ed25519 public key.";
+            return "The private key given is not a valid ed25519 private key.";
         }
-            /* No default case so the compiler warns us if we missed one */
+        case INVALID_EXTRA_DATA:
+        {
+            return "The extra data given for the transaction could not be decoded.";
+        }
+        case UNKNOWN_ERROR:
+        {
+            return "An unknown error occurred.";
+        }
+        case DAEMON_STILL_PROCESSING:
+        {
+            return "The transaction was sent to the daemon, but the connection "
+                   "timed out before we could determine if the transaction "
+                   "succeeded. Wait a few minutes before retrying the transaction, "
+                   "as it may still succeed.";
+        }
+        case OUTPUT_DECOMPOSITION:
+        {
+            return "The transaction contains more outputs than what is permitted "
+                   "by the number of inputs that have been supplied for the "
+                   "transaction. Please try to send your transaction again. "
+                   "If the problem persists, please reduce the number of "
+                   "destinations that you are trying to send to.";
+        }
+        case PREPARED_TRANSACTION_EXPIRED:
+        {
+            return "The prepared transaction contains inputs that have since "
+                   "been spent or are no longer available, probably due to sending "
+                   "another transaction in between preparing this transaction and "
+                   "sending it. The prepared transaction has been cancelled.";
+        }
+        case PREPARED_TRANSACTION_NOT_FOUND:
+        {
+            return "The prepared transaction hash given does not exist, either "
+                   "because it never existed or because the wallet process was "
+                   "restarted and the previously prepared transactions were lost. "
+                   "Please re-prepare and re-send the transaction, ensuring you "
+                   "specify the correct transaction hash.";
+        }
+        case AMOUNT_UGLY:
+        {
+            return "The amount given does not have only a single significant digit. "
+                   "For example, 20000 or 100000 would be fine, but 20001 or 123456 would not.";
+        }
+        /* No default case so the compiler warns us if we missed one */
     }
 
     throw std::invalid_argument("Invalid error code given");
