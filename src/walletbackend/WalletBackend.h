@@ -129,19 +129,33 @@ class WalletBackend
         const bool daemonSSL,
         const unsigned int syncThreadCount);
 
+    /* Remove a previously prepared transaction. */
+    bool removePreparedTransaction(const Crypto::Hash &transactionHash);
+
+    /* Sends a previously prepared transaction to the network */
+    std::tuple<Error, Crypto::Hash> sendPreparedTransaction(
+        const Crypto::Hash transactionHash);
+
     /* Send a transaction of amount to destination with paymentID */
-    std::tuple<Error, Crypto::Hash>
-        sendTransactionBasic(const std::string destination, const uint64_t amount, const std::string paymentID);
+    std::tuple<Error, Crypto::Hash, WalletTypes::PreparedTransactionInfo> sendTransactionBasic(
+        const std::string destination,
+        const uint64_t amount,
+        const std::string paymentID,
+        const bool sendAll = false,
+        const bool sendTransaction = true);
 
     /* Advanced send transaction, specify mixin, change address, etc */
-    std::tuple<Error, Crypto::Hash> sendTransactionAdvanced(
+    std::tuple<Error, Crypto::Hash, WalletTypes::PreparedTransactionInfo> sendTransactionAdvanced(
         const std::vector<std::pair<std::string, uint64_t>> destinations,
         const uint64_t mixin,
-        const uint64_t fee,
+        const WalletTypes::FeeType fee,
         const std::string paymentID,
         const std::vector<std::string> subWalletsToTakeFrom,
         const std::string changeAddress,
-        const uint64_t unlockTime);
+        const uint64_t unlockTime,
+        const std::vector<uint8_t> extraData,
+        const bool sendAll = false,
+        const bool sendTransaction = true);
 
     /* Send a fusion using default mixin, default destination, and
        taking from all subwallets */
@@ -151,7 +165,9 @@ class WalletBackend
     std::tuple<Error, Crypto::Hash> sendFusionTransactionAdvanced(
         const uint64_t mixin,
         const std::vector<std::string> subWalletsToTakeFrom,
-        const std::string destinationAddress);
+        const std::string destinationAddress,
+        const std::vector<uint8_t> extraData,
+        const std::optional<uint64_t> optimizeTarget);
 
     /* Get the balance for one subwallet (error, unlocked, locked) */
     std::tuple<Error, uint64_t, uint64_t> getBalance(const std::string address) const;
@@ -161,11 +177,14 @@ class WalletBackend
 
     uint64_t getTotalUnlockedBalance() const;
 
-    /* Make a new sub wallet (gens a privateSpendKey) */
-    std::tuple<Error, std::string, Crypto::SecretKey> addSubWallet();
+    /* Make a new sub wallet (gens a deterministic privateSpendKey) */
+    std::tuple<Error, std::string, Crypto::SecretKey, uint64_t> addSubWallet();
 
     /* Import a sub wallet with the given privateSpendKey */
     std::tuple<Error, std::string> importSubWallet(const Crypto::SecretKey privateSpendKey, const uint64_t scanHeight);
+
+    /* Import a deterministic sub wallet using the given wallet index */
+    std::tuple<Error, std::string> importSubWallet(const uint64_t walletIndex, const uint64_t scanHeight);
 
     /* Import a view only sub wallet with the given publicSpendKey */
     std::tuple<Error, std::string>
@@ -204,7 +223,7 @@ class WalletBackend
     Crypto::SecretKey getPrivateViewKey() const;
 
     /* Gets the public and private spend key for the given address */
-    std::tuple<Error, Crypto::PublicKey, Crypto::SecretKey> getSpendKeys(const std::string &address) const;
+    std::tuple<Error, Crypto::PublicKey, Crypto::SecretKey, uint64_t> getSpendKeys(const std::string &address) const;
 
     /* Get the private spend and private view for the primary address */
     std::tuple<Crypto::SecretKey, Crypto::SecretKey> getPrimaryAddressPrivateKeys() const;
@@ -295,9 +314,10 @@ class WalletBackend
 
     Error unsafeSave() const;
 
+    std::string unsafeToJSON() const;
+
     void init();
 
-    
     //////////////////////////////
     /* Private member variables */
     //////////////////////////////
@@ -320,4 +340,10 @@ class WalletBackend
     std::shared_ptr<WalletSynchronizerRAIIWrapper> m_syncRAIIWrapper;
 
     unsigned int m_syncThreadCount;
+
+    /* Prepared, unsent transactions. */
+    std::unordered_map<Crypto::Hash, WalletTypes::PreparedTransactionInfo> m_preparedTransactions;
+
+    /* Ensure we only send one transaction in parallel, otherwise txs will likely fail. */
+    std::mutex m_transactionMutex;
 };
