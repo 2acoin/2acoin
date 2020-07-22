@@ -11,6 +11,7 @@
 #include <config/CryptoNoteConfig.h>
 #include <logging/ILogger.h>
 #include <rapidjson/document.h>
+#include <thread>
 
 using namespace rapidjson;
 
@@ -27,14 +28,11 @@ namespace DaemonConfig
             checkPoints = "default";
             logFile = logfile.str();
             logLevel = Logging::WARNING;
-            dbMaxOpenFiles = CryptoNote::DATABASE_DEFAULT_MAX_OPEN_FILES;
-            dbReadCacheSizeMB = CryptoNote::DATABASE_READ_BUFFER_MB_DEFAULT_SIZE;
-            dbThreads = CryptoNote::DATABASE_DEFAULT_BACKGROUND_THREADS_COUNT;
-            dbWriteBufferSizeMB = CryptoNote::DATABASE_WRITE_BUFFER_MB_DEFAULT_SIZE;
             rewindToHeight = 0;
             p2pInterface = "0.0.0.0";
             p2pPort = CryptoNote::P2P_DEFAULT_PORT;
             p2pExternalPort = 0;
+            transactionValidationThreads = std::thread::hardware_concurrency();
             rpcInterface = "127.0.0.1";
             rpcPort = CryptoNote::RPC_DEFAULT_PORT;
             noConsole = false;
@@ -50,6 +48,7 @@ namespace DaemonConfig
             dumpConfig = false;
             enableDbCompression = false;
             resync = false;
+            enableLevelDB = false;
         }
 
         std::string dataDirectory;
@@ -72,7 +71,7 @@ namespace DaemonConfig
 
         std::vector<std::string> seedNodes;
 
-        std::vector<std::string> enableCors;
+        std::string enableCors;
 
         int logLevel;
 
@@ -84,13 +83,17 @@ namespace DaemonConfig
 
         int p2pExternalPort;
 
-        int dbThreads;
+        uint32_t transactionValidationThreads;
 
-        int dbMaxOpenFiles;
+        uint64_t dbThreads;
 
-        int dbWriteBufferSizeMB;
+        uint64_t dbMaxOpenFiles;
 
-        int dbReadCacheSizeMB;
+        uint64_t dbWriteBufferSizeMB;
+
+        uint64_t dbReadCacheSizeMB;
+
+        uint64_t dbMaxFileSizeMB;
 
         uint32_t rewindToHeight;
 
@@ -107,6 +110,8 @@ namespace DaemonConfig
         bool resync;
 
         bool p2pResetPeerstate;
+
+        bool enableLevelDB;
 
         std::string configFile;
 
