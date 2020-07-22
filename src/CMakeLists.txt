@@ -2,6 +2,7 @@
 add_definitions(-DSTATICLIB)
 
 # Add external libraries as include dirs, so we can do #include "httplib" for example
+include_directories(${CMAKE_SOURCE_DIR}/external/leveldb/include)
 include_directories(${CMAKE_SOURCE_DIR}/external/rocksdb/include)
 include_directories(${CMAKE_SOURCE_DIR}/external/cpp-linenoise)
 include_directories(${CMAKE_SOURCE_DIR}/external/cpp-httplib)
@@ -12,6 +13,7 @@ include_directories(${CMAKE_SOURCE_DIR}/external/cryptopp)
 include_directories(${CMAKE_SOURCE_DIR}/external/zstd)
 include_directories(${CMAKE_SOURCE_DIR}/external/lz4)
 include_directories(${CMAKE_SOURCE_DIR}/external/argon2/include)
+include_directories(${CMAKE_SOURCE_DIR}/external/snappy)
 
 # Show cmake where the source files are
 # Note, if you add remove a source file, you will need to re-run cmake so it
@@ -44,7 +46,6 @@ file(GLOB_RECURSE WalletApi walletapi/*)
 file(GLOB_RECURSE WalletBackend walletbackend/*)
 file(GLOB_RECURSE WalletService walletservice/*)
 file(GLOB_RECURSE WalletUpgrader walletupgrader/*)
-file(GLOB_RECURSE zedwallet zedwallet/*)
 file(GLOB_RECURSE zedwallet++ zedwallet++/*)
 
 if (MSVC)
@@ -56,7 +57,7 @@ else ()
 endif ()
 
 # Group the files together in IDEs
-source_group("" FILES $${Common} ${Config} ${Crypto} ${CryptoNoteCore} ${CryptoNoteProtocol} ${2ACoind} ${JsonRpcServer} ${Http} ${Logging} ${Logger} ${miner} ${Mnemonics} ${Nigel} ${NodeRpcProxy} ${P2p} ${Rpc} ${Serialization} ${System} ${Transfers} ${Wallet} ${WalletApi} ${WalletBackend} ${WalletService} ${zedwallet} ${zedwallet++} ${CryptoTest} ${Errors} ${Utilities} ${SubWallets})
+source_group("" FILES $${Common} ${Config} ${Crypto} ${CryptoNoteCore} ${CryptoNoteProtocol} ${2ACoind} ${JsonRpcServer} ${Http} ${Logging} ${Logger} ${miner} ${Mnemonics} ${Nigel} ${NodeRpcProxy} ${P2p} ${Rpc} ${Serialization} ${System} ${Transfers} ${Wallet} ${WalletApi} ${WalletBackend} ${WalletService} ${zedwallet++} ${CryptoTest} ${Errors} ${Utilities} ${WalletUpgrader} ${SubWallets})
 
 # Define a group of files as a library to link against
 add_library(BlockchainExplorer STATIC ${BlockchainExplorer})
@@ -112,17 +113,15 @@ add_executable(WalletService ${WalletService} ${PG_SOURCES_OS})
 add_executable(2ACoind ${2ACoind} ${DAEMON_SOURCES_OS})
 add_executable(WalletApi ${WalletApi} ${WALLET_API_SOURCES_OS})
 add_executable(WalletUpgrader ${WalletUpgrader} ${WALLET_UPGRADER_SOURCES_OS})
-add_executable(zedwallet ${zedwallet} ${ZED_WALLET_SOURCES_OS})
 add_executable(zedwallet++ ${zedwallet++} ${ZED_WALLET_SOURCES_OS})
 
 if (MSVC)
     target_link_libraries(System ws2_32)
-    target_link_libraries(2ACoind Rpcrt4)
+    target_link_libraries(2ACoind Rpcrt4 ws2_32 advapi32 crypt32 gdi32 user32)
     target_link_libraries(WalletService Rpcrt4 ws2_32 advapi32 crypt32 gdi32 user32)
     target_link_libraries(zedwallet++ ws2_32 advapi32 crypt32 gdi32 user32)
     target_link_libraries(WalletApi ws2_32 advapi32 crypt32 gdi32 user32)
     target_link_libraries(miner ws2_32 advapi32 crypt32 gdi32 user32)
-    target_link_libraries(zedwallet ws2_32 advapi32 crypt32 gdi32 user32)
     target_link_libraries(WalletUpgrader ws2_32 advapi32 crypt32 gdi32 user32)
 endif ()
 
@@ -138,9 +137,9 @@ elseif (UNIX)
 endif ()
 
 if (MSVC)
-    target_link_libraries(2ACoind System CryptoNoteCore rocksdb zstd lz4 Errors ${Boost_LIBRARIES})
+    target_link_libraries(2ACoind System CryptoNoteCore rocksdb zstd lz4 leveldb snappy Errors ${Boost_LIBRARIES})
 else ()
-    target_link_libraries(2ACoind System CryptoNoteCore rocksdblib zstd lz4 Errors ${Boost_LIBRARIES})
+    target_link_libraries(2ACoind System CryptoNoteCore rocksdblib zstd lz4 leveldblib snappy Errors ${Boost_LIBRARIES})
 endif ()
 
 # Add the dependencies we need
@@ -151,9 +150,9 @@ target_link_libraries(cryptotest Crypto Common)
 target_link_libraries(Errors Crypto SubWallets Utilities)
 target_link_libraries(Logging Common)
 target_link_libraries(miner Crypto Errors Utilities System Serialization)
-target_link_libraries(Nigel Errors)
+target_link_libraries(Nigel Errors CryptoNoteCore)
 target_link_libraries(NodeRpcProxy Rpc)
-target_link_libraries(P2P upnpc-static Serialization)
+target_link_libraries(P2P upnpc-static Serialization System CryptoNoteCore)
 target_link_libraries(Rpc P2P Utilities CryptoNoteCore)
 target_link_libraries(Serialization Common Crypto ${Boost_LIBRARIES})
 target_link_libraries(SubWallets Common Logger)
@@ -164,7 +163,6 @@ target_link_libraries(WalletApi WalletBackend)
 target_link_libraries(WalletBackend Serialization Mnemonics Nigel cryptopp-static __filesystem Utilities SubWallets Logger Config Wallet)
 target_link_libraries(WalletService JsonRpcServer Wallet Mnemonics Errors)
 target_link_libraries(WalletUpgrader Utilities WalletBackend Common)
-target_link_libraries(zedwallet Mnemonics Wallet Utilities Errors)
 target_link_libraries(zedwallet++ WalletBackend)
 
 if (OPENSSL_FOUND)
@@ -173,6 +171,7 @@ if (OPENSSL_FOUND)
     target_link_libraries(WalletApi ${OPENSSL_LIBRARIES})
     target_link_libraries(zedwallet++ ${OPENSSL_LIBRARIES})
     target_link_libraries(WalletService ${OPENSSL_LIBRARIES})
+    target_link_libraries(TurtleCoind ${OPENSSL_LIBRARIES})
 endif ()
 
 # Add dependencies means we have to build the latter before we build the former
@@ -187,12 +186,11 @@ add_dependencies(2ACoind version)
 add_dependencies(WalletUpgrader version)
 add_dependencies(WalletApi version)
 add_dependencies(WalletService version)
-add_dependencies(zedwallet version)
+add_dependencies(zedwallet++ version)
 
 # Finally build the binaries
 set_property(TARGET 2ACoind PROPERTY OUTPUT_NAME "2ACoind")
-set_property(TARGET zedwallet PROPERTY OUTPUT_NAME "zedwallet")
-set_property(TARGET zedwallet++ PROPERTY OUTPUT_NAME "zedwallet-beta")
+set_property(TARGET zedwallet++ PROPERTY OUTPUT_NAME "zedwallet")
 set_property(TARGET WalletService PROPERTY OUTPUT_NAME "2acoin-service")
 set_property(TARGET miner PROPERTY OUTPUT_NAME "miner")
 set_property(TARGET cryptotest PROPERTY OUTPUT_NAME "cryptotest")
@@ -202,5 +200,6 @@ set_property(TARGET WalletUpgrader PROPERTY OUTPUT_NAME "wallet-upgrader")
 # Additional make targets, can be used to build a subset of the targets
 # e.g. make pool will build only 2ACoind and service
 add_custom_target(pool DEPENDS 2ACoind WalletService)
-add_custom_target(solominer DEPENDS 2ACoind zedwallet miner)
-add_custom_target(cli DEPENDS 2ACoind zedwallet)
+add_custom_target(solominer DEPENDS 2ACoind zedwallet++ miner)
+add_custom_target(cli DEPENDS 2ACoind zedwallet++)
+add_custom_target(zedwallet DEPENDS zedwallet++)
