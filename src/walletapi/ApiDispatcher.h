@@ -120,24 +120,57 @@ class ApiDispatcher
     std::tuple<Error, uint16_t>
         importAddress(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
 
+    /* Imports a deterministic address using a wallet index */
+    std::tuple<Error, uint16_t>
+        importDeterministicAddress(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
+
     /* Imports a view only address with a public spend key */
     std::tuple<Error, uint16_t>
         importViewAddress(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
 
+    /* Validate an address or integrated address */
     std::tuple<Error, uint16_t>
         validateAddress(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
 
+    /* Send a previously prepared transaction */
+    std::tuple<Error, uint16_t>
+        sendPreparedTransaction(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
+
+    /* Prepare (don't send) a basic transaction */
+    std::tuple<Error, uint16_t>
+        prepareBasicTransaction(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
+
+    /* Send a basic transaction */
     std::tuple<Error, uint16_t>
         sendBasicTransaction(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
 
+    /* Make a basic transaction, optionally relaying to the network */
+    std::tuple<Error, uint16_t>
+        makeBasicTransaction(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body, const bool sendTransaction);
+
+    /* Prepare (don't send) an advanced transaction */
+    std::tuple<Error, uint16_t>
+        prepareAdvancedTransaction(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
+
+    /* Send an advanced transaction */
     std::tuple<Error, uint16_t>
         sendAdvancedTransaction(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
 
+    /* Make an advanced transaction, optionally relaying to the network */
+    std::tuple<Error, uint16_t>
+        makeAdvancedTransaction(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body, const bool sendTransaction);
+
+    /* Send a basic fusion transaction */
     std::tuple<Error, uint16_t>
         sendBasicFusionTransaction(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
 
+    /* Send a more customizable fusion transaction */
     std::tuple<Error, uint16_t>
         sendAdvancedFusionTransaction(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
+
+    /* Export wallet to file in JSON format */
+    std::tuple<Error, uint16_t>
+        exportToJSON(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
 
     /////////////////////
     /* DELETE REQUESTS */
@@ -149,6 +182,9 @@ class ApiDispatcher
 
     std::tuple<Error, uint16_t>
         deleteAddress(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
+
+    std::tuple<Error, uint16_t>
+        deletePreparedTransaction(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body);
 
     //////////////////
     /* PUT REQUESTS */
@@ -234,6 +270,16 @@ class ApiDispatcher
 
     std::tuple<Error, uint16_t>
         getTransactionDetails(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body) const;
+
+    std::tuple<Error, uint16_t> getTransactionsByPaymentId(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const nlohmann::json &body) const;
+
+    std::tuple<Error, uint16_t> getTransactionsWithPaymentId(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const nlohmann::json &body) const;
 
     std::tuple<Error, uint16_t>
         getBalance(const httplib::Request &req, httplib::Response &res, const nlohmann::json &body) const;
