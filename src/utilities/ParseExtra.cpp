@@ -35,6 +35,30 @@ namespace Utilities
         return parsed.extraData;
     }
 
+    Crypto::SecretKey getTransactionPrivateKeyFromExtra(const std::vector<uint8_t> &extra)
+    {
+        const ParsedExtra parsed = parseExtra(extra);
+        return parsed.transactionPrivateKey;
+    }
+
+    Crypto::PublicKey getRecipientPublicSpendKey(const std::vector<uint8_t> &extra)
+    {
+        const ParsedExtra parsed = parseExtra(extra);
+        return parsed.recipientPublicSpendKey;
+    }
+
+    Crypto::PublicKey getRecipientPublicViewKey(const std::vector<uint8_t> &extra)
+    {
+        const ParsedExtra parsed = parseExtra(extra);
+        return parsed.recipientPublicViewKey;
+    }
+
+    std::vector<uint8_t> getPoolNonceFromExtra(const std::vector<uint8_t> &extra)
+    {
+        const ParsedExtra parsed = parseExtra(extra);
+        return parsed.poolNonce;
+    }
+
     ParsedExtra parseExtra(const std::vector<uint8_t> &extra)
     {
         ParsedExtra parsed {Constants::NULL_PUBLIC_KEY, std::string(), {0, Constants::NULL_HASH}};
@@ -44,18 +68,29 @@ namespace Utilities
         bool seenExtraData = false;
         bool seenPaymentID = false;
         bool seenMergedMiningTag = false;
+        bool seenRecipientPublicViewKey = false;
+        bool seenRecipientPublicSpendKey = false;
+        bool seenTransactionPrivateKey = false;
+        bool seenPoolNonce = false;
 
         for (auto it = extra.begin(); it < extra.end(); it++)
         {
             /* Nothing else to parse. */
-            if (seenPubKey && seenPaymentID && seenMergedMiningTag && seenExtraData)
+            if (seenPubKey
+             && seenPaymentID
+             && seenMergedMiningTag
+             && seenExtraData
+             && seenRecipientPublicViewKey
+             && seenRecipientPublicSpendKey
+             && seenTransactionPrivateKey
+             && seenPoolNonce)
             {
                 break;
             }
 
             const uint8_t c = *it;
 
-            const auto elementsRemaining = std::distance(it, extra.end());
+            const size_t elementsRemaining = std::distance(it, extra.end());
 
             /* Found a pubkey */
 
@@ -79,14 +114,14 @@ namespace Utilities
             }
 
             /* Found nonce information and need to decode it.
-            /* Nonce is a sub-tagged field and thus we need to work through
+               Nonce is a sub-tagged field and thus we need to work through
                the data to determine what fields are in here */
             if (c == Constants::TX_EXTRA_NONCE_IDENTIFIER && elementsRemaining > 1 && !seenNonce)
             {
                 /* Get the length of the following data in the field */
                 size_t nonceSize = 0;
 
-                const auto readNonceSize = Tools::read_varint(it + 1, extra.end(), nonceSize);
+                const size_t readNonceSize = Tools::read_varint(it + 1, extra.end(), nonceSize);
 
                 /* Set up a variable to hold how much we have read so we know how far to skip ahead */
                 size_t advanceIterator = readNonceSize;
@@ -104,7 +139,7 @@ namespace Utilities
                     {
                         const uint8_t s = *is;
 
-                        const auto nElementsRemaining = std::distance(is, nonceData.end());
+                        const size_t nElementsRemaining = std::distance(is, nonceData.end());
 
                         /* If we encounter a Payment ID field and there are enough bytes remaining in
                            the nonce data and we have not encountered a payment ID, then read it out */
@@ -136,7 +171,7 @@ namespace Utilities
                             /* Read out the size of the data */
                             size_t dataSize = 0;
 
-                            const auto readDataSize = Tools::read_varint(is + 1, nonceData.end(), dataSize);
+                            const size_t readDataSize = Tools::read_varint(is + 1, nonceData.end(), dataSize);
 
                             /* If there are enough bytes left to read based upon the size above then
                                read out the data */
@@ -175,7 +210,7 @@ namespace Utilities
                 /* Get the length of the following data (Probably 33 bytes for depth+hash) */
                 size_t dataSize = 0;
 
-                const auto readDataSize = Tools::read_varint(it + 1, extra.end(), dataSize);
+                const size_t readDataSize = Tools::read_varint(it + 1, extra.end(), dataSize);
 
                 if (elementsRemaining > dataSize + readDataSize && dataSize >= 33)
                 {
@@ -196,6 +231,72 @@ namespace Utilities
                     it += readDepthSize + 32;
 
                     seenMergedMiningTag = true;
+
+                    /* Can continue parsing */
+                    continue;
+                }
+            }
+
+            if (c == Constants::TX_EXTRA_RECIPIENT_PUBLIC_VIEW_KEY_IDENTIFIER && elementsRemaining > 32 && !seenRecipientPublicViewKey)
+            {
+                /* Copy 32 chars, beginning from the next char */
+                std::copy(it + 1, it + 1 + 32, std::begin(parsed.recipientPublicViewKey.data));
+
+                /* Advance past the public view key */
+                it += 32;
+
+                seenRecipientPublicViewKey = true;
+
+                /* And continue parsing. */
+                continue;
+            }
+
+            if (c == Constants::TX_EXTRA_RECIPIENT_PUBLIC_SPEND_KEY_IDENTIFIER && elementsRemaining > 32 && !seenRecipientPublicSpendKey)
+            {
+                /* Copy 32 chars, beginning from the next char */
+                std::copy(it + 1, it + 1 + 32, std::begin(parsed.recipientPublicSpendKey.data));
+
+                /* Advance past the public spend key */
+                it += 32;
+
+                seenRecipientPublicSpendKey = true;
+
+                /* And continue parsing. */
+                continue;
+            }
+
+            if (c == Constants::TX_EXTRA_TRANSACTION_PRIVATE_KEY_IDENTIFIER && elementsRemaining > 32 && !seenTransactionPrivateKey)
+            {
+                /* Copy 32 chars, beginning from the next char */
+                std::copy(it + 1, it + 1 + 32, std::begin(parsed.transactionPrivateKey.data));
+
+                /* Advance past the private key */
+                it += 32;
+
+                seenTransactionPrivateKey = true;
+
+                /* And continue parsing. */
+                continue;
+            }
+
+            if (c == Constants::TX_EXTRA_POOL_NONCE && elementsRemaining > 1 && !seenPoolNonce)
+            {
+                /* Get the length of the following data in the field */
+                size_t nonceSize = 0;
+
+                const size_t readNonceSize = Tools::read_varint(it + 1, extra.end(), nonceSize);
+
+                if (elementsRemaining > readNonceSize + nonceSize)
+                {
+                    /* Copy the data into the parsed extraData field */
+                    std::copy(it + 1 + readNonceSize, it + 1 + readNonceSize + nonceSize, std::back_inserter(parsed.poolNonce));
+
+                    seenPoolNonce = true;
+
+                    /* Advance past the mm tag by length field (readDataSize) + */
+                    it += readNonceSize + nonceSize;
+
+                    seenPoolNonce = true;
 
                     /* Can continue parsing */
                     continue;
