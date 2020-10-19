@@ -247,11 +247,26 @@ namespace CryptoNote
         tx.outputs.clear();
         tx.extra.clear();
 
+        /**
+         * To avoid weird parsing errors in the TX_EXTRA bytes, it's far safer to make sure
+         * that we always add the fields in ORDER of the their TAG number
+         */
+
         KeyPair txkey = generateKeyPair();
-        addTransactionPublicKeyToExtra(tx.extra, txkey.publicKey);
+        addTransactionPublicKeyToExtra(tx.extra, txkey.publicKey); // TAG 0x01
+
+        tx.extra.push_back(Constants::TX_EXTRA_RECIPIENT_PUBLIC_VIEW_KEY_IDENTIFIER); // TAG 0x04
+        std::copy(std::begin(publicViewKey.data), std::end(publicViewKey.data), std::back_inserter(tx.extra));
+
+        tx.extra.push_back(Constants::TX_EXTRA_RECIPIENT_PUBLIC_SPEND_KEY_IDENTIFIER); // TAG 0x05
+        std::copy(std::begin(publicSpendKey.data), std::end(publicSpendKey.data), std::back_inserter(tx.extra));
+
+        tx.extra.push_back(Constants::TX_EXTRA_TRANSACTION_PRIVATE_KEY_IDENTIFIER); // TAG 0x06
+        std::copy(std::begin(txkey.secretKey.data), std::end(txkey.secretKey.data), std::back_inserter(tx.extra));
+
         if (!extraNonce.empty())
         {
-            if (!addExtraNonceToTransactionExtra(tx.extra, extraNonce))
+            if (!addPoolNonceToTransactionExtra(tx.extra, extraNonce)) // TAG 0x07
             {
                 return false;
             }
