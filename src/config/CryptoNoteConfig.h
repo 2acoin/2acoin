@@ -68,15 +68,12 @@ namespace CryptoNote
         const uint64_t FEE_PER_BYTE_CHUNK_SIZE = 256;
         
         /* Fee to charge per byte of transaction. Will be applied in chunks, see
-         * above. This value comes out to 1.953125. We use this value instead of
-         * something like 2 because it makes for pretty resulting fees
-         * - 5 TRTL vs 5.12 TRTL. You can read this as.. the fee per chunk
+         * above. This value comes out to 0.0000006. We use this value instead of
+         * something like .0011 because it makes for pretty resulting fees
+         * - .0000006 ARMS. You can read this as.. the fee per chunk
          * is 500 atomic units. The fee per byte is 500 / chunk size. */
-        const double MINIMUM_FEE_PER_BYTE_V1 = 500.00 / FEE_PER_BYTE_CHUNK_SIZE;
+        const double MINIMUM_FEE_PER_BYTE_V1 = 0.0001536 / FEE_PER_BYTE_CHUNK_SIZE;
         
-        /* Height for our first fee to byte change to take effect. */
-        const uint64_t MINIMUM_FEE_PER_BYTE_V1_HEIGHT = 2200000;
-
         /* This section defines our minimum and maximum mixin counts required for transactions */
         const uint64_t MINIMUM_MIXIN_V1                              = 0;
         const uint64_t MAXIMUM_MIXIN_V1                              = 100;
@@ -133,7 +130,10 @@ namespace CryptoNote
         const uint64_t BLOCK_BLOB_SHUFFLE_CHECK_HEIGHT               = 390000;
         const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 391000;
         const uint64_t MAX_OUTPUT_SIZE_HEIGHT                        = 585000;
-
+        const size_t   NORMAL_TX_MAX_OUTPUT_COUNT_V1_HEIGHT          = 725000;
+        const uint64_t MINIMUM_FEE_PER_BYTE_V1_HEIGHT                = 775000;      // Height for our first fee to byte change to take effect.
+        const uint64_t COINBASE_TRANSACTION_OUTPUT_CLAIMING_HEIGHT   = 800000;      // Coinbase transactions must include the recipient address + tx priv
+	   
         /* 4,477,500 ARMS -> Max supply / mixin+1 outputs                 */
         /* This is enforced on the daemon side. An output > 4,477,500 causes an invalid block.   */
         const uint64_t MAX_OUTPUT_SIZE_NODE                          = 4'477'500'00000000;
@@ -158,7 +158,6 @@ namespace CryptoNote
             to help curtail fusion transaction spam. */
         const size_t   FUSION_TX_MAX_POOL_COUNT 					 = 50;
         const size_t   NORMAL_TX_MAX_OUTPUT_COUNT_V1                 = 90;
-        const size_t   NORMAL_TX_MAX_OUTPUT_COUNT_V1_HEIGHT          = 725000;
 
         const uint32_t UPGRADE_HEIGHT_V2                             = 1;
         const uint32_t UPGRADE_HEIGHT_V3                             = 2;
@@ -189,12 +188,14 @@ namespace CryptoNote
             455000, //10 CN-ARMOR/ARGON2
             585000, //11 MAX_OUTPUT_SIZE
             700000, //12
-            800000, //13
-            900000  //14
+			775000, //13 FEE PER BYTE
+            800000, //14 COINBASE TRANSACTION VALIDATE
+            900000, //15
+            1000000 //16
         };
 
         /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
-        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 12;
+        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 15;
 
         const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
@@ -256,8 +257,8 @@ namespace CryptoNote
 
     // P2P Network Configuration Section - This defines our current P2P network version
     // and the minimum version for communication between nodes
-    const uint8_t  P2P_CURRENT_VERSION                           = 8;
-    const uint8_t  P2P_MINIMUM_VERSION                           = 7;
+    const uint8_t  P2P_CURRENT_VERSION                           = 11;
+    const uint8_t  P2P_MINIMUM_VERSION                           = 10;
 
     // This defines the minimum P2P version required for lite blocks propogation
     const uint8_t P2P_LITE_BLOCKS_PROPOGATION_VERSION            = 4;

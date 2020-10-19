@@ -223,6 +223,21 @@ namespace CryptoNote
         return true;
     }
 
+    bool addPoolNonceToTransactionExtra(std::vector<uint8_t> &tx_extra, const BinaryArray &extra_nonce)
+    {
+        size_t start_pos = tx_extra.size();
+        tx_extra.resize(tx_extra.size() + 2 + extra_nonce.size());
+        // write tag
+        tx_extra[start_pos] = TX_EXTRA_POOL;
+        // write len
+        ++start_pos;
+        tx_extra[start_pos] = static_cast<uint8_t>(extra_nonce.size());
+        // write data
+        ++start_pos;
+        memcpy(&tx_extra[start_pos], extra_nonce.data(), extra_nonce.size());
+        return true;
+    }
+
     bool appendMergeMiningTagToExtra(std::vector<uint8_t> &tx_extra, const TransactionExtraMergeMiningTag &mm_tag)
     {
         BinaryArray blob;
