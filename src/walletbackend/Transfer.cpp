@@ -223,7 +223,7 @@ namespace SendTransaction
         subWallets->storeTxPrivateKey(txKeyPair.secretKey, txHash);
 
         /* Lock the input for spending till it is confirmed as spent in a block */
-        for (const auto input : ourInputs)
+        for (const auto &input : ourInputs)
         {
             subWallets->markInputAsLocked(input.input.keyImage, input.publicSpendKey);
         }
@@ -366,7 +366,7 @@ namespace SendTransaction
         uint64_t requiredAmount = totalAmount;
         WalletTypes::PreparedTransactionInfo txInfo;
 
-        for (const auto input : availableInputs)
+        for (const auto &input : availableInputs)
         {
             ourInputs.push_back(input);
             sumOfInputs += input.input.amount;
@@ -547,7 +547,7 @@ namespace SendTransaction
             subWallets->storeTxPrivateKey(txResult.txKeyPair.secretKey, txHash);
 
             /* Lock the input for spending till it is confirmed as spent in a block */
-            for (const auto input : ourInputs)
+            for (const auto &input : ourInputs)
             {
                 subWallets->markInputAsLocked(input.input.keyImage, input.publicSpendKey);
             }
@@ -603,7 +603,7 @@ namespace SendTransaction
         subWallets->storeTxPrivateKey(txInfo.tx.txKeyPair.secretKey, txHash);
 
         /* Lock the input for spending till it is confirmed as spent in a block */
-        for (const auto input : txInfo.inputs)
+        for (const auto &input : txInfo.inputs)
         {
             subWallets->markInputAsLocked(input.input.keyImage, input.publicSpendKey);
         }
@@ -678,7 +678,7 @@ namespace SendTransaction
             {
                 return { false, txResult, changeRequired, amountPreFee + actualFee };
             }
-            
+
             /* Our fee was too low. Lets try making the transaction again,
              * this time using the actual fee calculated. Note that this still
              * may fail, since we are possibly adding more outputs, and so have
@@ -767,7 +767,7 @@ namespace SendTransaction
         std::unordered_map<Crypto::PublicKey, int64_t> transfers;
 
         /* Loop through each input, and minus that from the transfers array */
-        for (const auto input : ourInputs)
+        for (const auto &input : ourInputs)
         {
             transfers[input.publicSpendKey] -= input.input.amount;
         }
@@ -825,7 +825,7 @@ namespace SendTransaction
 
         std::vector<WalletTypes::TransactionDestination> destinations;
 
-        for (const auto [address, amount] : addressesAndAmounts)
+        for (const auto &[address, amount] : addressesAndAmounts)
         {
             /* Grab the public keys from the receiver address */
             const auto [publicSpendKey, publicViewKey] = Utilities::addressToKeys(address);
@@ -968,7 +968,7 @@ namespace SendTransaction
 
         size_t i = 0;
 
-        for (const auto walletAmount : sources)
+        for (const auto &walletAmount : sources)
         {
             WalletTypes::GlobalIndexKey realOutput {*walletAmount.input.globalOutputIndex, walletAmount.input.key};
 
@@ -1149,7 +1149,7 @@ namespace SendTransaction
 
         std::vector<WalletTypes::KeyOutput> outputs;
 
-        for (const auto destination : destinations)
+        for (const auto &destination : destinations)
         {
             Crypto::KeyDerivation derivation;
 
@@ -1186,7 +1186,7 @@ namespace SendTransaction
         size_t i = 0;
 
         /* Add the transaction signatures */
-        for (const auto input : inputsAndFakes)
+        for (const auto &input : inputsAndFakes)
         {
             std::vector<Crypto::PublicKey> publicKeys;
 
@@ -1218,11 +1218,11 @@ namespace SendTransaction
 
         i = 0;
 
-        for (const auto input : inputsAndFakes)
+        for (const auto &input : inputsAndFakes)
         {
             std::vector<Crypto::PublicKey> publicKeys;
 
-            for (const auto output : input.outputs)
+            for (const auto &output : input.outputs)
             {
                 publicKeys.push_back(output.key);
             }
@@ -1292,7 +1292,7 @@ namespace SendTransaction
     {
         std::vector<CryptoNote::TransactionInput> result;
 
-        for (const auto input : keyInputs)
+        for (const auto &input : keyInputs)
         {
             result.push_back(input);
         }
@@ -1449,7 +1449,7 @@ namespace SendTransaction
 
         /* Note - not verifying inputs as it's possible to have received inputs
            from another wallet which don't enforce this rule */
-        for (const auto output : tx.outputs)
+        for (const auto &output : tx.outputs)
         {
             amounts.push_back(output.amount);
         }
@@ -1477,12 +1477,12 @@ namespace SendTransaction
         uint64_t inputTotal = 0;
         uint64_t outputTotal = 0;
 
-        for (const auto input : tx.inputs)
+        for (const auto &input : tx.inputs)
         {
             inputTotal += boost::get<CryptoNote::KeyInput>(input).amount;
         }
 
-        for (const auto output : tx.outputs)
+        for (const auto &output : tx.outputs)
         {
             outputTotal += output.amount;
         }
