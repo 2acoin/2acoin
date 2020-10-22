@@ -65,15 +65,15 @@ namespace CryptoNote
         /* Fee per byte is rounded up in chunks. This helps makes estimates
          * more accurate. It's suggested to make this a power of two, to relate
          * to the underlying storage cost / page sizes for storing a transaction. */
-        const uint64_t FEE_PER_BYTE_CHUNK_SIZE = 256;
-        
+        const uint64_t FEE_PER_BYTE_CHUNK_SIZE                       = 256;
+
         /* Fee to charge per byte of transaction. Will be applied in chunks, see
-         * above. This value comes out to 0.0000006. We use this value instead of
-         * something like .0011 because it makes for pretty resulting fees
+         * above. This value comes out to 0.0000006 per chunk. We use this value instead of
+         * something like .0001 because it makes for pretty resulting fees
          * - .0000006 ARMS. You can read this as.. the fee per chunk
-         * is 500 atomic units. The fee per byte is 500 / chunk size. */
-        const double MINIMUM_FEE_PER_BYTE_V1 = 0.0001536 / FEE_PER_BYTE_CHUNK_SIZE;
-        
+         * is .0001536 ARMS. The fee per byte is .0001536 / chunk size. */
+        const double MINIMUM_FEE_PER_BYTE_V1                         = 0.0001536 / FEE_PER_BYTE_CHUNK_SIZE;
+
         /* This section defines our minimum and maximum mixin counts required for transactions */
         const uint64_t MINIMUM_MIXIN_V1                              = 0;
         const uint64_t MAXIMUM_MIXIN_V1                              = 100;
@@ -120,7 +120,7 @@ namespace CryptoNote
         static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
 
         /* Adjusted parmas for forks */
-		const size_t   MAX_BLOCK_SIZE_INITIAL                        = 100000;
+        const size_t   MAX_BLOCK_SIZE_INITIAL                        = 100000;
         const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR         = 100 * 1024;
         const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_DENOMINATOR       = 365 * 24 * 60 * 60 / DIFFICULTY_TARGET;
         const uint64_t MAX_EXTRA_SIZE                                = 140000;
@@ -133,7 +133,7 @@ namespace CryptoNote
         const size_t   NORMAL_TX_MAX_OUTPUT_COUNT_V1_HEIGHT          = 725000;
         const uint64_t MINIMUM_FEE_PER_BYTE_V1_HEIGHT                = 775000;      // Height for our first fee to byte change to take effect.
         const uint64_t COINBASE_TRANSACTION_OUTPUT_CLAIMING_HEIGHT   = 800000;      // Coinbase transactions must include the recipient address + tx priv
-	   
+
         /* 4,477,500 ARMS -> Max supply / mixin+1 outputs                 */
         /* This is enforced on the daemon side. An output > 4,477,500 causes an invalid block.   */
         const uint64_t MAX_OUTPUT_SIZE_NODE                          = 4'477'500'00000000;
@@ -156,7 +156,7 @@ namespace CryptoNote
             at any given time. Incoming fusion transactions that attempt to exceed this limit
             will be rejected from the pool and will not be added. This mechanism is in place
             to help curtail fusion transaction spam. */
-        const size_t   FUSION_TX_MAX_POOL_COUNT 					 = 50;
+        const size_t   FUSION_TX_MAX_POOL_COUNT                      = 50;
         const size_t   NORMAL_TX_MAX_OUTPUT_COUNT_V1                 = 90;
 
         const uint32_t UPGRADE_HEIGHT_V2                             = 1;
@@ -166,7 +166,7 @@ namespace CryptoNote
         const uint32_t UPGRADE_HEIGHT_V6                             = 455000;  // Upgrade height for ARGON2 switch.
         const uint32_t UPGRADE_HEIGHT_CURRENT                        = UPGRADE_HEIGHT_V6;
 
-        const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
+        const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;                                 // percent
         const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
         const uint32_t UPGRADE_WINDOW                                = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
         static_assert(0 < UPGRADE_VOTING_THRESHOLD && UPGRADE_VOTING_THRESHOLD <= 100, "Bad UPGRADE_VOTING_THRESHOLD");
@@ -188,7 +188,7 @@ namespace CryptoNote
             455000, //10 CN-ARMOR/ARGON2
             585000, //11 MAX_OUTPUT_SIZE
             700000, //12
-			775000, //13 FEE PER BYTE
+            775000, //13 FEE PER BYTE
             800000, //14 COINBASE TRANSACTION VALIDATE
             900000, //15
             1000000 //16
@@ -258,7 +258,7 @@ namespace CryptoNote
     // P2P Network Configuration Section - This defines our current P2P network version
     // and the minimum version for communication between nodes
     const uint8_t  P2P_CURRENT_VERSION                           = 11;
-    const uint8_t  P2P_MINIMUM_VERSION                           = 10;
+    const uint8_t  P2P_MINIMUM_VERSION                           = 7;
 
     // This defines the minimum P2P version required for lite blocks propogation
     const uint8_t P2P_LITE_BLOCKS_PROPOGATION_VERSION            = 4;
@@ -307,7 +307,7 @@ namespace CryptoNote
     const char* const SEED_NODES[] = {
       "45.63.35.51:17890",        //US-WEST - Seattle(1)
       "144.202.29.252:17890",     //US-EAST - Atlanta (2)
-      "207.148.6.195:17890",      //US-CENTRAL-02 - Dallas (3)
+      /* "207.148.6.195:17890",   //US-CENTRAL-02 - Dallas (3)  --shutdown--  */
       "207.148.3.16:17890",       //US-CENTRAL - Dallas (4)
       "45.76.232.71:17890",       //US-CENTRAL-03 - Dallas (5)
       "95.179.141.4:17890"        //EU-WEST-06 - Amsterdam (6)
