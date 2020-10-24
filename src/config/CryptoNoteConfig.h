@@ -68,11 +68,11 @@ namespace CryptoNote
         const uint64_t FEE_PER_BYTE_CHUNK_SIZE                       = 256;
 
         /* Fee to charge per byte of transaction. Will be applied in chunks, see
-         * above. This value comes out to 0.0000006 per chunk. We use this value instead of
-         * something like .0001 because it makes for pretty resulting fees
-         * - .0000006 ARMS. You can read this as.. the fee per chunk
-         * is .0001536 ARMS. The fee per byte is .0001536 / chunk size. */
-        const double MINIMUM_FEE_PER_BYTE_V1                         = 0.0001536 / FEE_PER_BYTE_CHUNK_SIZE;
+         * above. This value comes out to 1000 (atomic units) per chunk. We use
+         * this value because it makes for pretty resulting fees. 
+         * You can read this as.. the fee per chunk is .00001000 per chunk. 
+         * The fee per byte is 256000 / 256 (chunk size).    */
+        const double MINIMUM_FEE_PER_BYTE_V1                         = 256000 / FEE_PER_BYTE_CHUNK_SIZE;
 
         /* This section defines our minimum and maximum mixin counts required for transactions */
         const uint64_t MINIMUM_MIXIN_V1                              = 0;
@@ -131,8 +131,8 @@ namespace CryptoNote
         const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 391000;
         const uint64_t MAX_OUTPUT_SIZE_HEIGHT                        = 585000;
         const size_t   NORMAL_TX_MAX_OUTPUT_COUNT_V1_HEIGHT          = 725000;
-        const uint64_t MINIMUM_FEE_PER_BYTE_V1_HEIGHT                = 775000;      // Height for our first fee to byte change to take effect.
-        const uint64_t COINBASE_TRANSACTION_OUTPUT_CLAIMING_HEIGHT   = 800000;      // Coinbase transactions must include the recipient address + tx priv
+        const uint64_t MINIMUM_FEE_PER_BYTE_V1_HEIGHT                = 780000;      // Height for our first fee to byte change to take effect.
+        const uint64_t COINBASE_TRANSACTION_OUTPUT_CLAIMING_HEIGHT   = 785000;      // Coinbase transactions must include the recipient address + tx priv
 
         /* 4,477,500 ARMS -> Max supply / mixin+1 outputs                 */
         /* This is enforced on the daemon side. An output > 4,477,500 causes an invalid block.   */
@@ -188,8 +188,8 @@ namespace CryptoNote
             455000, //10 CN-ARMOR/ARGON2
             585000, //11 MAX_OUTPUT_SIZE
             700000, //12
-            775000, //13 FEE PER BYTE
-            800000, //14 COINBASE TRANSACTION VALIDATE
+            780000, //13 FEE PER BYTE
+            785000, //14 COINBASE TRANSACTION VALIDATE
             900000, //15
             1000000 //16
         };
