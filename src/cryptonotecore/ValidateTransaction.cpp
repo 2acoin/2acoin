@@ -368,8 +368,8 @@ bool ValidateTransaction::validateTransactionFee()
             );
 
             validFee = fee >= minFee;
-        }
-        else if (m_isPoolTransaction && (m_blockHeight < CryptoNote::parameters::MINIMUM_FEE_PER_BYTE_V1_HEIGHT))
+        } 
+        else
         /* Test for historical validation problems and let thru on resync of chain
          * We cannot enforce validation of transactions already in a block with new validation rule.
          * Our chain contains historical blocks with -0- fee */

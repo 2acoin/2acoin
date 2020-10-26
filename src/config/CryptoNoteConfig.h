@@ -131,8 +131,8 @@ namespace CryptoNote
         const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 391000;
         const uint64_t MAX_OUTPUT_SIZE_HEIGHT                        = 585000;
         const size_t   NORMAL_TX_MAX_OUTPUT_COUNT_V1_HEIGHT          = 725000;
-        const uint64_t MINIMUM_FEE_PER_BYTE_V1_HEIGHT                = 780000;      // Height for our first fee to byte change to take effect.
-        const uint64_t COINBASE_TRANSACTION_OUTPUT_CLAIMING_HEIGHT   = 785000;      // Coinbase transactions must include the recipient address + tx priv
+        const uint64_t MINIMUM_FEE_PER_BYTE_V1_HEIGHT                = 777000;      // Height for our first fee to byte change to take effect.
+        const uint64_t COINBASE_TRANSACTION_OUTPUT_CLAIMING_HEIGHT   = 780000;      // Coinbase transactions must include the recipient address + tx priv
 
         /* 4,477,500 ARMS -> Max supply / mixin+1 outputs                 */
         /* This is enforced on the daemon side. An output > 4,477,500 causes an invalid block.   */
@@ -188,8 +188,8 @@ namespace CryptoNote
             455000, //10 CN-ARMOR/ARGON2
             585000, //11 MAX_OUTPUT_SIZE
             700000, //12
-            780000, //13 FEE PER BYTE
-            785000, //14 COINBASE TRANSACTION VALIDATE
+            777000, //13 FEE PER BYTE
+            780000, //14 COINBASE TRANSACTION VALIDATE
             900000, //15
             1000000 //16
         };
@@ -258,7 +258,7 @@ namespace CryptoNote
     // P2P Network Configuration Section - This defines our current P2P network version
     // and the minimum version for communication between nodes
     const uint8_t  P2P_CURRENT_VERSION                           = 11;
-    const uint8_t  P2P_MINIMUM_VERSION                           = 7;
+    const uint8_t  P2P_MINIMUM_VERSION                           = 9;
 
     // This defines the minimum P2P version required for lite blocks propogation
     const uint8_t P2P_LITE_BLOCKS_PROPOGATION_VERSION            = 4;
@@ -294,7 +294,7 @@ namespace CryptoNote
     /* MainNet Network Identifier for 2ACoin */
     const static   boost::uuids::uuid CRYPTONOTE_NETWORK         =
     {
-        {  0xff, 0x00, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x00  }
+        {  0xff, 0x01, 0xab, 0xcd, 0x17, 0x89, 0xaa, 0xaa, 0x17, 0x91, 0x12, 0x15, 0x17, 0x91, 0x00, 0x01  }
     };
 
     /* TestNet Network Identifier for 2ACoin */
@@ -307,7 +307,7 @@ namespace CryptoNote
     const char* const SEED_NODES[] = {
       "45.63.35.51:17890",        //US-WEST - Seattle(1)
       "144.202.29.252:17890",     //US-EAST - Atlanta (2)
-      /* "207.148.6.195:17890",   //US-CENTRAL-02 - Dallas (3)  --shutdown--  */
+      "207.148.6.195:17890",   //US-CENTRAL-02 - Dallas (3)
       "207.148.3.16:17890",       //US-CENTRAL - Dallas (4)
       "45.76.232.71:17890",       //US-CENTRAL-03 - Dallas (5)
       "95.179.141.4:17890"        //EU-WEST-06 - Amsterdam (6)
