@@ -368,7 +368,7 @@ bool ValidateTransaction::validateTransactionFee()
             );
 
             validFee = fee >= minFee;
-        } 
+        }
         else
         /* Test for historical validation problems and let thru on resync of chain
          * We cannot enforce validation of transactions already in a block with new validation rule.
