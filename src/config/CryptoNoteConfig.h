@@ -69,8 +69,8 @@ namespace CryptoNote
 
         /* Fee to charge per byte of transaction. Will be applied in chunks, see
          * above. This value comes out to 1000 (atomic units) per chunk. We use
-         * this value because it makes for pretty resulting fees. 
-         * You can read this as.. the fee per chunk is .00001000 per chunk. 
+         * this value because it makes for pretty resulting fees.
+         * You can read this as.. the fee per chunk is .00001000 per chunk.
          * The fee per byte is 256000 / 256 (chunk size).    */
         const double MINIMUM_FEE_PER_BYTE_V1                         = 256000 / FEE_PER_BYTE_CHUNK_SIZE;
 

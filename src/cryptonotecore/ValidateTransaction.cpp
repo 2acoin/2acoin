@@ -369,9 +369,12 @@ bool ValidateTransaction::validateTransactionFee()
 
             validFee = fee >= minFee;
         }
-        else if (m_isPoolTransaction)
+        else if (m_isPoolTransaction && (m_blockHeight < CryptoNote::parameters::MINIMUM_FEE_PER_BYTE_V1_HEIGHT))
+        /* Test for historical validation problems and let thru on resync of chain
+         * We cannot enforce validation of transactions already in a block with new validation rule.
+         * Our chain contains historical blocks with -0- fee */
         {
-            validFee = fee >= CryptoNote::parameters::MINIMUM_FEE;
+            validFee = true;
         }
 
         if (!validFee)
@@ -415,7 +418,9 @@ bool ValidateTransaction::validateTransactionExtra()
 
 bool ValidateTransaction::validateInputOutputRatio()
 {
-    if (m_isPoolTransaction || m_blockHeight >= CryptoNote::parameters::NORMAL_TX_MAX_OUTPUT_COUNT_V1_HEIGHT)
+    /* We only want to enforce this validation on new transactions not on resync of chain
+     * therefore we check for both && (and) instead of || (or) */
+    if (m_isPoolTransaction && m_blockHeight >= CryptoNote::parameters::NORMAL_TX_MAX_OUTPUT_COUNT_V1_HEIGHT)
     {
         if (m_transaction.outputs.size() > CryptoNote::parameters::NORMAL_TX_MAX_OUTPUT_COUNT_V1)
         {
