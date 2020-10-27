@@ -131,7 +131,7 @@ namespace CryptoNote
         const uint64_t TRANSACTION_INPUT_BLOCKTIME_VALIDATION_HEIGHT = 391000;
         const uint64_t MAX_OUTPUT_SIZE_HEIGHT                        = 585000;
         const size_t   NORMAL_TX_MAX_OUTPUT_COUNT_V1_HEIGHT          = 725000;
-        const uint64_t MINIMUM_FEE_PER_BYTE_V1_HEIGHT                = 777000;      // Height for our first fee to byte change to take effect.
+        const uint64_t MINIMUM_FEE_PER_BYTE_V1_HEIGHT                = 775000;      // Height for our first fee to byte change to take effect.
         const uint64_t COINBASE_TRANSACTION_OUTPUT_CLAIMING_HEIGHT   = 780000;      // Coinbase transactions must include the recipient address + tx priv
 
         /* 4,477,500 ARMS -> Max supply / mixin+1 outputs                 */
@@ -188,7 +188,7 @@ namespace CryptoNote
             455000, //10 CN-ARMOR/ARGON2
             585000, //11 MAX_OUTPUT_SIZE
             700000, //12
-            777000, //13 FEE PER BYTE
+            775000, //13 FEE PER BYTE
             780000, //14 COINBASE TRANSACTION VALIDATE
             900000, //15
             1000000 //16
