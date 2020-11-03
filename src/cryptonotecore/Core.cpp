@@ -2729,6 +2729,37 @@ namespace CryptoNote
         return segment->getBlockByIndex(blockIndex);
     }
 
+    CryptoNote::RawBlock Core::getRawBlock(uint32_t blockIndex) const
+    {
+        assert(!chainsStorage.empty());
+        assert(!chainsLeaves.empty());
+
+        throwIfNotInitialized();
+
+        IBlockchainCache *chain = chainsLeaves[0];
+
+        return chain->getBlockByIndex(blockIndex);
+    }
+
+    CryptoNote::RawBlock Core::getRawBlock(const Crypto::Hash &blockHash) const
+    {
+        assert(!chainsStorage.empty());
+        assert(!chainsLeaves.empty());
+
+        throwIfNotInitialized();
+
+        IBlockchainCache *segment =
+            findMainChainSegmentContainingBlock(blockHash); // TODO should it be requested from the main chain?
+        if (segment == nullptr)
+        {
+            throw std::runtime_error("Requested hash wasn't found in main blockchain");
+        }
+
+        const uint32_t blockIndex = segment->getBlockIndex(blockHash);
+
+        return segment->getBlockByIndex(blockIndex);
+    }
+
     // TODO: decompose these three methods
     size_t Core::pushBlockHashes(
         uint32_t startIndex,

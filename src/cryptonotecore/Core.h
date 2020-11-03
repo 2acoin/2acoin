@@ -224,6 +224,10 @@ namespace CryptoNote
 
         static WalletTypes::RawTransaction getRawTransaction(const std::vector<uint8_t> &rawTX);
 
+        CryptoNote::RawBlock getRawBlock(uint32_t blockIndex) const;
+
+        CryptoNote::RawBlock getRawBlock(const Crypto::Hash &blockHash) const;
+
       private:
         const Currency &currency;
 

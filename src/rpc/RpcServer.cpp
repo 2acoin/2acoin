@@ -92,11 +92,11 @@ RpcServer::RpcServer(
 
         if (method == "getblocktemplate")
         {
-            router(&RpcServer::getBlockTemplate, RpcMode::Default, bodyRequired, syncRequired)(req, res);
+            router(&RpcServer::getBlockTemplate, RpcMode::Default, bodyRequired, syncNotRequired)(req, res);
         }
         else if (method == "submitblock")
         {
-            router(&RpcServer::submitBlock, RpcMode::Default, bodyRequired, syncRequired)(req, res);
+            router(&RpcServer::submitBlock, RpcMode::Default, bodyRequired, syncNotRequired)(req, res);
         }
         else if (method == "getblockcount")
         {
