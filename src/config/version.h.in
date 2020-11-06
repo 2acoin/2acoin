@@ -6,8 +6,8 @@
 #define PROJECT_COPYRIGHT "Copyright 2018-2020, 2ACoin Developers"
 #define APP_VER_MAJOR 2
 #define APP_VER_MINOR 1
-#define APP_VER_REV 2
-#define APP_VER_BUILD 138
+#define APP_VER_REV 3
+#define APP_VER_BUILD 140
 
 #define BUILD_COMMIT_ID "@VERSION@"
 #define PROJECT_VERSION STR(APP_VER_MAJOR) "." STR(APP_VER_MINOR) "." STR(APP_VER_REV)
