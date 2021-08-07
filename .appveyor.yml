@@ -58,7 +58,6 @@ deploy:
       secure: /bs0N/NFsPyhu6WvG3XFhtn53gRMvxcYD75MqbB5PsSdLP+GPF/XMQQJNN2z/0Yl
     bucket: olk-2acoin
     region: us-east-1
-    set_public: true
     folder: 2acoin
     artifact: 2ACoinRelease
     on:

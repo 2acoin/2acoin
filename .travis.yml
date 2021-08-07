@@ -116,12 +116,11 @@ deploy:
 
   - provider: s3
     access_key_id:
-      secure: $(AWS_ACCESS_KEY_ID)
+      secure: ${AWS_ACCESS_KEY_ID}
     secret_access_key:
-      secure: $(AWS_SECRET_KEY_ID)
+      secure: ${AWS_SECRET_KEY_ID}
     bucket: olk-2acoin
     skip_cleanup: true
-    acl: public_read
     region: us-east-1
     upload-dir: 2acoin
     local-dir: src/builds
