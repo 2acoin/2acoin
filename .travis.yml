@@ -24,7 +24,7 @@ matrix:
     env:
     - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
     - LABEL="linux"
-    - _DEPLOYABLE="true"
+    - _DEPLOYABLE="false"
     - STRIP="strip"
 
   # Ubuntu, g++-7
@@ -70,7 +70,7 @@ matrix:
     env:
     - MATRIX_EVAL="CC=aarch64-linux-gnu-gcc && CXX=aarch64-linux-gnu-g++"
     - LABEL="aarch64"
-    - _DEPLOYABLE="true"
+    - _DEPLOYABLE="false"
     - STRIP="aarch64-linux-gnu-strip"
 
 before_install:
