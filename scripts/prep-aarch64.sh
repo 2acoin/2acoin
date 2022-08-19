@@ -47,7 +47,7 @@ echo -n "Checking for Boost 1.55... "
 if [ ! -f $TOOLCHAIN_DIR/boost_1_55_0/stage/lib/libboost_system.a ]; then
   echo "Not found... Installing..."
 #  wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.gz 
-  wget https://downloads.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.gz
+  wget https://downloads.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.gz --no-check-certificate
   tar zxvf boost_1_55_0.tar.gz >/dev/null
   cd boost_1_55_0
   echo -n "Bootstrapping Boost 1.55 build... "
@@ -70,7 +70,7 @@ export BOOST_ROOT=$TOOLCHAIN_DIR/boost_1_55_0
 echo -n "Checking for OpenSSL 1.1.1f..."
 if [ ! -f $TOOLCHAIN_DIR/openssl/lib/libcrypto.a ]; then
   echo "Not found... Installing..."
-  wget https://www.openssl.org/source/openssl-1.1.1f.tar.gz
+  wget https://www.openssl.org/source/openssl-1.1.1f.tar.gz --no-check-certificate
   tar zxvf openssl-1.1.1f.tar.gz >/dev/null
   cd openssl-1.1.1f
   ./Configure linux-aarch64 --prefix=$TOOLCHAIN_DIR/openssl --openssldir=$TOOLCHAIN_DIR/openssl >/dev/null
