@@ -46,7 +46,8 @@ export CUSTOM_TOOLCHAIN_FILE=../scripts/cross-aarch64.cmake
 echo -n "Checking for Boost 1.55... "
 if [ ! -f $TOOLCHAIN_DIR/boost_1_55_0/stage/lib/libboost_system.a ]; then
   echo "Not found... Installing..."
-  wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.gz
+#  wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.gz 
+  wget https://downloads.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.gz
   tar zxvf boost_1_55_0.tar.gz >/dev/null
   cd boost_1_55_0
   echo -n "Bootstrapping Boost 1.55 build... "
