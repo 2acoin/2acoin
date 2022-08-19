@@ -152,7 +152,7 @@ namespace CryptoNote
         const size_t   FUSION_TX_MAX_SIZE                            = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT * 30 / 100;
         const size_t   FUSION_TX_MIN_INPUT_COUNT                     = 12;
         const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
-			/* This sets the maximum number of fusion transactions that can be present in the pool
+            /* This sets the maximum number of fusion transactions that can be present in the pool
             at any given time. Incoming fusion transactions that attempt to exceed this limit
             will be rejected from the pool and will not be added. This mechanism is in place
             to help curtail fusion transaction spam. */
@@ -194,12 +194,16 @@ namespace CryptoNote
             1000000, //16
             1250000, //17
             1500000, //18
-            1750000, //18            
-            2000000  //19
+            1750000, //19            
+            2000000, //20            
+            2250000, //21            
+            2500000, //22            
+            2750000, //23            
+            3000000  //24
         };
 
         /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
-        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 17;
+        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX                 = 22;
 
         const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
@@ -261,8 +265,8 @@ namespace CryptoNote
 
     // P2P Network Configuration Section - This defines our current P2P network version
     // and the minimum version for communication between nodes
-    const uint8_t  P2P_CURRENT_VERSION                           = 11;
-    const uint8_t  P2P_MINIMUM_VERSION                           = 9;
+    const uint8_t  P2P_CURRENT_VERSION                           = 12;
+    const uint8_t  P2P_MINIMUM_VERSION                           = 10;
 
     // This defines the minimum P2P version required for lite blocks propogation
     const uint8_t P2P_LITE_BLOCKS_PROPOGATION_VERSION            = 4;
