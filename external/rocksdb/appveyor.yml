@@ -73,7 +73,7 @@ before_build:
 
 build:
   project: build\rocksdb.sln
-  parallel: true
+  parallel: false
   verbosity: normal
 
 test:
