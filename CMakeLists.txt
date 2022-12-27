@@ -1,6 +1,10 @@
 # We need 3.8 for set(CMAKE_CXX_STANDARD 17)
 cmake_minimum_required(VERSION 3.8)
 
+if(POLICY CMP0074)
+  cmake_policy(SET CMP0074 NEW)
+endif()
+
 find_program(CCACHE_PROGRAM ccache)
 if (CCACHE_PROGRAM)
     message(STATUS "Found ccache package... Activating...")
@@ -245,9 +249,6 @@ endif ()
 set(Boost_NO_BOOST_CMAKE ON)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_STATIC_RUNTIME ON)
-if (MSVC)
-    cmake_policy(SET CMP0074 NEW)
-endif ()
 find_package(Boost REQUIRED COMPONENTS system thread date_time chrono serialization)
 
 message(STATUS "Boost Found: ${Boost_INCLUDE_DIRS}")
