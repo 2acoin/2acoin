@@ -1,5 +1,5 @@
 // Copyright (c) 2018, The TurtleCoin Developers
-// Copyright (c) 2018-2021, 2ACoin Developers
+// Copyright (c) 2018-2023, 2ACoin Developers
 // 
 // Please see the included LICENSE file for more information.
 
