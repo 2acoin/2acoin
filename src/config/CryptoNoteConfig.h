@@ -315,9 +315,8 @@ namespace CryptoNote
     const char* const SEED_NODES[] = {
       "45.63.35.51:17890",        //US-WEST - Seattle(1)
       "144.202.29.252:17890",     //US-EAST - Atlanta (2)
-      "207.148.6.195:17890",      //US-CENTRAL-02 - Dallas (3)
-      "207.148.3.16:17890",       //US-CENTRAL - Dallas (4)
-      "45.76.232.71:17890",       //US-CENTRAL-03 - Dallas (5)
-      "95.179.141.4:17890"        //EU-WEST-06 - Amsterdam (6)
+      "45.76.232.71:17890",       //US-CENTRAL-01 - Dallas (3)
+      "108.61.205.5:17890",       //US-CENTRAL-02 - Dallas (4)
+      "95.179.141.4:17890"        //EU-WEST - Amsterdam (5)
       };
 } // Namespace CryptoNote
