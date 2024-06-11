@@ -9,9 +9,10 @@ import sys
 import json
 import requests
 import datetime
+import time
 
 topbuffer = 1
-
+start_height = int(sys.argv[2])
 
 def lastknownblock():
     try:
@@ -24,7 +25,7 @@ def lastknownblock():
 
 
 def height():
-    base_url = 'http://localhost:17910/getheight'
+    base_url = 'http://localhost:17910/height'
     resp = requests.get(base_url).json()
     if 'height' not in resp:
         print ('Unexpected response, make sure 2ACoind is running',
@@ -64,13 +65,21 @@ def get_block_info(from_height):
     return resp['blocks']
 
 def get_block_hash(height):
-   resp = rpc('on_getblockhash', [height])
-   return resp
+   resp = rpc('getblockheaderbyheight', {'height': height})
+   return resp['block_header']['hash']
 
-stop_height = lastknownblock() + 1
+# stop_height = lastknownblock() + 1
 
+process_height = lastknownblock() +1
 current_height = height() - topbuffer
-process_height = 1
+
+while current_height < start_height:
+   print '#############################################'
+   print 'Start Height   = %s' % start_height
+   print 'Current Height = %s' % current_height
+   time.sleep(10)
+   current_height = height() - topbuffer
+
 start_time = datetime.datetime.now()
 with open(sys.argv[1], 'a') as f:
    while process_height < current_height:
@@ -78,13 +87,15 @@ with open(sys.argv[1], 'a') as f:
            hash = get_block_hash(process_height+1)
            check = (process_height % 1000)
            if check == 0:
-               print '%s,%s' % (process_height, hash)
+               print '%s,%s' % (process_height,hash)
            f.write('%s,%s\n' % (process_height,hash))
            process_height = process_height + 1
            if process_height > current_height:
                break
        except:
            print "Whoops... let's try that again"
+           print '%s,%s' % (process_height,hash)
+           break
 
 #   if process_height > 1:
 #       f.write('\n')
